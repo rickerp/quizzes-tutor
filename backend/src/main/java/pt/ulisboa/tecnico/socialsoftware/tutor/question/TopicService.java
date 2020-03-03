@@ -1,7 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -9,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.TopicsXmlExport;
@@ -28,8 +27,6 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Service
 public class TopicService {
-    private static Logger logger = LoggerFactory.getLogger(TopicService.class);
-
     @Autowired
     private QuestionService questionService;
 
@@ -41,6 +38,14 @@ public class TopicService {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public CourseDto findTopicCourse(int topicId) {
+        return topicRepository.findById(topicId)
+                .map(Topic::getCourse)
+                .map(CourseDto::new)
+                .orElseThrow(() -> new TutorException(TOPIC_NOT_FOUND, topicId));
+    }
 
     @Retryable(
       value = { SQLException.class },
@@ -115,5 +120,6 @@ public class TopicService {
 
         xmlImporter.importTopics(topicsXML, this, questionService, courseRepository);
     }
+
 }
 

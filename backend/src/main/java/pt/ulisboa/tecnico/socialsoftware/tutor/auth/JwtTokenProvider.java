@@ -58,14 +58,19 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.RS512, privateKey)
+                .signWith(privateKey)
                 .compact();
     }
 
     static String getToken(HttpServletRequest req) {
         String authHeader = req.getHeader("Authorization");
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
+        } else if (authHeader != null && authHeader.startsWith("AUTH")) {
+            return authHeader.substring(4);
+        } else if (authHeader != null) {
+            return authHeader;
         }
         return "";
     }
@@ -74,8 +79,6 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(publicKey).parseClaimsJws(token);
             return true;
-        } catch (SignatureException ex) {
-            logger.error("Server security keys have changed");
         } catch (MalformedJwtException ex) {
             logger.error("Invalkey JWT token");
         } catch (ExpiredJwtException ex) {

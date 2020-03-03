@@ -68,8 +68,9 @@ public class AuthService {
                 User finalUser = user;
                 activeTeachingCourses.stream().filter(courseExecution -> !finalUser.getCourseExecutions().contains(courseExecution)).forEach(user::addCourse);
 
+                allCoursesInDb.addAll(fenixTeachingCourses);
+
                 String ids = fenixTeachingCourses.stream()
-                        .peek(allCoursesInDb::add)
                         .map(courseDto -> courseDto.getAcronym() + courseDto.getAcademicTerm())
                         .collect(Collectors.joining(","));
 
@@ -138,6 +139,17 @@ public class AuthService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public AuthDto demoTeacherAuth() {
         User user = this.userService.getDemoTeacher();
+
+        return new AuthDto(JwtTokenProvider.generateToken(user), new AuthUserDto(user));
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            maxAttempts = 2,
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public AuthDto demoAdminAuth() {
+        User user = this.userService.getDemoAdmin();
 
         return new AuthDto(JwtTokenProvider.generateToken(user), new AuthUserDto(user));
     }

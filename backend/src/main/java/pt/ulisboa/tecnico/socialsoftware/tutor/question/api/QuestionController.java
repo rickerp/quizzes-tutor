@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
@@ -18,13 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
-@Secured({ "ROLE_ADMIN", "ROLE_TEACHER" })
 public class QuestionController {
     private static Logger logger = LoggerFactory.getLogger(QuestionController.class);
 
@@ -38,36 +35,38 @@ public class QuestionController {
     }
 
     @GetMapping("/courses/{courseId}/questions")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public List<QuestionDto> getCourseQuestions(@PathVariable int courseId){
         return this.questionService.findQuestions(courseId);
     }
 
     @GetMapping("/courses/{courseId}/questions/available")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public List<QuestionDto> getAvailableQuestions(@PathVariable int courseId){
         return this.questionService.findAvailableQuestions(courseId);
     }
 
     @PostMapping("/courses/{courseId}/questions")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public QuestionDto createQuestion(@PathVariable int courseId, @Valid @RequestBody QuestionDto question) {
-        logger.debug("createQuestion title: {}, content: {}, options: {}: ",
-                question.getTitle(), question.getContent(),
-                question.getOptions().stream().map(optionDto -> optionDto.getId() + " : " + optionDto.getContent() + " : " + optionDto.getCorrect())
-                        .collect(Collectors.joining("\n")));
         question.setStatus(Question.Status.AVAILABLE.name());
         return this.questionService.createQuestion(courseId, question);
     }
 
     @GetMapping("/questions/{questionId}")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public QuestionDto getQuestion(@PathVariable Integer questionId) {
         return this.questionService.findQuestionById(questionId);
     }
 
     @PutMapping("/questions/{questionId}")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public QuestionDto updateQuestion(@PathVariable Integer questionId, @Valid @RequestBody QuestionDto question) {
         return this.questionService.updateQuestion(questionId, question);
     }
 
     @DeleteMapping("/questions/{questionId}")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public ResponseEntity removeQuestion(@PathVariable Integer questionId) throws IOException {
         logger.debug("removeQuestion questionId: {}: ", questionId);
         QuestionDto questionDto = questionService.findQuestionById(questionId);
@@ -83,6 +82,7 @@ public class QuestionController {
     }
 
     @PostMapping("/questions/{questionId}/set-status")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public ResponseEntity questionSetStatus(@PathVariable Integer questionId, @Valid @RequestBody String status) {
         logger.debug("questionSetStatus questionId: {}: ", questionId);
         questionService.questionSetStatus(questionId, Question.Status.valueOf(status));
@@ -90,6 +90,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{questionId}/image")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public String uploadImage(@PathVariable Integer questionId, @RequestParam("file") MultipartFile file) throws IOException {
         logger.debug("uploadImage  questionId: {}: , filename: {}", questionId, file.getContentType());
 
@@ -111,9 +112,8 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{questionId}/topics")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public ResponseEntity updateQuestionTopics(@PathVariable Integer questionId, @RequestBody TopicDto[] topics) {
-        logger.debug("updateQuestionTopics  questionId: {}: , topics: {}", questionId, Arrays.toString(topics));
-
         questionService.updateQuestionTopics(questionId, topics);
 
         return ResponseEntity.ok().build();
