@@ -52,6 +52,14 @@ class CreateStudentQuestionTest extends Specification {
         courseRepository.save(course)
     }
 
+    def "user not found"() {
+        when:
+        studentQuestionService.createStudentQuestion(null, course.getId(), new QuestionDto())
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == ErrorMessage.USER_NOT_FOUND
+    }
+
     def "create studentQuestion with no question"() {
         when: "no question exists"
         studentQuestionService.createStudentQuestion(USERNAME, course.getId(), null)

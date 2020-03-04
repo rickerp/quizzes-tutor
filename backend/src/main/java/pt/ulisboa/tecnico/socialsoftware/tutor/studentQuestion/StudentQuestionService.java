@@ -42,6 +42,8 @@ public class StudentQuestionService {
             throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
 
         User user = userService.findByUsername(username);
+        if (user == null)
+            throw new TutorException(ErrorMessage.USER_NOT_FOUND);
 
         QuestionDto createdQuestionDto = questionService.createQuestion(courseId, questionDto);
         int questionId = createdQuestionDto.getId();
