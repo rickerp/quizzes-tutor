@@ -49,8 +49,8 @@ public class StudentQuestionService {
         int questionId = createdQuestionDto.getId();
         questionService.questionSetStatus(questionId, Question.Status.PENDING);
 
-        // TODO: Verify errors
-        Question question = questionRepository.findById(questionId).get();
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.QUESTION_NOT_FOUND));
 
         StudentQuestion studentQuestion = new StudentQuestion(user, question);
         this.entityManager.persist(studentQuestion);
