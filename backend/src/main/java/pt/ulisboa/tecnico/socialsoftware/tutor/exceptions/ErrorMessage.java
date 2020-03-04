@@ -58,8 +58,8 @@ public enum ErrorMessage {
     CANNOT_OPEN_FILE("Cannot open file"),
 
     QUESTION_IS_EMPTY("The question is empty"),
-    STUDENTQUESTION_IS_EMPTY("The studentQuestion is empty"),
-    ACCEPTED_IS_EMPTY("The accepted value is empty"),
+    STUDENT_QUESTION_IS_EMPTY("The studentQuestion is empty"),
+    STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
 
     JUSTIFICATION_ERROR("Student question was accepted, can not add a justification");
 

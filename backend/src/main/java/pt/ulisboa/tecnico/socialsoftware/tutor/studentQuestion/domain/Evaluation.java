@@ -1,13 +1,35 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion;
+package pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.domain.StudentQuestion;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "evaluations")
 public class Evaluation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @OneToOne
+    @JoinColumn(name = "student_question_id")
     private StudentQuestion studentQuestion;
+
     private boolean accepted;
     private String justification;
+
+    public Evaluation(StudentQuestion studentQuestion, boolean accepted, String justification){
+        if(!accepted && (justification == null)){
+            throw new TutorException(ErrorMessage.JUSTIFICATION_ERROR);
+        }
+
+        this.studentQuestion = studentQuestion;
+        this.accepted = accepted;
+        this.justification = justification;
+    }
 
     public int getId() {
         return id;

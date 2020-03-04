@@ -13,6 +13,7 @@ public class StudentQuestionDto implements Serializable {
     private StudentDto student;
 
     public StudentQuestionDto(StudentQuestion studentQuestion) {
+        this.id = studentQuestion.getId();
         this.question = new QuestionDto(studentQuestion.getQuestion());
         this.student = new StudentDto(studentQuestion.getStudent());
     }
