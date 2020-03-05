@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.domain;
+package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain;
 
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
@@ -21,9 +21,9 @@ public class Evaluation {
     private boolean accepted;
     private String justification;
 
-    public Evaluation(StudentQuestion studentQuestion, boolean accepted, String justification){
+    public Evaluation(StudentQuestion studentQuestion, boolean accepted, String justification) {
         if(!accepted && (justification == null)){
-            throw new TutorException(ErrorMessage.JUSTIFICATION_ERROR);
+            throw new TutorException(ErrorMessage.JUSTIFICATION_NOT_FOUND);
         }
 
         this.studentQuestion = studentQuestion;

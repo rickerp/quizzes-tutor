@@ -58,10 +58,10 @@ public enum ErrorMessage {
     CANNOT_OPEN_FILE("Cannot open file"),
 
     QUESTION_IS_EMPTY("The question is empty"),
-    STUDENT_QUESTION_IS_EMPTY("The studentQuestion is empty"),
+    STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
     STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
+    JUSTIFICATION_NOT_FOUND("Justification not found");
 
-    JUSTIFICATION_ERROR("Student question was accepted, can not add a justification");
 
     public final String label;
 
