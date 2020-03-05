@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
@@ -22,6 +23,9 @@ import spock.lang.Specification
 class CreateStudentQuestionTest extends Specification {
 
     static final USERNAME = 'username'
+
+    @Autowired
+    StudentQuestionRepository studentQuestionRepository
 
     @Autowired
     StudentQuestionService studentQuestionService
@@ -68,7 +72,7 @@ class CreateStudentQuestionTest extends Specification {
         questionDto.setKey(1)
         questionDto.setTitle("title")
         questionDto.setContent("content")
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setStatus(Question.Status.PENDING.name())
         and: 'a optionId'
         def optionDto = new OptionDto()
         optionDto.setContent("content")
@@ -81,10 +85,10 @@ class CreateStudentQuestionTest extends Specification {
         def studentQuestionDto = studentQuestionService.createStudentQuestion(USERNAME, course.getId(), questionDto);
 
         then: "the question contains correct information"
-        studentQuestionDto != null
-        studentQuestionDto.question != null
-        studentQuestionDto.question.title == questionDto.title
-        studentQuestionDto.question.image == questionDto.image
+        def studentQuestion = studentQuestionRepository.findAll().get(0)
+        studentQuestion != null
+        studentQuestion.question != null
+        studentQuestion.question.title == questionDto.title
     }
 
     @TestConfiguration
