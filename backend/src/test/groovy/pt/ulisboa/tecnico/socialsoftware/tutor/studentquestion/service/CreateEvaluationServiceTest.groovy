@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.service
+package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -12,15 +12,14 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.EvaluationService
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.StudentQuestionService
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.repository.StudentQuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.EvaluationService
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.EvaluationRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Specification
-
-import java.util.concurrent.RejectedExecutionException
 
 @DataJpaTest
 class CreateEvaluationServiceTest extends Specification {
@@ -36,6 +35,9 @@ class CreateEvaluationServiceTest extends Specification {
     EvaluationService evaluationService
 
     @Autowired
+    EvaluationRepository evaluationRepository
+
+    @Autowired
     UserRepository userRepository
 
     @Autowired
@@ -49,6 +51,7 @@ class CreateEvaluationServiceTest extends Specification {
 
     User user
     Course course
+    QuestionDto questionDto
 
     def setup(){
         user = new User("name", USERNAME, 1, User.Role.STUDENT)
@@ -56,112 +59,100 @@ class CreateEvaluationServiceTest extends Specification {
 
         course = new Course("course", Course.Type.TECNICO)
         courseRepository.save(course)
-    }
 
-    def "studentQuestion exists and create evaluation"(){
-        given: "a Question"
-        def questionDto = new QuestionDto()
+        questionDto = new QuestionDto()
         questionDto.setKey(1)
         questionDto.setTitle("title")
         questionDto.setContent("content")
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        and: 'a optionId'
+        questionDto.setStatus(Question.Status.PENDING.name())
         def optionDto = new OptionDto()
         optionDto.setContent("content")
         optionDto.setCorrect(true)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         questionDto.setOptions(options)
-        and: "a studentQuestion"
+    }
+
+    def "studentQuestion exists and create evaluation"(){
+        given: "a studentQuestion"
         def studentQuestionDto = studentQuestionService.createStudentQuestion(USERNAME, course.getId(), questionDto)
 
         when:
         def result = evaluationService.createEvaluation(studentQuestionDto.getId(), ACCEPTED, null)
-        then:
+
+        then: "the returned data is correct"
         result.getStudentQuestionDto() != null
         result.isAccepted()
         result.getJustification() == null
+        and: "evaluation is created"
+        def evaluation = evaluationRepository.findById(result.getId()).orElse(null)
+        evaluation != null
+        and: "has the correct value"
+        evaluation.getStudentQuestion().getId() == studentQuestionDto.getId()
+        evaluation.isAccepted()
+        evaluation.getJustification() == null
     }
 
     def "studentQuestion does not exist"(){
         when: "there is no studentQuestion"
-        def result = evaluationService.createEvaluation(-1, ACCEPTED, null)
+        evaluationService.createEvaluation(-1, ACCEPTED, null)
         then: "an exception is thrown"
         def error = thrown(TutorException)
         error.errorMessage == ErrorMessage.STUDENT_QUESTION_NOT_FOUND
     }
 
     def "studentQuestion and evaluation exist"(){
-        given: "a Question"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle("title")
-        questionDto.setContent("content")
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        and: 'a optionId'
-        def optionDto = new OptionDto()
-        optionDto.setContent("content")
-        optionDto.setCorrect(true)
-        def options = new ArrayList<OptionDto>()
-        options.add(optionDto)
-        questionDto.setOptions(options)
-        and: "a studentQuestion"
+        given: "a studentQuestion"
         def studentQuestionDto = studentQuestionService.createStudentQuestion(USERNAME, course.getId(), questionDto)
         and: "a evaluation"
-        def evaluationDto = evaluationService.createEvaluation(studentQuestionDto.getId(), REJECTED, JUSTIFICATION_ONE)
+        evaluationService.createEvaluation(studentQuestionDto.getId(), REJECTED, JUSTIFICATION_ONE)
+
         when: "create another evaluation"
         def result = evaluationService.createEvaluation(studentQuestionDto.getId(), ACCEPTED, null)
+
         then: "overwrite the older one"
         result.getStudentQuestionDto() != null
         result.isAccepted()
         result.getJustification() == null
+        and: "evaluation is created"
+        def evaluation = evaluationRepository.findById(result.getId()).orElse(null)
+        evaluation != null
+        and: "has the correct value"
+        evaluation.getStudentQuestion().getId() == studentQuestionDto.getId()
+        evaluation.isAccepted()
+        evaluation.getJustification() == null
     }
 
     def "reject studentQuestion and do not add a justification"() {
-        given: "a Question"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle("title")
-        questionDto.setContent("content")
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        and: 'a optionId'
-        def optionDto = new OptionDto()
-        optionDto.setContent("content")
-        optionDto.setCorrect(true)
-        def options = new ArrayList<OptionDto>()
-        options.add(optionDto)
-        questionDto.setOptions(options)
-        and: "a studentQuestion"
+        given: "a studentQuestion"
         def studentQuestionDto = studentQuestionService.createStudentQuestion(USERNAME, course.getId(), questionDto)
+
         when: "create evaluation"
-        def result = evaluationService.createEvaluation(studentQuestionDto.getId(), REJECTED, null)
+        evaluationService.createEvaluation(studentQuestionDto.getId(), REJECTED, null)
+
         then: "an exception is thrown"
         def error = thrown(TutorException)
-        error.errorMessage == ErrorMessage.JUSTIFICATION_ERROR
+        error.errorMessage == ErrorMessage.JUSTIFICATION_NOT_FOUND
     }
 
     def "reject studentQuestion and add a justification"() {
-        given: "a Question"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle("title")
-        questionDto.setContent("content")
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        and: 'a optionId'
-        def optionDto = new OptionDto()
-        optionDto.setContent("content")
-        optionDto.setCorrect(true)
-        def options = new ArrayList<OptionDto>()
-        options.add(optionDto)
-        questionDto.setOptions(options)
-        and: "a studentQuestion"
+        given: "a studentQuestion"
         def studentQuestionDto = studentQuestionService.createStudentQuestion(USERNAME, course.getId(), questionDto)
+
         when: "create evaluation"
         def result = evaluationService.createEvaluation(studentQuestionDto.getId(), REJECTED, JUSTIFICATION_ONE)
+
         then:
         result.getStudentQuestionDto() != null
         !result.isAccepted()
         result.getJustification() == JUSTIFICATION_ONE
+        and: "evaluation is created"
+        def evaluation = evaluationRepository.findById(result.getId()).orElse(null)
+        evaluation != null
+        and: "has the correct value"
+        evaluation.getStudentQuestion().getId() == studentQuestionDto.getId()
+        !evaluation.isAccepted()
+        evaluation.getJustification() == JUSTIFICATION_ONE
     }
 
     @TestConfiguration

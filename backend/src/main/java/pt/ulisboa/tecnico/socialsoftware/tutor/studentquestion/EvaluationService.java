@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion;
+package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,12 +6,11 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.domain.Evaluation;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.domain.StudentQuestion;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.dto.EvaluationDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.dto.StudentQuestionDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.repository.EvaluationRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.repository.StudentQuestionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.Evaluation;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.EvaluationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.EvaluationRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository;
 
 @Service
 public class EvaluationService {
@@ -22,8 +21,8 @@ public class EvaluationService {
     private EvaluationRepository evaluationRepository;
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public EvaluationDto createEvaluation(int id, boolean accepted, String justification){
-        StudentQuestion studentQuestion = studentQuestionRepository.findById(id).orElse(null);
+    public EvaluationDto createEvaluation(int studentQuestionId, boolean accepted, String justification) {
+        StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId).orElse(null);
         if(studentQuestion == null){
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND);
         }
