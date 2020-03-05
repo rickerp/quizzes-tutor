@@ -12,6 +12,9 @@ public class StudentQuestionDto implements Serializable {
     private QuestionDto question;
     private StudentDto student;
 
+    public StudentQuestionDto() {
+
+    }
     public StudentQuestionDto(StudentQuestion studentQuestion) {
         this.id = studentQuestion.getId();
         this.question = new QuestionDto(studentQuestion.getQuestion());
@@ -39,7 +42,7 @@ public class StudentQuestionDto implements Serializable {
     }
 
     public void setStudent(StudentDto user) {
-        this.student = student;
+        this.student = user;
     }
 
     @Override

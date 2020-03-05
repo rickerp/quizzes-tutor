@@ -13,10 +13,13 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.StudentQuestionService
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.dto.StudentQuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.repository.StudentQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import spock.lang.Specification
 
 @DataJpaTest
@@ -51,16 +54,47 @@ class CreateStudentQuestionTest extends Specification {
     }
 
     def "user not found"() {
+        given:
+        def studentQuestionDto = new StudentQuestionDto()
+        def user = new User("name", "123", 1, User.Role.STUDENT)
+        studentQuestionDto.setStudent(new StudentDto(user))
+        studentQuestionDto.setQuestion(new QuestionDto())
         when:
-        studentQuestionService.createStudentQuestion(null, course.getId(), new QuestionDto())
+        studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
         then:
         def error = thrown(TutorException)
         error.errorMessage == ErrorMessage.USER_NOT_FOUND
     }
 
+    def "user not passed"() {
+        given:
+        def studentQuestionDto = new StudentQuestionDto()
+        studentQuestionDto.setStudent(null)
+        studentQuestionDto.setQuestion(new QuestionDto())
+        when:
+        studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == ErrorMessage.USER_NOT_FOUND
+    }
+
+    def "empty studentQuestion"() {
+        when:
+        studentQuestionService.createStudentQuestion(course.getId(), null)
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == ErrorMessage.STUDENT_QUESTION_IS_EMPTY
+    }
+
     def "create studentQuestion with no question"() {
+        given:
+        def studentQuestionDto = new StudentQuestionDto()
+        def studentDto = new StudentDto()
+        studentDto.setUsername(USERNAME)
+        studentQuestionDto.setStudent(studentDto)
+        studentQuestionDto.setQuestion(null)
         when: "no question exists"
-        studentQuestionService.createStudentQuestion(USERNAME, course.getId(), null)
+        studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
         then: "an exception is thrown"
         def error = thrown(TutorException)
         error.errorMessage == ErrorMessage.QUESTION_IS_EMPTY
@@ -80,9 +114,12 @@ class CreateStudentQuestionTest extends Specification {
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         questionDto.setOptions(options)
+        def studentQuestionDto = new StudentQuestionDto()
+        studentQuestionDto.setQuestion(questionDto)
+        studentQuestionDto.setStudent(new StudentDto(user))
 
         when: "a student question is created"
-        def studentQuestionDto = studentQuestionService.createStudentQuestion(USERNAME, course.getId(), questionDto);
+        studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto);
 
         then: "the question contains correct information"
         def studentQuestion = studentQuestionRepository.findAll().get(0)

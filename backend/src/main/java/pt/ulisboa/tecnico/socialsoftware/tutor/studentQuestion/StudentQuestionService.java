@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.dto.StudentQuesti
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentQuestion.repository.StudentQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,12 +34,21 @@ public class StudentQuestionService {
     @PersistenceContext
     EntityManager entityManager;
 
-    public StudentQuestionDto createStudentQuestion(String username, int courseId, QuestionDto questionDto) {
+    public StudentQuestionDto createStudentQuestion(int courseId, StudentQuestionDto studentQuestionDto) {
+
+        if (studentQuestionDto == null)
+            throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
+
+        QuestionDto questionDto = studentQuestionDto.getQuestion();
+        StudentDto studentDto = studentQuestionDto.getStudent();
 
         if (questionDto == null)
             throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
 
-        User user = userService.findByUsername(username);
+        if (studentDto == null)
+            throw new TutorException(ErrorMessage.USER_NOT_FOUND);
+
+        User user = userService.findByUsername(studentDto.getUsername());
         if (user == null)
             throw new TutorException(ErrorMessage.USER_NOT_FOUND);
 
