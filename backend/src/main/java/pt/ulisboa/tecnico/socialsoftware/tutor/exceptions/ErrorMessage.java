@@ -55,7 +55,12 @@ public enum ErrorMessage {
 
 
     ACCESS_DENIED("You do not have permission to view this resource"),
-    CANNOT_OPEN_FILE("Cannot open file");
+    CANNOT_OPEN_FILE("Cannot open file"),
+
+    /* TdP Messages */
+    INVALID_USER_ROLE("Invalid User Role to Enroll in a Tournament"),
+    INVALID_TOURNAMENT_STATE("Invalid Tournament State to Enroll"),
+    DUPLICATE_TOURNAMENT_ENROLL("A Student can not enroll twice in the same Tournament");
 
     public final String label;
 
