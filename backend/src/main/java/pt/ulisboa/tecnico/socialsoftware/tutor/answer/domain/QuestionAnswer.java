@@ -1,9 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "question_answers")
@@ -14,6 +17,9 @@ public class QuestionAnswer {
 
     @Column(name = "time_taken")
     private Integer timeTaken;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Clarification clarification;
 
     @ManyToOne
     @JoinColumn(name = "quiz_question_id")

@@ -4,7 +4,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionImage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
@@ -45,8 +45,8 @@ public class QuestionsXmlExport {
 		questionElement.setAttribute("title", question.getTitle());
 		questionElement.setAttribute("status", question.getStatus().name());
 
-		if (question.getImage() != null) {
-			exportImage(questionElement, question.getImage());
+		if (question.getQuestionImage() != null) {
+			exportImage(questionElement, question.getQuestionImage());
 		}
 
 		exportOptions(questionElement, question.getOptions());
@@ -54,12 +54,12 @@ public class QuestionsXmlExport {
 		element.addContent(questionElement);
 	}
 
-	private void exportImage(Element questionElement, Image image) {
+	private void exportImage(Element questionElement, QuestionImage questionImage) {
 		Element imageElement = new Element("image");
-		if (image.getWidth() != null) {
-			imageElement.setAttribute("width",String.valueOf(image.getWidth()));
+		if (questionImage.getWidth() != null) {
+			imageElement.setAttribute("width",String.valueOf(questionImage.getWidth()));
 		}
-		imageElement.setAttribute("url", image.getUrl());
+		imageElement.setAttribute("url", questionImage.getUrl());
 
 		questionElement.addContent(imageElement);
 	}

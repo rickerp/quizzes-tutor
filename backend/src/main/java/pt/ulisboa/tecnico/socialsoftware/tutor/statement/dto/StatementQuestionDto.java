@@ -16,8 +16,8 @@ public class StatementQuestionDto implements Serializable {
 
     public StatementQuestionDto(QuestionAnswer questionAnswer) {
         this.content = questionAnswer.getQuizQuestion().getQuestion().getContent();
-        if (questionAnswer.getQuizQuestion().getQuestion().getImage() != null) {
-            this.image = new ImageDto(questionAnswer.getQuizQuestion().getQuestion().getImage());
+        if (questionAnswer.getQuizQuestion().getQuestion().getQuestionImage() != null) {
+            this.image = new ImageDto(questionAnswer.getQuizQuestion().getQuestion().getQuestionImage());
         }
         this.options = questionAnswer.getQuizQuestion().getQuestion().getOptions().stream().map(StatementOptionDto::new).collect(Collectors.toList());
         this.sequence = questionAnswer.getSequence();

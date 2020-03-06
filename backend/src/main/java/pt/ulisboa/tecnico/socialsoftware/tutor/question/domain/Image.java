@@ -13,9 +13,6 @@ public class Image {
     private String url;
     private Integer width;
 
-    @OneToOne
-    @JoinColumn(name="question_id")
-    private Question question;
 
     public Image() {}
 
@@ -24,21 +21,12 @@ public class Image {
         this.width = imageDto.getWidth();
     }
 
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
     }
 
     public String getUrl() {
@@ -59,7 +47,7 @@ public class Image {
 
     @Override
     public String toString() {
-        return "Image{" +
+        return "QuestionImage{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
                 ", width=" + width +

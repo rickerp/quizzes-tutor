@@ -12,7 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.QuestionsXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.QuestionsXmlImport;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionImage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
@@ -144,17 +144,17 @@ public class QuestionService {
     public void uploadImage(Integer questionId, String type) {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
 
-        Image image = question.getImage();
+        QuestionImage questionImage = question.getQuestionImage();
 
-        if (image == null) {
-            image = new Image();
+        if (questionImage == null) {
+            questionImage = new QuestionImage();
 
-            question.setImage(image);
+            question.setQuestionImage(questionImage);
 
-            entityManager.persist(image);
+            entityManager.persist(questionImage);
         }
 
-        question.getImage().setUrl(question.getKey() + "." + type);
+        question.getQuestionImage().setUrl(question.getKey() + "." + type);
     }
 
     @Retryable(

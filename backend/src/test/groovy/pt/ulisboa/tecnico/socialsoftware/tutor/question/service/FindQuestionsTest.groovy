@@ -13,9 +13,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionImage
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionImage
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.ImageRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
@@ -80,11 +81,11 @@ class FindQuestionsTest extends Specification {
         question.setNumberOfCorrect(1)
         question.setCourse(course)
         and: 'an image'
-        def image = new Image()
+        def image = new QuestionImage()
         image.setUrl(URL)
         image.setWidth(20)
         imageRepository.save(image)
-        question.setImage(image)
+        question.setQuestionImage(image)
         and: 'two options'
         def optionOK = new Option()
         optionOK.setContent(OPTION_CONTENT)
