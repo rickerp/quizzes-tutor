@@ -10,6 +10,9 @@ public class EvaluationDto implements Serializable {
     private boolean accepted;
     private String justification;
 
+    public EvaluationDto() {
+    }
+
     public EvaluationDto(Evaluation evaluation) {
         this.id = evaluation.getId();
         this.studentQuestionDto = new StudentQuestionDto(evaluation.getStudentQuestion());
