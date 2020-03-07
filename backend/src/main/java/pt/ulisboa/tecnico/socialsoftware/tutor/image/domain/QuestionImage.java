@@ -1,7 +1,7 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
+package pt.ulisboa.tecnico.socialsoftware.tutor.image.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import javax.persistence.*;
 

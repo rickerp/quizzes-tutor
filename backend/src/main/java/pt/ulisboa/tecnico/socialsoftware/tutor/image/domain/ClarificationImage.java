@@ -1,8 +1,7 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
+package pt.ulisboa.tecnico.socialsoftware.tutor.image.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

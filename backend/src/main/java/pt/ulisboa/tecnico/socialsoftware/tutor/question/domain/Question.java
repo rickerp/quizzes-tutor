@@ -4,6 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.QuestionImage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
@@ -64,7 +65,7 @@ public class Question {
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @OneToMany
-    private Set<Clarification> clarifications;
+    private Set<Clarification> clarifications = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
     private Set<Topic> topics = new HashSet<>();
@@ -213,6 +214,8 @@ public class Question {
     public void addTopic(Topic topic) {
         topics.add(topic);
     }
+
+    public void addClarification(Clarification clarification) { clarifications.add(clarification); }
 
     public void remove() {
         canRemove();

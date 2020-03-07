@@ -1,9 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ImageDto;
-
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import java.time.LocalDateTime;
 
 public class ClarificationDTO {
@@ -27,10 +25,9 @@ public class ClarificationDTO {
         this.userName = clarification.getUser().getUsername();
 
         if (clarification.getClarificationImage() != null) {
-           this.image = new ImageDto(clarification.getClarificationImage());
+            this.image = new ImageDto(clarification.getClarificationImage());
         }
     }
-
 
     public int getId() {
         return id;

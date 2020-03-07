@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +13,7 @@ public class StatementQuestionDto implements Serializable {
     private List<StatementOptionDto> options;
     private ImageDto image;
     private Integer sequence;
+    private Integer questionAnswerId;
 
     public StatementQuestionDto(QuestionAnswer questionAnswer) {
         this.content = questionAnswer.getQuizQuestion().getQuestion().getContent();
@@ -21,6 +22,8 @@ public class StatementQuestionDto implements Serializable {
         }
         this.options = questionAnswer.getQuizQuestion().getQuestion().getOptions().stream().map(StatementOptionDto::new).collect(Collectors.toList());
         this.sequence = questionAnswer.getSequence();
+
+        this.questionAnswerId = questionAnswer.getId();
     }
 
     public String getContent() {
@@ -63,5 +66,13 @@ public class StatementQuestionDto implements Serializable {
                 ", image=" + image +
                 ", sequence=" + sequence +
                 '}';
+    }
+
+    public Integer getQuestionAnswerId() {
+        return questionAnswerId;
+    }
+
+    public void setQuestionAnswerId(Integer questionAnswerId) {
+        this.questionAnswerId = questionAnswerId;
     }
 }

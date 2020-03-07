@@ -175,4 +175,10 @@ public class QuizAnswer {
             this.usedInStatistics = true;
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof QuizAnswer &&
+                ((QuizAnswer) obj).id == this.id;
+    }
 }

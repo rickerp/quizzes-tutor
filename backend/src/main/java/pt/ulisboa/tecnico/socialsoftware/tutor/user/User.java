@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 
@@ -18,13 +20,6 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-    public Set<Clarification> getClarifications() {
-        return clarifications;
-    }
-
-    public void setClarifications(Set<Clarification> clarifications) {
-        this.clarifications = clarifications;
-    }
 
     public enum Role {STUDENT, TEACHER, ADMIN, DEMO_ADMIN}
 
@@ -304,6 +299,15 @@ public class User implements UserDetails {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
+
+    public Set<Clarification> getClarifications() {
+        return clarifications;
+    }
+
+    public void setClarifications(Set<Clarification> clarifications) {
+        this.clarifications = clarifications;
+    }
+
     public void increaseNumberOfQuizzes(Quiz.QuizType type) {
         switch (type) {
             case PROPOSED:
@@ -359,6 +363,13 @@ public class User implements UserDetails {
     public void addCourse(CourseExecution course) {
         this.courseExecutions.add(course);
     }
+
+    public void addClarification(Clarification clarification) {
+        if (!this.quizAnswers.contains(clarification.getQuestionAnswer().getQuizAnswer()))
+            throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarification.getQuestionAnswer().getId());
+        this.clarifications.add(clarification);
+    }
+
 
     @Override
     public String toString() {

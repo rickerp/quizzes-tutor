@@ -58,14 +58,12 @@ public enum ErrorMessage {
     CANNOT_OPEN_FILE("Cannot open file"),
 
     // Ddp - f1.1
-    CLARIFICATION_USER_NOT_FOUND("Clarification user not found with id %d"),
-    CLARIFICATION_INVALID_USER("User can't write a clarification to an unanswered question"),
+    CLARIFICATION_INVALID_USER("Uer associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("Clarification content invalid"),
     CLARIFICATION_INVALID_QUESTION_ANSWER("Question Answer associated to clarification is invalid"),
     CLARIFICATION_INVALID_STATE("Clarification state invalid"),
-    CLARIFICATION_INVALID_CREATION_DATE("Clarification creation date invalid"),
-    CLARIFICATION_QUESTION_ANSWER_NOT_FOUND("Question Answer not found with id %d"),
-    CLARIFICATION_INVALID_QUESTION("Question associated to clarification is invalid"),
+    CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER("User has no question answer with id %d"),
+    CLARIFICATION_QUESTION_ANSWER_HAS_CLARIFICATION("Question already has a clarification"),
     CLARIFICATION_QUIZ_NOT_COMPLETED("Quiz must be completed to write a clarification");
 
     public final String label;

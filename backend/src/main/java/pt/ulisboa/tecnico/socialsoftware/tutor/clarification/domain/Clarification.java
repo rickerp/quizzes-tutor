@@ -2,6 +2,9 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDTO;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.ClarificationImage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
@@ -38,20 +41,26 @@ public class Clarification {
 
     public Clarification() {}
 
-    public Clarification(ClarificationDTO clarificationDto, User user, QuestionAnswer questionAnswer) {
-        this.content = clarificationDto.getContent();
-        this.state = clarificationDto.getState();
+    public Clarification(ClarificationDTO clarificationsDto, User user, QuestionAnswer questionAnswer) {
+
+        if (clarificationsDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
+        this.content = clarificationsDto.getContent();
+
+        if (!(clarificationsDto.getState() == State.UNRESOLVED))
+            throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
+
+        this.state = State.UNRESOLVED;
         this.user = user;
         this.questionAnswer = questionAnswer;
 
-        if (clarificationDto.getImage() != null) {
-            ClarificationImage img = new ClarificationImage(clarificationDto.getImage());
+        if (clarificationsDto.getImage() != null) {
+            ClarificationImage img = new ClarificationImage(clarificationsDto.getImage());
             this.clarificationImage = img;
             img.setClarification(this);
         }
 
-        if (clarificationDto.getCreationDate() == null)
-            this.creationDate = LocalDateTime.now();
+        this.creationDate = clarificationsDto.getCreationDate() == null ? LocalDateTime.now() : clarificationsDto.getCreationDate();
+
     }
 
     public Integer getId() {

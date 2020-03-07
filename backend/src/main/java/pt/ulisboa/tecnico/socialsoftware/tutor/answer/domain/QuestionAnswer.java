@@ -134,4 +134,9 @@ public class QuestionAnswer {
     public boolean isCorrect() {
         return getOption() != null && getOption().getCorrect();
     }
+
+    public Clarification getClarification() { return clarification; }
+
+    public void setClarification(Clarification clarification) { this.clarification = clarification; }
+
 }
