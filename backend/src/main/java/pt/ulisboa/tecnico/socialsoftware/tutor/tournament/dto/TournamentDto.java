@@ -9,6 +9,8 @@ public class TournamentDto implements Serializable {
     private Tournament.State state;
 
     public TournamentDto(Tournament tournament) {
+        this.id = tournament.getId();
+        this.state = tournament.getState();
     }
 
     public Tournament.State getState() {

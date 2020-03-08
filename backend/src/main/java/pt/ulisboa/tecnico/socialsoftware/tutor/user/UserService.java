@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlImport;
@@ -114,9 +115,13 @@ public class UserService {
         return this.userRepository.findByUsername("Demo-Admin");
     }
 
-    /* TdP */
+    /* TdP Begin */
     public Set<Tournament> getTournaments(Integer playerId) {
-        /* TODO */
-        return new HashSet<Tournament>();
+
+        User player = userRepository.findById(playerId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, playerId));
+
+        return player.getTournaments();
     }
+    /* TdP End */
 }

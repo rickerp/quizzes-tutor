@@ -34,9 +34,10 @@ class EnrollTournamentServiceTest extends Specification {
     def tournament_1
 
     def setup() {
-        player_1 = new User()
+        player_1 = new User("Ricardo", "Opty", 1, User.Role.STUDENT)
         userRepository.save(player_1)
         tournament_1 = new Tournament()
+        tournament_1.setState(Tournament.State.OPENED)
         tournamentRepository.save(tournament_1)
     }
 
@@ -55,20 +56,19 @@ class EnrollTournamentServiceTest extends Specification {
         error.getErrorMessage() == Message
 
         where:
-        Role                | State                     || Message
-        User.Role.ADMIN     | Tournament.State.CLOSED   || ErrorMessage.INVALID_USER_ROLE
-        User.Role.ADMIN     | Tournament.State.OPENED   || ErrorMessage.INVALID_USER_ROLE
-        User.Role.TEACHER   | Tournament.State.CLOSED   || ErrorMessage.INVALID_USER_ROLE
-        User.Role.TEACHER   | Tournament.State.OPENED   || ErrorMessage.INVALID_USER_ROLE
-        User.Role.STUDENT   | Tournament.State.CLOSED   || ErrorMessage.INVALID_TOURNAMENT_STATE
+        Role                | State                         || Message
+        User.Role.ADMIN     | Tournament.State.CLOSED       || ErrorMessage.TOURNAMENT_NOT_OPENED
+        User.Role.TEACHER   | Tournament.State.CLOSED       || ErrorMessage.TOURNAMENT_NOT_OPENED
+        User.Role.STUDENT   | Tournament.State.CLOSED       || ErrorMessage.TOURNAMENT_NOT_OPENED
+        User.Role.ADMIN     | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
+        User.Role.TEACHER   | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
+        User.Role.STUDENT   | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
+        User.Role.ADMIN     | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
+        User.Role.TEACHER   | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
     }
 
     def 'Enroll a Student in an Opened Tournament' () {
         /* A Student should can enroll in an Opened Tournament */
-        given: 'Set Players Role & Tournaments State'
-        tournament_1.setState(Tournament.State.OPENED)
-        player_1.setRole(User.Role.STUDENT)
-
         when: 'Enroll Players in Tournaments'
         tournamentService.enrollPlayer(player_1.getId(), tournament_1.getId())
         and: 'Get from DB'
@@ -84,10 +84,7 @@ class EnrollTournamentServiceTest extends Specification {
         /* A Student should can enroll in two different Opened Tournaments */
         given: 'Create Second Tournament'
         def tournament_2 = new Tournament()
-        and: 'Set Players Role & Tournaments State'
-        tournament_1.setState(Tournament.State.OPENED)
         tournament_2.setState(Tournament.State.OPENED)
-        player_1.setRole(User.Role.STUDENT)
         and: 'Save in DB'
         tournamentRepository.save(tournament_2)
 
@@ -108,10 +105,6 @@ class EnrollTournamentServiceTest extends Specification {
 
     def 'Enroll a Student twice in the same Opened Tournament' () {
         /* The second Enroll should throw an Exception */
-        given: 'Set Players Role & Tournaments State'
-        tournament_1.setState(Tournament.State.OPENED)
-        player_1.setRole(User.Role.STUDENT)
-
         when: 'Enroll Players in Tournaments'
         tournamentService.enrollPlayer(player_1.getId(), tournament_1.getId())
         tournamentService.enrollPlayer(player_1.getId(), tournament_1.getId())
@@ -124,11 +117,7 @@ class EnrollTournamentServiceTest extends Specification {
     def 'Enroll two Students in the same Opened Tournament' () {
         /* Two Students should can enroll in the same Opened Tournament */
         given: 'Create Second Player'
-        def player_2 = new User()
-        and: 'Set Players Role & Tournaments State'
-        tournament_1.setState(Tournament.State.OPENED)
-        player_1.setRole(User.Role.STUDENT)
-        player_2.setRole(User.Role.STUDENT)
+        def player_2 = new User("Ricardo", "Rickerp", 2, User.Role.STUDENT)
         and: 'Save in DB'
         userRepository.save(player_2)
 
