@@ -30,8 +30,7 @@ public class Clarification {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_Answer_Id")
+    @ManyToOne(cascade = CascadeType.ALL)
     private QuestionAnswer questionAnswer;
 
     private LocalDateTime creationDate;

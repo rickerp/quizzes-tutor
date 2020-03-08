@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
@@ -18,8 +20,8 @@ public class QuestionAnswer {
     @Column(name = "time_taken")
     private Integer timeTaken;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Clarification clarification;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer")
+    private Set<Clarification> clarifications = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "quiz_question_id")
@@ -88,8 +90,6 @@ public class QuestionAnswer {
         this.timeTaken = timeTaken;
     }
 
-
-
     public QuizQuestion getQuizQuestion() {
         return quizQuestion;
     }
@@ -122,6 +122,16 @@ public class QuestionAnswer {
         this.sequence = sequence;
     }
 
+    public boolean isCorrect() {
+        return getOption() != null && getOption().getCorrect();
+    }
+
+    public Set<Clarification> getClarifications() { return this.clarifications; }
+
+    public void setClarifications(Set<Clarification> clarifications) { this.clarifications = clarifications; }
+
+    public void addClarification(Clarification clarification) { this.clarifications.add(clarification); }
+
     @Override
     public String toString() {
         return "QuestionAnswer{" +
@@ -130,13 +140,5 @@ public class QuestionAnswer {
                 ", sequence=" + sequence +
                 '}';
     }
-
-    public boolean isCorrect() {
-        return getOption() != null && getOption().getCorrect();
-    }
-
-    public Clarification getClarification() { return clarification; }
-
-    public void setClarification(Clarification clarification) { this.clarification = clarification; }
 
 }

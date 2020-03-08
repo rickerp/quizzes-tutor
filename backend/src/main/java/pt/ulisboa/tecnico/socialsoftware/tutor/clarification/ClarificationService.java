@@ -41,12 +41,11 @@ public class ClarificationService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void createClarification(ClarificationDTO clarificationsDto) {
         User user = getUser(clarificationsDto.getUserName());
-        System.out.println(clarificationsDto.getQuestionAnswerId());
-        System.out.flush();
 
-        QuestionAnswer questionAnswer = questionAnswerRepository.findById(
-                clarificationsDto.getQuestionAnswerId()).orElseThrow(() ->
-                new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
+        QuestionAnswer questionAnswer = questionAnswerRepository.findById(clarificationsDto.getQuestionAnswerId())
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
+
+        Question question = questionAnswer.getQuizQuestion().getQuestion();
 
         if (!questionAnswer.getQuizAnswer().isCompleted())
             throw new TutorException(ErrorMessage.CLARIFICATION_QUIZ_NOT_COMPLETED);
@@ -54,12 +53,7 @@ public class ClarificationService {
         Clarification clarification = new Clarification(clarificationsDto, user, questionAnswer);
 
         user.addClarification(clarification);
-
-        if(questionAnswer.getClarification() != null)
-            throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_HAS_CLARIFICATION);
-        questionAnswer.setClarification(clarification);
-
-        Question question = questionAnswer.getQuizQuestion().getQuestion();
+        questionAnswer.addClarification(clarification);
         question.addClarification(clarification);
 
         this.entityManager.persist(clarification);
