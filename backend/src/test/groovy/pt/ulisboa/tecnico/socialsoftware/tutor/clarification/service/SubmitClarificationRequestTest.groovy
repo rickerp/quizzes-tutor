@@ -122,7 +122,6 @@ class SubmitClarificationRequestTest extends Specification {
         def clarificationCreatedList = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())
         clarificationCreatedList.size() == 1
         def clarificationCreated = clarificationCreatedList[0]
-        clarificationCreated.getId() != null
         clarificationCreated.getState() == clarificationDto.getState()
         clarificationCreated.getContent() == clarificationDto.getContent()
         clarificationCreated.getCreationDate() == clarificationDto.getCreationDate()
@@ -178,6 +177,27 @@ class SubmitClarificationRequestTest extends Specification {
         questionAnswer.getClarifications().size() == 2
     }
 
+    def "Submit an Empty Clarification"() {
+        when:
+        clarificationService.createClarification(null);
+
+        then:
+        def error = thrown(TutorException)
+        error.getErrorMessage() == ErrorMessage.CLARIFICATION_IS_EMPTY
+    }
+
+    def "Submit a clarification without a creationTime"() {
+        given: "Update clarificationDto"
+        clarificationDto.setCreationDate(null)
+
+        when:
+        clarificationService.createClarification(clarificationDto)
+
+        then:
+        def clarificationCreated = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())[0]
+        clarificationCreated.getCreationDate() != null
+    }
+
     @Unroll("Test: #creationDate | #userName | #content | #state || #message")
     def "submit a clarification with wrong arguments"() {
         given: "Another ClarificationDto"
@@ -202,18 +222,6 @@ class SubmitClarificationRequestTest extends Specification {
         creationTime | null               | CLARIFICATION_CONTENT | Clarification.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_USER
         creationTime | "rafael"           | CLARIFICATION_CONTENT | Clarification.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_USER
         creationTime | user.getUsername() | null                  | Clarification.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_CONTENT
-    }
-
-    def "Submit a clarification without a creationTime"() {
-        given: "Update clarificationDto"
-        clarificationDto.setCreationDate(null)
-
-        when:
-        clarificationService.createClarification(clarificationDto)
-
-        then:
-        def clarificationCreated = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())
-        clarificationCreated[0].getCreationDate() != null
     }
 
     def "Submit a clarification with a question answer that doesn't exist"() {
@@ -261,6 +269,20 @@ class SubmitClarificationRequestTest extends Specification {
         then:
         def error = thrown(TutorException)
         error.getErrorMessage() == ErrorMessage.CLARIFICATION_QUIZ_NOT_COMPLETED
+    }
+
+    def "Submit a clarification and test the returned ClarificationDto"() {
+        when:
+        def clarificationDtoCreated = clarificationService.createClarification(clarificationDto)
+
+        then:
+        def clarificationCreated = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())[0]
+        clarificationDtoCreated.getId() == clarificationCreated.getId()
+        clarificationDtoCreated.getState() == clarificationDto.getState()
+        clarificationDtoCreated.getContent() == clarificationDto.getContent()
+        clarificationDtoCreated.getUserName() == clarificationDto.getUserName()
+        clarificationDtoCreated.getCreationDate() == clarificationDto.getCreationDate()
+        clarificationDtoCreated.getQuestionAnswerId() == clarificationDto.getQuestionAnswerId()
     }
 
     @TestConfiguration

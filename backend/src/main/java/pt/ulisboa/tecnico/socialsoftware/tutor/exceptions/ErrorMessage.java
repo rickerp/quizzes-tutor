@@ -63,7 +63,8 @@ public enum ErrorMessage {
     CLARIFICATION_INVALID_QUESTION_ANSWER("Question Answer associated to clarification is invalid"),
     CLARIFICATION_INVALID_STATE("Clarification state invalid"),
     CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER("User has no question answer with id %d"),
-    CLARIFICATION_QUIZ_NOT_COMPLETED("Quiz must be completed to write a clarification");
+    CLARIFICATION_QUIZ_NOT_COMPLETED("Quiz must be completed to write a clarification"),
+    CLARIFICATION_IS_EMPTY("Clarification is empty");
 
     public final String label;
 

@@ -58,16 +58,6 @@ public class StatementQuestionDto implements Serializable {
         this.sequence = sequence;
     }
 
-    @Override
-    public String toString() {
-        return "StatementQuestionDto{" +
-                ", content='" + content + '\'' +
-                ", options=" + options +
-                ", image=" + image +
-                ", sequence=" + sequence +
-                '}';
-    }
-
     public Integer getQuestionAnswerId() {
         return questionAnswerId;
     }
@@ -75,4 +65,16 @@ public class StatementQuestionDto implements Serializable {
     public void setQuestionAnswerId(Integer questionAnswerId) {
         this.questionAnswerId = questionAnswerId;
     }
+
+    @Override
+    public String toString() {
+        return "StatementQuestionDto{" +
+                ", content='" + content + '\'' +
+                ", options=" + options +
+                ", image=" + image +
+                ", sequence=" + sequence +
+                ", questionAnswerId=" + questionAnswerId+
+                '}';
+    }
+
 }

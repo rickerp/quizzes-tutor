@@ -39,7 +39,11 @@ public class ClarificationService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void createClarification(ClarificationDTO clarificationsDto) {
+    public ClarificationDTO createClarification(ClarificationDTO clarificationsDto) {
+        if (clarificationsDto == null){
+            throw new TutorException(ErrorMessage.CLARIFICATION_IS_EMPTY);
+        }
+
         User user = getUser(clarificationsDto.getUserName());
 
         QuestionAnswer questionAnswer = questionAnswerRepository.findById(clarificationsDto.getQuestionAnswerId())
@@ -57,6 +61,7 @@ public class ClarificationService {
         question.addClarification(clarification);
 
         this.entityManager.persist(clarification);
+        return new ClarificationDTO(clarification);
     }
 
     private User getUser(String username) {
@@ -67,7 +72,5 @@ public class ClarificationService {
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
         return user;
     }
-
-
 }
 

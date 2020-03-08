@@ -84,4 +84,17 @@ public class ClarificationDTO {
     public void setImage(ImageDto image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "StatementQuizDto{" +
+                "id=" + id +
+                ", state=" + state +
+                ", content='" + content + '\'' +
+                ", userName='" + userName + '\'' +
+                ", questionAnswerId='" + questionAnswerId + '\'' +
+                ", creationDate=" + creationDate +
+                ", image=" + image +
+                '}';
+    }
 }

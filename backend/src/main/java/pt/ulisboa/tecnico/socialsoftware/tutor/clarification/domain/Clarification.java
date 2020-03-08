@@ -102,14 +102,11 @@ public class Clarification {
         this.creationDate = creationDate;
     }
 
-
     public ClarificationImage getClarificationImage() {
         return clarificationImage;
     }
 
-    public void setClarificationImage(ClarificationImage clarificationImage) {
-        this.clarificationImage = clarificationImage;
-    }
+    public void setClarificationImage(ClarificationImage clarificationImage) { this.clarificationImage = clarificationImage; }
 
     public User getUser() {
         return user;
@@ -118,6 +115,4 @@ public class Clarification {
     public void setUser(User user) {
         this.user = user;
     }
-
-
 }
