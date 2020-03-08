@@ -22,6 +22,10 @@ public class StudentDto implements Serializable {
     private String creationDate;
     private String lastAccess;
 
+    public StudentDto() {
+
+    }
+
     public StudentDto(User user) {
         this.username = user.getUsername();
         this.name = user.getName();
