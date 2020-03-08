@@ -56,15 +56,14 @@ class CreateEvaluationServiceTest extends Specification {
     @Autowired
     QuestionRepository questionRepository
 
-    User user
-    Course course
-    Question question
+    def user
+    def question
 
     def setup(){
         user = new User("name", USERNAME, 1, User.Role.STUDENT)
         userRepository.save(user)
 
-        course = new Course("course", Course.Type.TECNICO)
+        def course = new Course("course", Course.Type.TECNICO)
         courseRepository.save(course)
 
         def questionDto = new QuestionDto()

@@ -21,6 +21,10 @@ public class Evaluation {
     private boolean accepted;
     private String justification;
 
+    public Evaluation(){
+
+    }
+
     public Evaluation(StudentQuestion studentQuestion, boolean accepted, String justification) {
         if(!accepted && (justification == null)){
             throw new TutorException(ErrorMessage.JUSTIFICATION_NOT_FOUND);

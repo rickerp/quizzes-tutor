@@ -19,7 +19,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import spock.lang.Specification
 
 @DataJpaTest
@@ -42,11 +41,10 @@ class CreateStudentQuestionTest extends Specification {
     @Autowired
     CourseRepository courseRepository
 
-    User user
-    Course course
+    def course
 
     def setup() {
-        user = new User("name", USERNAME, 1, User.Role.STUDENT)
+        def user = new User("name", USERNAME, 1, User.Role.STUDENT)
         userRepository.save(user)
 
         course = new Course("course", Course.Type.TECNICO)
@@ -101,7 +99,9 @@ class CreateStudentQuestionTest extends Specification {
     }
 
     def "createStudentQuestion" () {
-        given: "a questionDto"
+        given: "a User"
+        def user = new User("name", USERNAME, 1, User.Role.STUDENT)
+        and: "a questionDto"
         def questionDto = new QuestionDto()
         questionDto.setKey(1)
         questionDto.setTitle("title")
