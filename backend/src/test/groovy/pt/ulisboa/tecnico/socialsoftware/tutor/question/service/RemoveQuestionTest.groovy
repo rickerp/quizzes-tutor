@@ -9,10 +9,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
-import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.QuestionImage
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
-import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.QuestionImage
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.repository.ImageRepository
@@ -77,11 +78,11 @@ class RemoveQuestionTest extends Specification {
         question.setCourse(course)
         course.addQuestion(question)
 
-        def image = new QuestionImage()
+        def image = new Image()
         image.setUrl(URL)
         image.setWidth(20)
         imageRepository.save(image)
-        question.setQuestionImage(image)
+        question.setImage(image)
 
         optionOK = new Option()
         optionOK.setContent(OPTION_CONTENT)

@@ -4,7 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.QuestionImage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
@@ -52,11 +52,11 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private Status status = Status.DISABLED;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "question")
-    private QuestionImage questionImage;
-
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    private Image image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private List<Option> options = new ArrayList<>();
@@ -64,7 +64,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<Clarification> clarifications = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -88,9 +88,9 @@ public class Question {
         course.addQuestion(this);
 
         if (questionDto.getImage() != null) {
-            QuestionImage img = new QuestionImage(questionDto.getImage());
-            setQuestionImage(img);
-            img.setQuestion(this);
+            Image img = new Image(questionDto.getImage());
+            this.setImage(img);
+
         }
 
         int index = 0;
@@ -146,13 +146,12 @@ public class Question {
         return options;
     }
 
-    public QuestionImage getQuestionImage() {
-        return questionImage;
+    public Image getImage() {
+        return image;
     }
 
-    public void setQuestionImage(QuestionImage questionImage) {
-        this.questionImage = questionImage;
-        questionImage.setQuestion(this);
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public String getTitle() {
@@ -235,7 +234,7 @@ public class Question {
                 ", numberOfAnswers=" + numberOfAnswers +
                 ", numberOfCorrect=" + numberOfCorrect +
                 ", status=" + status +
-                ", questionImage=" + questionImage +
+                ", image=" + image +
                 ", options=" + options +
                 ", topics=" + topics +
                 '}';

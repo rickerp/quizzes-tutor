@@ -12,9 +12,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.QuestionsXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.QuestionsXmlImport;
-import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.QuestionImage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository;
@@ -144,17 +144,17 @@ public class QuestionService {
     public void uploadImage(Integer questionId, String type) {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
 
-        QuestionImage questionImage = question.getQuestionImage();
+        Image image = question.getImage();
 
-        if (questionImage == null) {
-            questionImage = new QuestionImage();
+        if (image == null) {
+            image = new Image();
 
-            question.setQuestionImage(questionImage);
+            question.setImage(image);
 
-            entityManager.persist(questionImage);
+            entityManager.persist(image);
         }
 
-        question.getQuestionImage().setUrl(question.getKey() + "." + type);
+        question.getImage().setUrl(question.getKey() + "." + type);
     }
 
     @Retryable(

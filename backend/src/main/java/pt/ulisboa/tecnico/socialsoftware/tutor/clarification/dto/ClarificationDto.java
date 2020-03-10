@@ -4,7 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarificatio
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import java.time.LocalDateTime;
 
-public class ClarificationDTO {
+public class ClarificationDto {
 
     private int id;
     private Clarification.State state;
@@ -14,9 +14,9 @@ public class ClarificationDTO {
     private LocalDateTime creationDate;
     private ImageDto image;
 
-    public ClarificationDTO() {}
+    public ClarificationDto() {}
 
-    public ClarificationDTO(Clarification clarification) {
+    public ClarificationDto(Clarification clarification) {
         this.id =  clarification.getId();
         this.state = clarification.getState();
         this.content = clarification.getContent();
@@ -24,8 +24,8 @@ public class ClarificationDTO {
         this.creationDate = clarification.getCreationDate();
         this.userName = clarification.getUser().getUsername();
 
-        if (clarification.getClarificationImage() != null) {
-            this.image = new ImageDto(clarification.getClarificationImage());
+        if (clarification.getImage() != null) {
+            this.image = new ImageDto(clarification.getImage());
         }
     }
 

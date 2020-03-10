@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDTO;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.ClarificationImage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
@@ -30,17 +30,17 @@ public class Clarification {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private QuestionAnswer questionAnswer;
 
     private LocalDateTime creationDate;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "clarification")
-    private ClarificationImage clarificationImage;
+    @OneToOne(cascade=CascadeType.ALL)
+    private Image image;
 
     public Clarification() {}
 
-    public Clarification(ClarificationDTO clarificationsDto, User user, QuestionAnswer questionAnswer) {
+    public Clarification(ClarificationDto clarificationsDto, User user, QuestionAnswer questionAnswer) {
 
         if (clarificationsDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
         this.content = clarificationsDto.getContent();
@@ -52,11 +52,7 @@ public class Clarification {
         this.user = user;
         this.questionAnswer = questionAnswer;
 
-        if (clarificationsDto.getImage() != null) {
-            ClarificationImage img = new ClarificationImage(clarificationsDto.getImage());
-            this.clarificationImage = img;
-            img.setClarification(this);
-        }
+        if (clarificationsDto.getImage() != null) this.image = new Image(clarificationsDto.getImage());;
 
         this.creationDate = clarificationsDto.getCreationDate() == null ? LocalDateTime.now() : clarificationsDto.getCreationDate();
 
@@ -102,11 +98,11 @@ public class Clarification {
         this.creationDate = creationDate;
     }
 
-    public ClarificationImage getClarificationImage() {
-        return clarificationImage;
+    public Image getImage() {
+        return this.image;
     }
 
-    public void setClarificationImage(ClarificationImage clarificationImage) { this.clarificationImage = clarificationImage; }
+    public void setImage(Image image) { this.image = image; }
 
     public User getUser() {
         return user;

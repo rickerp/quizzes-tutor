@@ -75,7 +75,7 @@ class CreateQuestionTest extends Specification {
         result.getStatus() == Question.Status.AVAILABLE
         result.getTitle() == QUESTION_TITLE
         result.getContent() == QUESTION_CONTENT
-        result.getQuestionImage() == null
+        result.getImage() == null
         result.getOptions().size() == 1
         result.getCourse().getName() == COURSE_NAME
         course.getQuestions().contains(result)
@@ -121,9 +121,9 @@ class CreateQuestionTest extends Specification {
         result.getStatus() == Question.Status.AVAILABLE
         result.getTitle() == QUESTION_TITLE
         result.getContent() == QUESTION_CONTENT
-        result.getQuestionImage().getId() != null
-        result.getQuestionImage().getUrl() == URL
-        result.getQuestionImage().getWidth() == 20
+        result.getImage().getId() != null
+        result.getImage().getUrl() == URL
+        result.getImage().getWidth() == 20
         result.getOptions().size() == 2
     }
 

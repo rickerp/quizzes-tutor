@@ -20,9 +20,6 @@ public class QuestionAnswer {
     @Column(name = "time_taken")
     private Integer timeTaken;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer")
-    private Set<Clarification> clarifications = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "quiz_question_id")
     private QuizQuestion quizQuestion;
@@ -36,6 +33,9 @@ public class QuestionAnswer {
     private Option option;
 
     private Integer sequence;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch=FetchType.LAZY)
+    private Set<Clarification> clarifications = new HashSet<>();
 
     public QuestionAnswer() {
     }

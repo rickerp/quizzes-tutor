@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDTO
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService
 
@@ -71,7 +71,7 @@ class SubmitClarificationRequestTest extends Specification {
 
     def quiz
     def question
-    def clarificationDto
+    def ClarificationDto
 
     @Shared
     def user
@@ -105,27 +105,27 @@ class SubmitClarificationRequestTest extends Specification {
 
         creationTime = LocalDateTime.now()
 
-        clarificationDto = new ClarificationDTO()
-        clarificationDto.setQuestionAnswerId(questionAnswer.getId())
-        clarificationDto.setContent(CLARIFICATION_CONTENT)
-        clarificationDto.setCreationDate(creationTime)
-        clarificationDto.setState(Clarification.State.UNRESOLVED)
-        clarificationDto.setUserName(user.getUsername())
+        ClarificationDto = new ClarificationDto()
+        ClarificationDto.setQuestionAnswerId(questionAnswer.getId())
+        ClarificationDto.setContent(CLARIFICATION_CONTENT)
+        ClarificationDto.setCreationDate(creationTime)
+        ClarificationDto.setState(Clarification.State.UNRESOLVED)
+        ClarificationDto.setUserName(user.getUsername())
 
     }
 
     def "Submit a clarification to a question that has no clarifications submited"() {
         when:
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def clarificationCreatedList = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())
         clarificationCreatedList.size() == 1
         def clarificationCreated = clarificationCreatedList[0]
-        clarificationCreated.getState() == clarificationDto.getState()
-        clarificationCreated.getContent() == clarificationDto.getContent()
-        clarificationCreated.getCreationDate() == clarificationDto.getCreationDate()
-        clarificationCreated.getUser().getUsername() == clarificationDto.getUserName()
+        clarificationCreated.getState() == ClarificationDto.getState()
+        clarificationCreated.getContent() == ClarificationDto.getContent()
+        clarificationCreated.getCreationDate() == ClarificationDto.getCreationDate()
+        clarificationCreated.getUser().getUsername() == ClarificationDto.getUserName()
     }
 
     def "Submit a clarification with an image"() {
@@ -134,18 +134,18 @@ class SubmitClarificationRequestTest extends Specification {
         imageDto.setUrl("URL")
         imageDto.setWidth(20)
         and: "Add image to clarification"
-        clarificationDto.setImage(imageDto)
+        ClarificationDto.setImage(imageDto)
 
         when:
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def clarificationCreatedList = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())
         clarificationCreatedList.size() == 1
         def clarificationCreated = clarificationCreatedList[0]
-        clarificationCreated.getClarificationImage().getId() != null
-        clarificationCreated.getClarificationImage().getUrl() == "URL"
-        clarificationCreated.getClarificationImage().getWidth() == 20
+        clarificationCreated.getImage().getId() != null
+        clarificationCreated.getImage().getUrl() == "URL"
+        clarificationCreated.getImage().getWidth() == 20
     }
 
     def "Submit two clarifications to the same question, but different question answers"() {
@@ -156,9 +156,9 @@ class SubmitClarificationRequestTest extends Specification {
         questionAnswerRepository.save(questionAnswerCreated)
 
         when:
-        clarificationService.createClarification(clarificationDto)
-        clarificationDto.setQuestionAnswerId(questionAnswerCreated.getId())
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
+        ClarificationDto.setQuestionAnswerId(questionAnswerCreated.getId())
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def clarificationCreatedList = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())
@@ -170,8 +170,8 @@ class SubmitClarificationRequestTest extends Specification {
 
     def "Submit two clarifications to the same question answer"() {
         when:
-        clarificationService.createClarification(clarificationDto)
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         questionAnswer.getClarifications().size() == 2
@@ -187,11 +187,11 @@ class SubmitClarificationRequestTest extends Specification {
     }
 
     def "Submit a clarification without a creationTime"() {
-        given: "Update clarificationDto"
-        clarificationDto.setCreationDate(null)
+        given: "Update ClarificationDto"
+        ClarificationDto.setCreationDate(null)
 
         when:
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def clarificationCreated = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())[0]
@@ -201,7 +201,7 @@ class SubmitClarificationRequestTest extends Specification {
     @Unroll("Test: #creationDate | #userName | #content | #state || #message")
     def "submit a clarification with wrong arguments"() {
         given: "Another ClarificationDto"
-        def clarificationCreated = new ClarificationDTO()
+        def clarificationCreated = new ClarificationDto()
         clarificationCreated.setQuestionAnswerId(questionAnswer.getId())
         clarificationCreated.setContent(content)
         clarificationCreated.setCreationDate(creationDate)
@@ -226,10 +226,10 @@ class SubmitClarificationRequestTest extends Specification {
 
     def "Submit a clarification with a question answer that doesn't exist"() {
         given: "A non existent QuestionAnswer id"
-        clarificationDto.setQuestionAnswerId(questionAnswerId)
+        ClarificationDto.setQuestionAnswerId(questionAnswerId)
 
         when:
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def error = thrown(TutorException)
@@ -244,10 +244,10 @@ class SubmitClarificationRequestTest extends Specification {
         user = new User("Rafael", "rafafigo", 2, User.Role.STUDENT)
         userRepository.save(user)
         and: "Change username"
-        clarificationDto.setUserName("rafafigo")
+        ClarificationDto.setUserName("rafafigo")
 
         when:
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def error = thrown(TutorException)
@@ -261,10 +261,10 @@ class SubmitClarificationRequestTest extends Specification {
         def questionAnswerCreated = quizAnswerCreated.getQuestionAnswers()[0]
         questionAnswerRepository.save(questionAnswerCreated)
         and: "Update Clarification"
-        clarificationDto.setQuestionAnswerId(questionAnswerCreated.id)
+        ClarificationDto.setQuestionAnswerId(questionAnswerCreated.id)
 
         when:
-        clarificationService.createClarification(clarificationDto)
+        clarificationService.createClarification(ClarificationDto)
 
         then:
         def error = thrown(TutorException)
@@ -273,16 +273,16 @@ class SubmitClarificationRequestTest extends Specification {
 
     def "Submit a clarification and test the returned ClarificationDto"() {
         when:
-        def clarificationDtoCreated = clarificationService.createClarification(clarificationDto)
+        def ClarificationDtoCreated = clarificationService.createClarification(ClarificationDto)
 
         then:
         def clarificationCreated = clarificationRepository.findClarificationByQuestionAnswer(questionAnswer.getId())[0]
-        clarificationDtoCreated.getId() == clarificationCreated.getId()
-        clarificationDtoCreated.getState() == clarificationDto.getState()
-        clarificationDtoCreated.getContent() == clarificationDto.getContent()
-        clarificationDtoCreated.getUserName() == clarificationDto.getUserName()
-        clarificationDtoCreated.getCreationDate() == clarificationDto.getCreationDate()
-        clarificationDtoCreated.getQuestionAnswerId() == clarificationDto.getQuestionAnswerId()
+        ClarificationDtoCreated.getId() == clarificationCreated.getId()
+        ClarificationDtoCreated.getState() == ClarificationDto.getState()
+        ClarificationDtoCreated.getContent() == ClarificationDto.getContent()
+        ClarificationDtoCreated.getUserName() == ClarificationDto.getUserName()
+        ClarificationDtoCreated.getCreationDate() == ClarificationDto.getCreationDate()
+        ClarificationDtoCreated.getQuestionAnswerId() == ClarificationDto.getQuestionAnswerId()
     }
 
     @TestConfiguration

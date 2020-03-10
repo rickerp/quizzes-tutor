@@ -41,8 +41,8 @@ public class QuestionDto implements Serializable {
         this.options = question.getOptions().stream().map(OptionDto::new).collect(Collectors.toList());
         this.topics = question.getTopics().stream().sorted(Comparator.comparing(Topic::getName)).map(TopicDto::new).collect(Collectors.toList());
 
-        if (question.getQuestionImage() != null)
-            this.image = new ImageDto(question.getQuestionImage());
+        if (question.getImage() != null)
+            this.image = new ImageDto(question.getImage());
         if (question.getCreationDate() != null)
             this.creationDate = question.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 

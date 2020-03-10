@@ -4,7 +4,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 
 import javax.persistence.*;
 
-@MappedSuperclass
+@Entity
+@Table(name = "image")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +16,6 @@ public class Image {
 
     @Column
     private Integer width;
-
 
     public Image() {}
 
@@ -50,7 +50,7 @@ public class Image {
 
     @Override
     public String toString() {
-        return "QuestionImage{" +
+        return "image{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
                 ", width=" + width +

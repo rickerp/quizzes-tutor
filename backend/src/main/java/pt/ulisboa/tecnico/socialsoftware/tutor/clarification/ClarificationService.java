@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDTO;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -39,7 +39,7 @@ public class ClarificationService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationDTO createClarification(ClarificationDTO clarificationsDto) {
+    public ClarificationDto createClarification(ClarificationDto clarificationsDto) {
         if (clarificationsDto == null){
             throw new TutorException(ErrorMessage.CLARIFICATION_IS_EMPTY);
         }
@@ -61,7 +61,7 @@ public class ClarificationService {
         question.addClarification(clarification);
 
         this.entityManager.persist(clarification);
-        return new ClarificationDTO(clarification);
+        return new ClarificationDto(clarification);
     }
 
     private User getUser(String username) {

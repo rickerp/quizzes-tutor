@@ -9,9 +9,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerR
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
-import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.QuestionImage
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.repository.ImageRepository
@@ -65,11 +66,11 @@ class UpdateQuestionTest extends Specification {
         question.setNumberOfAnswers(2)
         question.setNumberOfCorrect(1)
         and: 'an image'
-        def image = new QuestionImage()
+        def image = new Image()
         image.setUrl(URL)
         image.setWidth(20)
         imageRepository.save(image)
-        question.setQuestionImage(image)
+        question.setImage(image)
         and: 'two options'
         optionOK = new Option()
         optionOK.setContent(OPTION_CONTENT)
@@ -123,7 +124,7 @@ class UpdateQuestionTest extends Specification {
         result.getNumberOfAnswers() == 2
         result.getNumberOfCorrect() == 1
         result.getDifficulty() == 50
-        result.getQuestionImage() != null
+        result.getImage() != null
         and: 'an option is changed'
         result.getOptions().size() == 2
         def resOptionOne = result.getOptions().stream().filter({option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
