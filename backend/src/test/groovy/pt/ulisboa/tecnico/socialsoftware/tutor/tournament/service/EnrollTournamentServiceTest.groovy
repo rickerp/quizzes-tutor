@@ -62,9 +62,9 @@ class EnrollTournamentServiceTest extends Specification {
         User.Role.ADMIN     | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
         User.Role.TEACHER   | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
         User.Role.STUDENT   | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
-        User.Role.ADMIN     | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
-        User.Role.TEACHER   | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
-        null                | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
+        User.Role.ADMIN     | Tournament.State.OPENED       || ErrorMessage.USER_NOT_STUDENT
+        User.Role.TEACHER   | Tournament.State.OPENED       || ErrorMessage.USER_NOT_STUDENT
+        null                | Tournament.State.OPENED       || ErrorMessage.USER_NOT_STUDENT
         User.Role.STUDENT   | null                          || ErrorMessage.TOURNAMENT_NOT_OPENED
     }
 

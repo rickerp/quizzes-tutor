@@ -33,7 +33,7 @@ public class TournamentService {
             throw new TutorException(ErrorMessage.TOURNAMENT_NOT_OPENED);
         }
         if (player.getRole() != User.Role.STUDENT) {
-            throw new TutorException(ErrorMessage.INVALID_USER_ROLE);
+            throw new TutorException(ErrorMessage.USER_NOT_STUDENT);
         }
         tournament.playerEnroll(player);
         player.tournamentEnroll(tournament);

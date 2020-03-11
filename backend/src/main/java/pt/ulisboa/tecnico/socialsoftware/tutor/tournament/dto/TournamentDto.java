@@ -8,6 +8,8 @@ public class TournamentDto implements Serializable {
     private int id;
     private Tournament.State state;
 
+    public TournamentDto() {}
+
     public TournamentDto(Tournament tournament) {
         this.id = tournament.getId();
         this.state = tournament.getState();
@@ -17,15 +19,5 @@ public class TournamentDto implements Serializable {
         return this.state;
     }
 
-    public void setState(Tournament.State state) {
-        this.state = state;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public Integer getId() { return id; }
 }

@@ -14,7 +14,7 @@ public class Tournament {
 
     public enum State {OPENED, IN_PROGRESS, CLOSED}
 
-    private Tournament.State state;
+    private Tournament.State state = State.OPENED;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

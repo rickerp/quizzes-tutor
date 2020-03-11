@@ -53,15 +53,19 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
-
+    INVALID_DTO("The dto given is invalid"),
     ACCESS_DENIED("You do not have permission to view this resource"),
     CANNOT_OPEN_FILE("Cannot open file"),
 
     /* TdP Messages Begin */
     TOURNAMENT_NOT_FOUND("Tournament not found with id %d"),
     TOURNAMENT_NOT_OPENED("The Tournament is not Opened for Enrollments"),
-    INVALID_USER_ROLE("Invalid User Role to Enroll in a Tournament"),
-    DUPLICATE_TOURNAMENT_ENROLL("A Student can not enroll twice in the same Tournament");
+    USER_NOT_STUDENT("The user should be a student"),
+    DUPLICATE_TOURNAMENT_ENROLL("A Student can not enroll twice in the same Tournament"),
+    TOURNAMENT_NR_QUESTIONS_INVALID("The tournament number of questions should be greater than zero"),
+    TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time"),
+    TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time"),
+    TOPIC_NOT_AVAILABLE("The topic %d not available");
     /* TdP End */
 
     public final String label;
