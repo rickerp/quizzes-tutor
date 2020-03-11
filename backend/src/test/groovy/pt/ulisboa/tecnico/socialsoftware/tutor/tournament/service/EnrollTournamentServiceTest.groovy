@@ -11,7 +11,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -25,19 +24,19 @@ class EnrollTournamentServiceTest extends Specification {
     TournamentRepository tournamentRepository
 
     @Autowired
-    UserService userService
-
-    @Autowired
     TournamentService tournamentService
 
     def player_1
     def tournament_1
 
     def setup() {
+        'Create User'
         player_1 = new User("Ricardo", "Opty", 1, User.Role.STUDENT)
-        userRepository.save(player_1)
+        'Create Tournament'
         tournament_1 = new Tournament()
         tournament_1.setState(Tournament.State.OPENED)
+        'Store data in DB'
+        userRepository.save(player_1)
         tournamentRepository.save(tournament_1)
     }
 
@@ -65,17 +64,19 @@ class EnrollTournamentServiceTest extends Specification {
         User.Role.STUDENT   | Tournament.State.IN_PROGRESS  || ErrorMessage.TOURNAMENT_NOT_OPENED
         User.Role.ADMIN     | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
         User.Role.TEACHER   | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
+        null                | Tournament.State.OPENED       || ErrorMessage.INVALID_USER_ROLE
+        User.Role.STUDENT   | null                          || ErrorMessage.TOURNAMENT_NOT_OPENED
     }
 
     def 'Enroll a Student in an Opened Tournament' () {
         /* A Student should can enroll in an Opened Tournament */
         when: 'Enroll Players in Tournaments'
         tournamentService.enrollPlayer(player_1.getId(), tournament_1.getId())
-        and: 'Get from DB'
-        def tournament_1_players = tournamentService.getPlayers(tournament_1.getId())
-        def player_1_tournaments = userService.getTournaments(player_1.getId())
 
-        then: 'Check DB data'
+        then: 'Get DB data'
+        def tournament_1_players = tournament_1.getPlayers()
+        def player_1_tournaments = player_1.getTournaments()
+        and: 'Check DB data'
         tournament_1_players.contains(player_1)
         player_1_tournaments.contains(tournament_1)
     }
@@ -91,12 +92,12 @@ class EnrollTournamentServiceTest extends Specification {
         when: 'Enroll Players in Tournaments'
         tournamentService.enrollPlayer(player_1.getId(), tournament_1.getId())
         tournamentService.enrollPlayer(player_1.getId(), tournament_2.getId())
-        and: 'Get from DB'
-        def tournament_1_players = tournamentService.getPlayers(tournament_1.getId())
-        def tournament_2_players = tournamentService.getPlayers(tournament_2.getId())
-        def player_1_tournaments = userService.getTournaments(player_1.getId())
 
-        then: 'Check DB data'
+        then: 'Get DB data'
+        def tournament_1_players = tournament_1.getPlayers()
+        def tournament_2_players = tournament_2.getPlayers()
+        def player_1_tournaments = player_1.getTournaments()
+        and: 'Check DB data'
         tournament_1_players.contains(player_1)
         tournament_2_players.contains(player_1)
         player_1_tournaments.contains(tournament_1)
@@ -124,12 +125,12 @@ class EnrollTournamentServiceTest extends Specification {
         when: 'Enroll Players in Tournaments'
         tournamentService.enrollPlayer(player_1.getId(), tournament_1.getId())
         tournamentService.enrollPlayer(player_2.getId(), tournament_1.getId())
-        and: 'Get from DB'
-        def tournament_1_players = tournamentService.getPlayers(tournament_1.getId())
-        def player_1_tournaments = userService.getTournaments(player_1.getId())
-        def player_2_tournaments = userService.getTournaments(player_2.getId())
 
         then: 'Check DB data'
+        def tournament_1_players = tournament_1.getPlayers()
+        def player_1_tournaments = player_1.getTournaments()
+        def player_2_tournaments = player_2.getTournaments()
+        and: 'Check DB data'
         tournament_1_players.contains(player_1)
         tournament_1_players.contains(player_2)
         player_1_tournaments.contains(tournament_1)
@@ -138,11 +139,6 @@ class EnrollTournamentServiceTest extends Specification {
 
     @TestConfiguration
     static class EnrollTournamentConfiguration {
-
-        @Bean
-        UserService userService() {
-            return new UserService()
-        }
 
         @Bean
         TournamentService tournamentService() {

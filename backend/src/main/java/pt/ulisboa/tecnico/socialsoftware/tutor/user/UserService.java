@@ -13,14 +13,12 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlImport;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_EXECUTION_NOT_FOUND;
@@ -114,14 +112,4 @@ public class UserService {
     public User getDemoAdmin() {
         return this.userRepository.findByUsername("Demo-Admin");
     }
-
-    /* TdP Begin */
-    public Set<Tournament> getTournaments(Integer playerId) {
-
-        User player = userRepository.findById(playerId)
-                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, playerId));
-
-        return player.getTournaments();
-    }
-    /* TdP End */
 }
