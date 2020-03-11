@@ -364,11 +364,7 @@ public class User implements UserDetails {
         this.courseExecutions.add(course);
     }
 
-    public void addClarification(Clarification clarification) {
-        if (!this.quizAnswers.contains(clarification.getQuestionAnswer().getQuizAnswer()))
-            throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarification.getQuestionAnswer().getId());
-        this.clarifications.add(clarification);
-    }
+    public void addClarification(Clarification clarification) { this.clarifications.add(clarification); }
 
 
     @Override
@@ -391,6 +387,7 @@ public class User implements UserDetails {
                 ", numberOfCorrectStudentAnswers=" + numberOfCorrectStudentAnswers +
                 ", creationDate=" + creationDate +
                 ", courseExecutions=" + courseExecutions +
+                 ", clarifications=" + clarifications +
                 '}';
     }
 

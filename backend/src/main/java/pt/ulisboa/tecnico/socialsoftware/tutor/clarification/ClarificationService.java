@@ -56,6 +56,8 @@ public class ClarificationService {
 
         Clarification clarification = new Clarification(clarificationsDto, user, questionAnswer);
 
+        if (!user.getQuizAnswers().contains(clarification.getQuestionAnswer().getQuizAnswer()))
+            throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarification.getQuestionAnswer().getId());
         user.addClarification(clarification);
         questionAnswer.addClarification(clarification);
         question.addClarification(clarification);
