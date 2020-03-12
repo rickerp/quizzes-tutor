@@ -71,7 +71,7 @@ class CreateTournamentTest extends Specification {
         ret.getNrQuestions() == dto.getNrQuestions()
     }
 
-    @Unroll('Test: #Role User | #TopicStatus Topic | #nQuestions Questions | #StartTime start time | #EndTime end time || #Message')
+    @Unroll('Invalid inputs: #Role User | #TopicStatus Topic | #nQuestions Questions | #StartTime start time | #EndTime end time || #Message')
     def 'Create a tournament with invalid inputs' () {
         /* A Tournament should not be created and should throw and exception */
         given: 'a set of invalid inputs'
