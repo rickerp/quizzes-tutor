@@ -1,11 +1,11 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.comment.dto;
+package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.domain.Comment;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 
 import java.time.LocalDateTime;
 
-public class CommentDto {
+public class ClarificationCommentDto {
 
     private int id;
     private String content;
@@ -13,14 +13,14 @@ public class CommentDto {
     private int clarificationId;
     private LocalDateTime creationDate;
 
-    public CommentDto() {}
+    public ClarificationCommentDto() {}
 
-    public CommentDto(Comment comment) {
-        this.id = comment.getId();
-        this.content = comment.getContent();
-        this.userName = comment.getUser().getUsername();
-        this.clarificationId = comment.getClarification().getId();
-        this.creationDate = comment.getCreationDate();
+    public ClarificationCommentDto(ClarificationComment clarificationComment) {
+        this.id = clarificationComment.getId();
+        this.content = clarificationComment.getContent();
+        this.userName = clarificationComment.getUser().getUsername();
+        this.clarificationId = clarificationComment.getClarification().getId();
+        this.creationDate = clarificationComment.getCreationDate();
     }
 
     public int getId() {

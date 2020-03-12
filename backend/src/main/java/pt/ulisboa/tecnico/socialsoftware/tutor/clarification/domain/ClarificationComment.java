@@ -1,8 +1,7 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.comment.domain;
+package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.dto.CommentDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Comments")
-public class Comment {
+public class ClarificationComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,19 +30,19 @@ public class Comment {
 
     private LocalDateTime creationDate;
 
-    public Comment() {}
+    public ClarificationComment() {}
 
-    public Comment(CommentDto commentDto, User user, Clarification clarification) {
+    public ClarificationComment(ClarificationCommentDto clarificationCommentDto, User user, Clarification clarification) {
 
-        if (commentDto.getContent() == null) {
+        if (clarificationCommentDto.getContent() == null) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_CONTENT);
         }
 
-        this.content = commentDto.getContent();
+        this.content = clarificationCommentDto.getContent();
         this.user = user;
         this.clarification = clarification;
-        this.creationDate = commentDto.getCreationDate() == null ?
-                            LocalDateTime.now() : commentDto.getCreationDate();
+        this.creationDate = clarificationCommentDto.getCreationDate() == null ?
+                            LocalDateTime.now() : clarificationCommentDto.getCreationDate();
     }
 
     public Integer getId() {

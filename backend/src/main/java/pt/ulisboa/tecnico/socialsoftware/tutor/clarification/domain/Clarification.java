@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDTO;
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.domain.Comment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.ClarificationImage;
@@ -40,7 +39,7 @@ public class Clarification {
     private ClarificationImage clarificationImage;
 
     @OneToOne(mappedBy = "clarification")
-    private Comment comment;
+    private ClarificationComment clarificationComment;
 
     public Clarification() {}
 
@@ -120,11 +119,11 @@ public class Clarification {
         this.user = user;
     }
 
-    public Comment getComment() {
-        return comment;
+    public ClarificationComment getClarificationComment() {
+        return clarificationComment;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
+    public void setClarificationComment(ClarificationComment clarificationComment) {
+        this.clarificationComment = clarificationComment;
     }
 }

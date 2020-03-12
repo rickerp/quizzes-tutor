@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.domain.Comment;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -63,7 +63,7 @@ public class User implements UserDetails {
     private Set<Clarification> clarifications = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
-    private Set<Comment> comments = new HashSet<>();
+    private Set<ClarificationComment> clarificationComments = new HashSet<>();
 
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
@@ -312,12 +312,12 @@ public class User implements UserDetails {
         this.clarifications = clarifications;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
+    public Set<ClarificationComment> getClarificationComments() {
+        return clarificationComments;
     }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
+    public void setClarificationComments(Set<ClarificationComment> clarificationComments) {
+        this.clarificationComments = clarificationComments;
     }
 
     public void increaseNumberOfQuizzes(Quiz.QuizType type) {
@@ -382,8 +382,8 @@ public class User implements UserDetails {
         this.clarifications.add(clarification);
     }
 
-    public void addClarificationComment(Comment comment) {
-        this.comments.add(comment);
+    public void addClarificationComment(ClarificationComment clarificationComment) {
+        this.clarificationComments.add(clarificationComment);
     }
 
 
@@ -407,7 +407,7 @@ public class User implements UserDetails {
                 ", numberOfCorrectStudentAnswers=" + numberOfCorrectStudentAnswers +
                 ", creationDate=" + creationDate +
                 ", courseExecutions=" + courseExecutions +
-                ", comments=" + comments +
+                ", clarificationComments=" + clarificationComments +
                 '}';
     }
 

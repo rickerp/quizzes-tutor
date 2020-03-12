@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.comment.service
+package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,9 +32,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerR
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRepository
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.dto.CommentDto
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.CommentService
-import pt.ulisboa.tecnico.socialsoftware.tutor.comment.repository.CommentRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationCommentRepository
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -48,7 +48,7 @@ class SubmitCommentTest extends Specification {
     public static final String COMMENT_CONTENT = "Teacher Answer"
 
     @Autowired
-    CommentService commentService
+    ClarificationCommentService commentService
 
     @Autowired
     UserRepository userRepository
@@ -72,7 +72,7 @@ class SubmitCommentTest extends Specification {
     ClarificationRepository clarificationRepository
 
     @Autowired
-    CommentRepository clarificationCommentRepository
+    ClarificationCommentRepository clarificationCommentRepository
 
     def setup() {
         def course = new Course()
@@ -109,7 +109,7 @@ class SubmitCommentTest extends Specification {
 
         def creationDate = LocalDateTime.now()
 
-        commentDto = new CommentDto()
+        commentDto = new ClarificationCommentDto()
         commentDto.setContent(COMMENT_CONTENT)
         commentDto.setUserName(user.getUsername())
         commentDto.setClarificationId(clarification.getId())
@@ -238,8 +238,8 @@ class SubmitCommentTest extends Specification {
     static class SubmitCommentTestContextConfiguration {
 
         @Bean
-        CommentService commentService() {
-            return new CommentService()
+        ClarificationCommentService commentService() {
+            return new ClarificationCommentService()
         }
     }
 }
