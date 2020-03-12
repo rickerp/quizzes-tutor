@@ -2,6 +2,11 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.comment.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.comment.dto.CommentDto;
+
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -28,6 +33,18 @@ public class Comment {
 
     public Comment() {}
 
+    public Comment(CommentDto commentDto, User user, Clarification clarification) {
+
+        if (commentDto.getContent() == null) {
+            throw new TutorException(ErrorMessage.COMMENT_INVALID_CONTENT);
+        }
+
+        this.content = commentDto.getContent();
+        this.user = user;
+        this.clarification = clarification;
+        this.creationDate = commentDto.getCreationDate() == null ?
+                            LocalDateTime.now() : commentDto.getCreationDate();
+    }
 
     public Integer getId() {
         return id;
