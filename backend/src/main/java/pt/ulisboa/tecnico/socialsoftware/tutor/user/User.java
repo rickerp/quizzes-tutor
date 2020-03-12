@@ -60,10 +60,8 @@ public class User implements UserDetails {
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
 
-    /* TdP Begin */
     @ManyToMany
     private Set<Tournament> tournaments = new HashSet<>();
-    /* TdP End */
 
     public User() {
     }
@@ -356,17 +354,15 @@ public class User implements UserDetails {
         this.courseExecutions.add(course);
     }
 
-    /* TdP Begin */
     public void tournamentEnroll(Tournament tournament) {
         if (!tournaments.add(tournament)) {
             throw new TutorException(ErrorMessage.DUPLICATE_TOURNAMENT_ENROLL);
         }
     }
 
-    public HashSet<Tournament> getTournaments() {
-        return new HashSet<>(this.tournaments);
+    public Set<Tournament> getTournaments() {
+        return this.tournaments;
     }
-    /* TdP End */
 
     @Override
     public String toString() {

@@ -16,11 +16,6 @@ import java.util.Set;
 @Table(name = "tournaments")
 public class Tournament {
 
-    public enum State {OPENED, IN_PROGRESS, CLOSED}
-
-    @Enumerated(EnumType.STRING)
-    private Tournament.State state = State.OPENED;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,9 +23,8 @@ public class Tournament {
     @ManyToMany(mappedBy = "tournaments")
     private Set<User> players = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "topic_id")
-    private Topic topic;
+    @ManyToMany
+    private Set<Topic> topics;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
@@ -42,17 +36,16 @@ public class Tournament {
 
     public Tournament() {}
 
-    public Tournament(User creator, Topic topic, Integer nrQuestions, LocalDateTime startTime, LocalDateTime endTime) {
+    public Tournament(User creator, Set<Topic> topics, Integer nrQuestions, LocalDateTime startTime, LocalDateTime endTime) {
         setCreator(creator);
-        setTopic(topic);
+        setTopics(topics);
         setNrQuestions(nrQuestions);
         setStartTime(startTime);
         setEndTime(endTime);
+
+        if (startTime.compareTo(LocalDateTime.now()) <= 0)
+            throw new TutorException(TOURNAMENT_START_TIME_INVALID, startTime.toString());
     }
-
-    public Tournament.State getState() { return this.state; }
-
-    public void setState(Tournament.State state) { this.state = state; }
 
     public Integer getId() { return id; }
 
@@ -64,15 +57,21 @@ public class Tournament {
         }
     }
 
-    public HashSet<User> getPlayers() { return new HashSet<>(this.players); }
+    public boolean isOpened() {
+        return startTime.compareTo(LocalDateTime.now()) > 0;
+    }
 
-    public Topic getTopic() { return topic; }
+    public Set<User> getPlayers() { return this.players; }
 
-    public void setTopic(Topic topic) {
-        if (topic == null) throw new TutorException(TOPIC_NOT_AVAILABLE, null);
-        if (topic.getStatus() != Topic.Status.AVAILABLE)
-            throw new TutorException(TOPIC_NOT_AVAILABLE, topic.getId());
-        this.topic = topic;
+    public Set<Topic> getTopics() { return this.topics; }
+
+    public void setTopics(Set<Topic> topics) {
+        if (topics == null || topics.isEmpty()) throw new TutorException(TOPIC_NOT_FOUND, null);
+        for (Topic topic : topics) {
+            if (topic.getStatus() != Topic.Status.AVAILABLE)
+                throw new TutorException(TOPIC_NOT_AVAILABLE, topic.getId());
+        }
+        this.topics = topics;
     }
 
     public User getCreator() { return creator; }
@@ -99,8 +98,6 @@ public class Tournament {
 
     public void setStartTime(LocalDateTime startTime) {
         if (startTime == null) throw new TutorException(TOURNAMENT_START_TIME_INVALID, null);
-        if (startTime.compareTo(LocalDateTime.now()) <= 0)
-            throw new TutorException(TOURNAMENT_START_TIME_INVALID, startTime.toString());
         this.startTime = startTime;
     }
 
@@ -114,5 +111,4 @@ public class Tournament {
             throw new TutorException(TOURNAMENT_END_TIME_INVALID, endTime.toString());
         this.endTime = endTime;
     }
-
 }

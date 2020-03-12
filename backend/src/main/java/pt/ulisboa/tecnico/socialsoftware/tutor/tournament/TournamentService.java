@@ -17,6 +17,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class TournamentService {
@@ -42,14 +44,23 @@ public class TournamentService {
 
         User creator = userRepository.findById(dto.getCreatorId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, dto.getCreatorId()));
-        Topic topic = topicRepository.findById(dto.getTopicId())
-                .orElseThrow(() -> new TutorException(ErrorMessage.TOPIC_NOT_FOUND, dto.getTopicId()));
 
-        Tournament tournament = new Tournament(creator, topic, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
+        Set<Topic> topics = new HashSet<>();
+        for (Integer topicId : dto.getTopicsId()) {
+            Topic topic = topicRepository.findById(topicId)
+                    .orElseThrow(() -> new TutorException(ErrorMessage.TOPIC_NOT_FOUND, topicId));
+            topics.add(topic);
+        }
+
+        Tournament tournament = new Tournament(creator, topics, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
         entityManager.persist(tournament);
         return new TournamentDto(tournament);
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void enrollPlayer(Integer playerId, Integer tournamentId) {
 
         User player = userRepository.findById(playerId)
@@ -57,7 +68,7 @@ public class TournamentService {
         Tournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
-        if (tournament.getState() != Tournament.State.OPENED) {
+        if (!tournament.isOpened()) {
             throw new TutorException(ErrorMessage.TOURNAMENT_NOT_OPENED);
         }
         if (player.getRole() != User.Role.STUDENT) {

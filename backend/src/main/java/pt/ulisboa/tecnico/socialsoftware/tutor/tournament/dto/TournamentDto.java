@@ -1,15 +1,17 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TournamentDto implements Serializable {
 
     private int id;
-    private Tournament.State state;
     private int creatorId;
-    private int topicId;
+    private Set<Integer> topicsId;
     private Integer nrQuestions;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -18,22 +20,24 @@ public class TournamentDto implements Serializable {
 
     public TournamentDto(Tournament tournament) {
         this.id = tournament.getId();
-        this.state = tournament.getState();
         this.creatorId = tournament.getCreator().getId();
-        this.topicId = tournament.getTopic().getId();
+        this.topicsId = tournament.getTopics().stream().map(Topic::getId).collect(Collectors.toSet());
+        this.nrQuestions = tournament.getNrQuestions();
+        this.startTime = tournament.getStartTime();
+        this.endTime = tournament.getEndTime();
     }
 
     public int getId() { return id; }
 
-    public Tournament.State getState() { return state; }
-
     public int getCreatorId() { return creatorId; }
 
-    public int setCreatorId(int creatorId) { return this.creatorId = creatorId; }
+    public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
 
-    public int getTopicId() { return topicId; }
+    public Set<Integer> getTopicsId() { return topicsId; }
 
-    public void setTopicId(int topicId) { this.topicId = topicId; }
+    public void setTopicsId(Set<Integer> topicsId) {
+        this.topicsId = topicsId;
+    }
 
     public Integer getNrQuestions() { return nrQuestions; }
 

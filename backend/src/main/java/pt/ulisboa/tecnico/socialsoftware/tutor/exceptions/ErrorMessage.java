@@ -57,7 +57,6 @@ public enum ErrorMessage {
     ACCESS_DENIED("You do not have permission to view this resource"),
     CANNOT_OPEN_FILE("Cannot open file"),
 
-    /* TdP Messages Begin */
     TOURNAMENT_NOT_FOUND("Tournament not found with id %d"),
     TOURNAMENT_NOT_OPENED("The Tournament is not Opened for Enrollments"),
     USER_NOT_STUDENT("The user %d should be a student"),
@@ -66,7 +65,6 @@ public enum ErrorMessage {
     TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time. Given: %s"),
     TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
     TOPIC_NOT_AVAILABLE("The topic %d not available"),
-    /* TdP End */
 
     QUESTION_IS_EMPTY("The question is empty"),
     STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
