@@ -1,3 +1,5 @@
+package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.service
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
@@ -5,6 +7,7 @@ import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto
@@ -18,6 +21,8 @@ import java.time.LocalDateTime
 
 @DataJpaTest
 class CreateTournamentTest extends Specification {
+
+    public static final LocalDateTime now = LocalDateTime.now()
 
     @Autowired
     UserRepository userRepository
@@ -37,6 +42,7 @@ class CreateTournamentTest extends Specification {
         'Create a objects'
         creator = new User("Ricardo", "rickerp", 1, User.Role.STUDENT)
         topic = new Topic()
+
         'Store data in DB'
         userRepository.save(creator)
         topicRepository.save(topic)
@@ -48,7 +54,7 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         dto.setCreatorId(creator.getId())
         dto.setTopicId(topic.getId())
-        dto.setStartTime(LocalDateTime.now().plusHours(1))
+        dto.setStartTime(now.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
 
@@ -56,7 +62,8 @@ class CreateTournamentTest extends Specification {
         def ret_dto = tournamentService.createTournament(dto)
 
         then: 'check if the tournament was created correctly'
-        def ret = tournamentRepository.findById(ret_dto.getId())
+        def ret = (Tournament)tournamentRepository.findById(ret_dto.getId()).orElse(null)
+        ret != null
         ret.getCreator().getId() == dto.getCreatorId()
         ret.getTopic().getId() == dto.getTopicId()
         ret.getStartTime() == dto.getStartTime()
@@ -86,23 +93,23 @@ class CreateTournamentTest extends Specification {
         error.getErrorMessage() == Message
 
         where:
-        Role                    | TopicStatus               | nQuestions    | StartTime                             | EndTime                               || Message
-        User.Role.ADMIN         | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || USER_NOT_STUDENT
-        User.Role.TEACHER       | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || USER_NOT_STUDENT
-        User.Role.DEMO_ADMIN    | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || USER_NOT_STUDENT
-        null                    | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || USER_NOT_STUDENT
-        User.Role.STUDENT       | Topic.Status.DISABLED     | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || TOPIC_NOT_AVAILABLE
-        User.Role.STUDENT       | Topic.Status.REMOVED      | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || TOPIC_NOT_AVAILABLE
-        User.Role.STUDENT       | null                      | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || TOPIC_NOT_AVAILABLE
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 0             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | -1            | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | null          | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(-10)  | LocalDateTime.now().plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now()                   | LocalDateTime.now().plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | null                                  | LocalDateTime.now().plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(5)    || TOURNAMENT_END_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | LocalDateTime.now().plusMinutes(10)   || TOURNAMENT_END_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | LocalDateTime.now().plusMinutes(10)   | null                                  || TOURNAMENT_END_TIME_INVALID
+        Role                    | TopicStatus               | nQuestions    | StartTime             | EndTime               || Message
+        User.Role.ADMIN         | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || USER_NOT_STUDENT
+        User.Role.TEACHER       | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || USER_NOT_STUDENT
+        User.Role.DEMO_ADMIN    | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || USER_NOT_STUDENT
+        null                    | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || USER_NOT_STUDENT
+        User.Role.STUDENT       | Topic.Status.DISABLED     | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
+        User.Role.STUDENT       | Topic.Status.REMOVED      | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
+        User.Role.STUDENT       | null                      | 5             | now.plusMinutes(10)   | now.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 0             | now.plusMinutes(10)   | now.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | -1            | now.plusMinutes(10)   | now.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | null          | now.plusMinutes(10)   | now.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(-10)  | now.plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | now                   | now.plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | null                  | now.plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | now.plusMinutes(5)    || TOURNAMENT_END_TIME_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | now.plusMinutes(10)   || TOURNAMENT_END_TIME_INVALID
+        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | now.plusMinutes(10)   | null                  || TOURNAMENT_END_TIME_INVALID
     }
 
     def 'Create an empty tournament' () {
@@ -122,7 +129,7 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         dto.setCreatorId(creator.getId())
         dto.setTopicId(topic.getId())
-        dto.setStartTime(LocalDateTime.now().plusHours(1))
+        dto.setStartTime(now.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
 
@@ -131,13 +138,15 @@ class CreateTournamentTest extends Specification {
         def ret_dto_2 = tournamentService.createTournament(dto)
 
         then: 'check if the tournament was created correctly'
-        def ret_1 = tournamentRepository.findById(ret_dto_1.getId())
+        def ret_1 = tournamentRepository.findById(ret_dto_1.getId()).orElse(null)
+        ret_1 != null
         ret_1.getCreator().getId() == dto.getCreatorId()
         ret_1.getTopic().getId() == dto.getTopicId()
         ret_1.getStartTime() == dto.getStartTime()
         ret_1.getEndTime() == dto.getEndTime()
         ret_1.getNrQuestions() == dto.getNrQuestions()
-        def ret_2 = tournamentRepository.findById(ret_dto_2.getId())
+        def ret_2 = tournamentRepository.findById(ret_dto_2.getId()).orElse(null)
+        ret_2 != null
         ret_2.getCreator().getId() == dto.getCreatorId()
         ret_2.getTopic().getId() == dto.getTopicId()
         ret_2.getStartTime() == dto.getStartTime()
@@ -150,7 +159,7 @@ class CreateTournamentTest extends Specification {
         given: 'a tournament dto'
         def dto = new TournamentDto()
         dto.setCreatorId(creator.getId())
-        dto.setStartTime(LocalDateTime.now().plusHours(1))
+        dto.setStartTime(now.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
 
@@ -159,7 +168,7 @@ class CreateTournamentTest extends Specification {
 
         then: 'check if an exception was thrown'
         def error = thrown(TutorException)
-        error.getErrorMessage() == INVALID_DTO
+        error.getErrorMessage() == TOPIC_NOT_FOUND
     }
 
     @TestConfiguration

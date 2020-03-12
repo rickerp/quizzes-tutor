@@ -60,11 +60,11 @@ public enum ErrorMessage {
     /* TdP Messages Begin */
     TOURNAMENT_NOT_FOUND("Tournament not found with id %d"),
     TOURNAMENT_NOT_OPENED("The Tournament is not Opened for Enrollments"),
-    USER_NOT_STUDENT("The user should be a student"),
+    USER_NOT_STUDENT("The user %d should be a student"),
     DUPLICATE_TOURNAMENT_ENROLL("A Student can not enroll twice in the same Tournament"),
-    TOURNAMENT_NR_QUESTIONS_INVALID("The tournament number of questions should be greater than zero"),
-    TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time"),
-    TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time"),
+    TOURNAMENT_NR_QUESTIONS_INVALID("The tournament number of questions should be greater than zero. Given: %d"),
+    TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time. Given: %s"),
+    TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
     TOPIC_NOT_AVAILABLE("The topic %d not available");
     /* TdP End */
 
