@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
-    @Query(value = "SELECT * FROM questions q WHERE q.course_id = :courseId", nativeQuery = true)
+    @Query(value = "SELECT * FROM questions q WHERE q.course_id = :courseId AND q.status != 'PENDING'", nativeQuery = true)
     List<Question> findQuestions(int courseId);
 
     @Query(value = "SELECT * FROM questions q WHERE q.course_id = :courseId AND q.status = 'AVAILABLE'", nativeQuery = true)

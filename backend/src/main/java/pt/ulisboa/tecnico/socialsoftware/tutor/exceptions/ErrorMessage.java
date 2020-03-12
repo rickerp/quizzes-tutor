@@ -65,8 +65,13 @@ public enum ErrorMessage {
     TOURNAMENT_NR_QUESTIONS_INVALID("The tournament number of questions should be greater than zero. Given: %d"),
     TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time. Given: %s"),
     TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
-    TOPIC_NOT_AVAILABLE("The topic %d not available");
+    TOPIC_NOT_AVAILABLE("The topic %d not available"),
     /* TdP End */
+
+    QUESTION_IS_EMPTY("The question is empty"),
+    STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
+    STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
+    JUSTIFICATION_NOT_FOUND("Justification not found");
 
     public final String label;
 
