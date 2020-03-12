@@ -1,6 +1,6 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
+package pt.ulisboa.tecnico.socialsoftware.tutor.image.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 
 import javax.persistence.*;
 
@@ -10,12 +10,12 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String url;
-    private Integer width;
 
-    @OneToOne
-    @JoinColumn(name="question_id")
-    private Question question;
+    @Column
+    private String url;
+
+    @Column
+    private Integer width;
 
     public Image() {}
 
@@ -24,21 +24,12 @@ public class Image {
         this.width = imageDto.getWidth();
     }
 
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
     }
 
     public String getUrl() {

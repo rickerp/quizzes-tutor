@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
@@ -50,11 +51,11 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private Status status = Status.DISABLED;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "question")
-    private Image image;
-
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    private Image image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private List<Option> options = new ArrayList<>();
@@ -84,8 +85,8 @@ public class Question {
 
         if (questionDto.getImage() != null) {
             Image img = new Image(questionDto.getImage());
-            setImage(img);
-            img.setQuestion(this);
+            this.setImage(img);
+
         }
 
         int index = 0;
@@ -139,7 +140,6 @@ public class Question {
 
     public void setImage(Image image) {
         this.image = image;
-        image.setQuestion(this);
     }
 
     public String getTitle() {
