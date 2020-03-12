@@ -58,13 +58,20 @@ public enum ErrorMessage {
     CANNOT_OPEN_FILE("Cannot open file"),
 
     // Ddp - F1.1
-    CLARIFICATION_INVALID_USER("Uer associated to clarification is invalid"),
+    CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("Clarification content invalid"),
     CLARIFICATION_INVALID_QUESTION_ANSWER("Question Answer associated to clarification is invalid"),
     CLARIFICATION_INVALID_STATE("Clarification state invalid"),
     CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER("User has no question answer with id %d"),
     CLARIFICATION_QUIZ_NOT_COMPLETED("Quiz must be completed to write a clarification"),
-    CLARIFICATION_IS_EMPTY("Clarification is empty");
+    CLARIFICATION_IS_EMPTY("Clarification is empty"),
+
+    COMMENT_INVALID_CLARIFICATION("Clarification associated to comment is invalid"),
+    COMMENT_INVALID_CONTENT("ClarificationComment content is invalid"),
+    COMMENT_IS_EMPTY("ClarificationComment is empty"),
+    COMMENT_INVALID_USER_COURSE("User is not associated with clarification course"),
+    COMMENT_INVALID_CLARIFICATION_STATE("Clarification state invalid for comment"),
+    COMMENT_INVALID_USER("User associated to comment is invalid");
 
     public final String label;
 

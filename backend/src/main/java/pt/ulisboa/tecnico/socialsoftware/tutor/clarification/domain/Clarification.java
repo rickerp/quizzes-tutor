@@ -38,6 +38,9 @@ public class Clarification {
     @OneToOne(cascade=CascadeType.ALL)
     private Image image;
 
+    @OneToOne(mappedBy = "clarification")
+    private ClarificationComment clarificationComment;
+
     public Clarification() {}
 
     public Clarification(ClarificationDto clarificationsDto, User user, QuestionAnswer questionAnswer) {
@@ -110,5 +113,13 @@ public class Clarification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ClarificationComment getClarificationComment() {
+        return clarificationComment;
+    }
+
+    public void setClarificationComment(ClarificationComment clarificationComment) {
+        this.clarificationComment = clarificationComment;
     }
 }
