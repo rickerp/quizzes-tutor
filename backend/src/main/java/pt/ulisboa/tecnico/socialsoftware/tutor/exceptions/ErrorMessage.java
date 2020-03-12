@@ -57,7 +57,6 @@ public enum ErrorMessage {
     ACCESS_DENIED("You do not have permission to view this resource"),
     CANNOT_OPEN_FILE("Cannot open file"),
 
-    // Ddp - F1.1
     CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("Clarification content invalid"),
     CLARIFICATION_INVALID_QUESTION_ANSWER("Question Answer associated to clarification is invalid"),
@@ -71,7 +70,13 @@ public enum ErrorMessage {
     COMMENT_IS_EMPTY("ClarificationComment is empty"),
     COMMENT_INVALID_USER_COURSE("User is not associated with clarification course"),
     COMMENT_INVALID_CLARIFICATION_STATE("Clarification state invalid for comment"),
-    COMMENT_INVALID_USER("User associated to comment is invalid");
+    COMMENT_INVALID_USER("User associated to comment is invalid"),
+
+    QUESTION_IS_EMPTY("The question is empty"),
+    STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
+    STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
+    JUSTIFICATION_NOT_FOUND("Justification not found");
+
 
     public final String label;
 

@@ -28,7 +28,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 public class Question {
     @SuppressWarnings("unused")
     public enum Status {
-        DISABLED, REMOVED, AVAILABLE
+        PENDING, DISABLED, REMOVED, AVAILABLE
     }
 
     @Id
