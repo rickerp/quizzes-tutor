@@ -9,10 +9,12 @@ import java.util.*;
 @Entity
 @Table(name = "topics")
 public class Topic {
-    @SuppressWarnings("unused")
+
     public enum Status {
         DISABLED, REMOVED, AVAILABLE
     }
+
+    private Status status = Status.AVAILABLE;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,6 +97,14 @@ public class Topic {
 
     public void addQuestion(Question question) {
         this.questions.add(question);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
