@@ -2,10 +2,8 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
-import io.swagger.models.auth.In;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
