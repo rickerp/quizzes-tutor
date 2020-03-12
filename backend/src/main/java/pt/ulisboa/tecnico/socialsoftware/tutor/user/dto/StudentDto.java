@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 
 public class StudentDto implements Serializable {
+    private Integer id;
     private String username;
     private String name;
     private Integer numberOfTeacherQuizzes;
@@ -27,6 +28,7 @@ public class StudentDto implements Serializable {
     }
 
     public StudentDto(User user) {
+        this.id = user.getId();
         this.username = user.getUsername();
         this.name = user.getName();
 
@@ -52,6 +54,14 @@ public class StudentDto implements Serializable {
             this.lastAccess = user.getLastAccess().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         if (user.getCreationDate() != null)
             this.creationDate = user.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUsername() {

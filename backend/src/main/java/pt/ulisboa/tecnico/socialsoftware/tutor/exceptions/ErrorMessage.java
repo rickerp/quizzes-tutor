@@ -11,13 +11,14 @@ public enum ErrorMessage {
     TOPIC_NOT_FOUND("Topic not found with id %d"),
     ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     TOPIC_CONJUNCTION_NOT_FOUND("Topic Conjunction not found with id %d"),
-    COURSE_EXECUTION_NOT_FOUND("Course execution not found with name %d"),
+    COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
 
     COURSE_NOT_FOUND("Course not found with name %s"),
     COURSE_NAME_IS_EMPTY("The course name is empty"),
     COURSE_TYPE_NOT_DEFINED("The course type is not defined"),
     COURSE_EXECUTION_ACRONYM_IS_EMPTY("The course execution acronym is empty"),
     COURSE_EXECUTION_ACADEMIC_TERM_IS_EMPTY("The course execution academic term is empty"),
+    CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
     USERNAME_NOT_FOUND("Username %s not found"),
 
     QUIZ_USER_MISMATCH("Quiz %s is not assigned to student %s"),
@@ -53,9 +54,18 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
-
+    INVALID_DTO("The dto given is invalid"),
     ACCESS_DENIED("You do not have permission to view this resource"),
     CANNOT_OPEN_FILE("Cannot open file"),
+
+    TOURNAMENT_NOT_FOUND("Tournament not found with id %d"),
+    TOURNAMENT_NOT_OPENED("The Tournament is not Opened for Enrollments"),
+    USER_NOT_STUDENT("The user %d should be a student"),
+    DUPLICATE_TOURNAMENT_ENROLL("A Student can not enroll twice in the same Tournament"),
+    TOURNAMENT_NR_QUESTIONS_INVALID("The tournament number of questions should be greater than zero. Given: %d"),
+    TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time. Given: %s"),
+    TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
+    TOPIC_NOT_AVAILABLE("The topic %d not available"),
 
     CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("Clarification content invalid"),
@@ -76,7 +86,6 @@ public enum ErrorMessage {
     STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
     STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
     JUSTIFICATION_NOT_FOUND("Justification not found");
-
 
     public final String label;
 
