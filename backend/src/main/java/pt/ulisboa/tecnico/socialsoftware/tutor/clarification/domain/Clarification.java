@@ -48,14 +48,14 @@ public class Clarification {
         if (clarificationsDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
         this.content = clarificationsDto.getContent();
 
-        if (!(clarificationsDto.getState() == State.UNRESOLVED))
+        if (clarificationsDto.getState() != State.UNRESOLVED)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
 
         this.state = State.UNRESOLVED;
         this.user = user;
         this.questionAnswer = questionAnswer;
 
-        if (clarificationsDto.getImage() != null) this.image = new Image(clarificationsDto.getImage());;
+        if (clarificationsDto.getImage() != null) this.image = new Image(clarificationsDto.getImage());
 
         this.creationDate = clarificationsDto.getCreationDate() == null ? LocalDateTime.now() : clarificationsDto.getCreationDate();
 

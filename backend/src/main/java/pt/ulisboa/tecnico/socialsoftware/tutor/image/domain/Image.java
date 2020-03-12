@@ -5,7 +5,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "image")
+@Table(name = "images")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class Image {
 
     @Override
     public String toString() {
-        return "image{" +
+        return "Image{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
                 ", width=" + width +

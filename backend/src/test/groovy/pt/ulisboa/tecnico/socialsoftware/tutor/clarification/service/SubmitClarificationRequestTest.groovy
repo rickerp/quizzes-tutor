@@ -106,6 +106,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationDto.setCreationDate(LocalDateTime.now())
         clarificationDto.setState(Clarification.State.UNRESOLVED)
         clarificationDto.setUserName(user.getUsername())
+
     }
 
     def "Submit a clarification to a question that has no clarifications submited"() {
@@ -159,7 +160,9 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationCreatedList.size() == 1
         def clarificationCreatedList2 = clarificationRepository.findClarificationByQuestionAnswer(questionAnswerCreated.getId())
         clarificationCreatedList2.size() == 1
-        questionAnswer.getQuizQuestion().getQuestion().getClarifications().size() == 2
+        def Question1 = clarificationCreatedList[0].getQuestionAnswer().getQuizQuestion().getQuestion()
+        def Question2 = clarificationCreatedList2[0].getQuestionAnswer().getQuizQuestion().getQuestion()
+        Question1.getId() == Question2.getId()
     }
 
     def "Submit two clarifications to the same question answer"() {

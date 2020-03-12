@@ -11,7 +11,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -49,8 +48,6 @@ public class ClarificationService {
         QuestionAnswer questionAnswer = questionAnswerRepository.findById(clarificationsDto.getQuestionAnswerId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
 
-        Question question = questionAnswer.getQuizQuestion().getQuestion();
-
         if (!questionAnswer.getQuizAnswer().isCompleted())
             throw new TutorException(ErrorMessage.CLARIFICATION_QUIZ_NOT_COMPLETED);
 
@@ -60,7 +57,6 @@ public class ClarificationService {
             throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarification.getQuestionAnswer().getId());
         user.addClarification(clarification);
         questionAnswer.addClarification(clarification);
-        question.addClarification(clarification);
 
         this.entityManager.persist(clarification);
         return new ClarificationDto(clarification);
@@ -69,7 +65,6 @@ public class ClarificationService {
     private User getUser(String username) {
 
         User user = userRepository.findByUsername(username);
-        System.out.println(user);
         if (user == null)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
         return user;
