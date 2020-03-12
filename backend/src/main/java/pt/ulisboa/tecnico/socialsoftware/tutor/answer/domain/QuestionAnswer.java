@@ -1,9 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "question_answers")
@@ -28,6 +31,9 @@ public class QuestionAnswer {
     private Option option;
 
     private Integer sequence;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch=FetchType.LAZY)
+    private Set<Clarification> clarifications = new HashSet<>();
 
     public QuestionAnswer() {
     }
@@ -82,8 +88,6 @@ public class QuestionAnswer {
         this.timeTaken = timeTaken;
     }
 
-
-
     public QuizQuestion getQuizQuestion() {
         return quizQuestion;
     }
@@ -116,6 +120,16 @@ public class QuestionAnswer {
         this.sequence = sequence;
     }
 
+    public boolean isCorrect() {
+        return getOption() != null && getOption().getCorrect();
+    }
+
+    public Set<Clarification> getClarifications() { return this.clarifications; }
+
+    public void setClarifications(Set<Clarification> clarifications) { this.clarifications = clarifications; }
+
+    public void addClarification(Clarification clarification) { this.clarifications.add(clarification); }
+
     @Override
     public String toString() {
         return "QuestionAnswer{" +
@@ -125,7 +139,4 @@ public class QuestionAnswer {
                 '}';
     }
 
-    public boolean isCorrect() {
-        return getOption() != null && getOption().getCorrect();
-    }
 }

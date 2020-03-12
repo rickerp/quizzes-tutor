@@ -5,6 +5,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     public enum Role {STUDENT, TEACHER, ADMIN, DEMO_ADMIN}
 
     @Id
@@ -53,6 +56,12 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Clarification> clarifications = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
+    private Set<ClarificationComment> clarificationComments = new HashSet<>();
 
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
@@ -292,6 +301,23 @@ public class User implements UserDetails {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
+
+    public Set<Clarification> getClarifications() {
+        return clarifications;
+    }
+
+    public void setClarifications(Set<Clarification> clarifications) {
+        this.clarifications = clarifications;
+    }
+
+    public Set<ClarificationComment> getClarificationComments() {
+        return clarificationComments;
+    }
+
+    public void setClarificationComments(Set<ClarificationComment> clarificationComments) {
+        this.clarificationComments = clarificationComments;
+    }
+
     public void increaseNumberOfQuizzes(Quiz.QuizType type) {
         switch (type) {
             case PROPOSED:
@@ -348,6 +374,13 @@ public class User implements UserDetails {
         this.courseExecutions.add(course);
     }
 
+    public void addClarification(Clarification clarification) { this.clarifications.add(clarification); }
+
+    public void addClarificationComment(ClarificationComment clarificationComment) {
+        this.clarificationComments.add(clarificationComment);
+    }
+
+
     @Override
     public String toString() {
         return "User{" +
@@ -368,6 +401,8 @@ public class User implements UserDetails {
                 ", numberOfCorrectStudentAnswers=" + numberOfCorrectStudentAnswers +
                 ", creationDate=" + creationDate +
                 ", courseExecutions=" + courseExecutions +
+                ", clarifications=" + clarifications +
+                ", clarificationComments=" + clarificationComments +
                 '}';
     }
 
