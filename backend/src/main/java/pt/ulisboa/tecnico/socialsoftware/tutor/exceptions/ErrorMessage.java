@@ -66,7 +66,6 @@ public enum ErrorMessage {
     TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time. Given: %s"),
     TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
     TOPIC_NOT_AVAILABLE("The topic %d not available"),
-    CREATOR_DOES_NOT_FREQUENTS_COURSE_EXECUTION("The creator with id %d does not frequents the course execution with id %d"),
     COURSE_EXECUTION_NOT_ACTIVE("The course execution with id %d is not active"),
 
     CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),

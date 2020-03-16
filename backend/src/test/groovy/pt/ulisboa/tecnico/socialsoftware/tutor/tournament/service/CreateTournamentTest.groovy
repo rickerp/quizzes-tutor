@@ -261,31 +261,6 @@ class CreateTournamentTest extends Specification {
         error.getErrorMessage() == COURSE_EXECUTION_NOT_ACTIVE
     }
 
-    def "Create a tournament with a course execution that the creator does not frequents" () {
-
-        given: "a course execution"
-        def courseExecution_2 = new CourseExecution()
-        courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
-        courseExecutionRepository.save(courseExecution_2)
-        and: "a tournament dto"
-        def dto = new TournamentDto()
-        Set<Integer> topicsId = new HashSet<>()
-        topicsId.add(topic.getId())
-        dto.setCreatorId(creator.getId())
-        dto.setTopicsId(topicsId)
-        dto.setCourseExecutionId(courseExecution_2.getId())
-        dto.setStartTime(NOW.plusHours(1))
-        dto.setEndTime(dto.getStartTime().plusMinutes(5))
-        dto.setNrQuestions(5)
-
-        when: "given a dto to tournament service"
-        tournamentService.createTournament(dto)
-
-        then: "check if an exception was thrown"
-        def error = thrown(TutorException)
-        error.getErrorMessage() == CREATOR_DOES_NOT_FREQUENTS_COURSE_EXECUTION
-    }
-
     @TestConfiguration
     static class CreateTournamentConfiguration {
 

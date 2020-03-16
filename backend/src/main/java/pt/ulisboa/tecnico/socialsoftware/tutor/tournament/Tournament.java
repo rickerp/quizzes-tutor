@@ -54,8 +54,8 @@ public class Tournament {
         setStartTime(startTime);
         setEndTime(endTime);
 
-        if (startTime.compareTo(LocalDateTime.now()) <= 0)
-            throw new TutorException(TOURNAMENT_START_TIME_INVALID, startTime.toString());
+        if (startTime == null || startTime.compareTo(LocalDateTime.now()) <= 0)
+            throw new TutorException(TOURNAMENT_START_TIME_INVALID, startTime == null ? "" : startTime.toString());
     }
 
     public Integer getId() { return id; }
@@ -77,7 +77,7 @@ public class Tournament {
     public Set<Topic> getTopics() { return this.topics; }
 
     public void setTopics(Set<Topic> topics) {
-        if (topics == null || topics.isEmpty()) throw new TutorException(TOPIC_NOT_FOUND, null);
+        if (topics == null || topics.isEmpty()) throw new TutorException(TOPIC_NOT_FOUND, -1);
         for (Topic topic : topics) {
             if (topic.getStatus() != Topic.Status.AVAILABLE)
                 throw new TutorException(TOPIC_NOT_AVAILABLE, topic.getId());
@@ -89,20 +89,17 @@ public class Tournament {
     public CourseExecution getCourseExecution() { return this.courseExecution; }
 
     public void setCourseExecution(CourseExecution courseExecution) {
-        if (courseExecution == null) throw new TutorException(COURSE_EXECUTION_NOT_FOUND, null);
+        if (courseExecution == null) throw new TutorException(COURSE_EXECUTION_NOT_FOUND, -1);
         if (courseExecution.getStatus() != CourseExecution.Status.ACTIVE)
             throw new TutorException(COURSE_EXECUTION_NOT_ACTIVE, courseExecution.getId());
-        if (!creator.getCourseExecutions().contains(courseExecution))
-            throw new TutorException(CREATOR_DOES_NOT_FREQUENTS_COURSE_EXECUTION, creator.getId(), courseExecution.getId());
         this.courseExecution = courseExecution;
     }
 
     public User getCreator() { return creator; }
 
     public void setCreator(User creator) {
-        if (creator == null) throw new TutorException(USER_NOT_STUDENT, null);
-        if (creator.getRole() != User.Role.STUDENT)
-            throw new TutorException(USER_NOT_STUDENT, creator.getId());
+        if (creator == null || creator.getRole() != User.Role.STUDENT)
+            throw new TutorException(USER_NOT_STUDENT, creator == null ? -1 : creator.getId());
         this.creator = creator;
     }
 
@@ -120,7 +117,7 @@ public class Tournament {
     }
 
     public void setStartTime(LocalDateTime startTime) {
-        if (startTime == null) throw new TutorException(TOURNAMENT_START_TIME_INVALID, null);
+        if (startTime == null) throw new TutorException(TOURNAMENT_START_TIME_INVALID, "");
         this.startTime = startTime;
     }
 
@@ -129,9 +126,8 @@ public class Tournament {
     }
 
     public void setEndTime(LocalDateTime endTime) {
-        if (endTime == null) throw new TutorException(TOURNAMENT_END_TIME_INVALID, null);
-        if (endTime.compareTo(getStartTime()) <= 0)
-            throw new TutorException(TOURNAMENT_END_TIME_INVALID, endTime.toString());
+        if (endTime == null || endTime.compareTo(getStartTime()) <= 0)
+            throw new TutorException(TOURNAMENT_END_TIME_INVALID, endTime == null ? "" : endTime.toString());
         this.endTime = endTime;
     }
 }
