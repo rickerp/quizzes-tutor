@@ -94,9 +94,9 @@ public class TournamentService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<TournamentDto> getOpenedTournaments() {
+    public List<TournamentDto> getOpenedTournaments(Set<Integer> executionsId) {
 
-        return tournamentRepository.findOpenedTournaments()
+        return tournamentRepository.findOpenedTournaments(executionsId)
                 .stream()
                 .map(TournamentDto::new)
                 .sorted(Comparator.comparing(TournamentDto::getStartTime))
