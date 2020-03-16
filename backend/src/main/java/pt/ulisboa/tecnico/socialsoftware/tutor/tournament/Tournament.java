@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -27,6 +28,10 @@ public class Tournament {
     private Set<Topic> topics;
 
     @ManyToOne
+    @JoinColumn(name = "course_execution_id")
+    private CourseExecution courseExecution;
+
+    @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
     
@@ -41,9 +46,10 @@ public class Tournament {
 
     public Tournament() {}
 
-    public Tournament(User creator, Set<Topic> topics, Integer nrQuestions, LocalDateTime startTime, LocalDateTime endTime) {
+    public Tournament(User creator, Set<Topic> topics, CourseExecution courseExecution, Integer nrQuestions, LocalDateTime startTime, LocalDateTime endTime) {
         setCreator(creator);
         setTopics(topics);
+        setCourseExecution(courseExecution);
         setNrQuestions(nrQuestions);
         setStartTime(startTime);
         setEndTime(endTime);
@@ -77,6 +83,18 @@ public class Tournament {
                 throw new TutorException(TOPIC_NOT_AVAILABLE, topic.getId());
         }
         this.topics = topics;
+    }
+
+
+    public CourseExecution getCourseExecution() { return this.courseExecution; }
+
+    public void setCourseExecution(CourseExecution courseExecution) {
+        if (courseExecution == null) throw new TutorException(COURSE_EXECUTION_NOT_FOUND, null);
+        if (courseExecution.getStatus() != CourseExecution.Status.ACTIVE)
+            throw new TutorException(COURSE_EXECUTION_NOT_ACTIVE, courseExecution.getId());
+        if (!creator.getCourseExecutions().contains(courseExecution))
+            throw new TutorException(CREATOR_DOES_NOT_FREQUENTS_COURSE_EXECUTION, creator.getId(), courseExecution.getId());
+        this.courseExecution = courseExecution;
     }
 
     public User getCreator() { return creator; }

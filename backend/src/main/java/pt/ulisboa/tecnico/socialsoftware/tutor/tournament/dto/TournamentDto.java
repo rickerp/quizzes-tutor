@@ -12,6 +12,7 @@ public class TournamentDto implements Serializable {
     private int id;
     private int creatorId;
     private Set<Integer> topicsId;
+    private int courseExecutionId;
     private Integer nrQuestions;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -22,6 +23,7 @@ public class TournamentDto implements Serializable {
         this.id = tournament.getId();
         this.creatorId = tournament.getCreator().getId();
         this.topicsId = tournament.getTopics().stream().map(Topic::getId).collect(Collectors.toSet());
+        this.courseExecutionId = tournament.getCourseExecution().getId();
         this.nrQuestions = tournament.getNrQuestions();
         this.startTime = tournament.getStartTime();
         this.endTime = tournament.getEndTime();
@@ -38,6 +40,10 @@ public class TournamentDto implements Serializable {
     public void setTopicsId(Set<Integer> topicsId) {
         this.topicsId = topicsId;
     }
+
+    public int getCourseExecutionId() { return courseExecutionId; }
+
+    public void setCourseExecutionId(int courseExecutionId) { this.courseExecutionId = courseExecutionId; }
 
     public Integer getNrQuestions() { return nrQuestions; }
 

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
@@ -36,6 +38,9 @@ public class TournamentService {
     @Autowired
     TopicRepository topicRepository;
 
+    @Autowired
+    CourseExecutionRepository courseExecutionRepository;
+
     @PersistenceContext
     EntityManager entityManager;
 
@@ -44,7 +49,7 @@ public class TournamentService {
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public TournamentDto createTournament(TournamentDto dto) {
-        if(dto == null) throw new TutorException(ErrorMessage.INVALID_DTO);
+        if (dto == null) throw new TutorException(ErrorMessage.INVALID_DTO);
 
         User creator = userRepository.findById(dto.getCreatorId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, dto.getCreatorId()));
@@ -56,7 +61,10 @@ public class TournamentService {
             topics.add(topic);
         }
 
-        Tournament tournament = new Tournament(creator, topics, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
+        CourseExecution courseExecution = courseExecutionRepository.findById(dto.getCourseExecutionId())
+                .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, dto.getCourseExecutionId()));
+
+        Tournament tournament = new Tournament(creator, topics, courseExecution, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
         entityManager.persist(tournament);
         return new TournamentDto(tournament);
     }

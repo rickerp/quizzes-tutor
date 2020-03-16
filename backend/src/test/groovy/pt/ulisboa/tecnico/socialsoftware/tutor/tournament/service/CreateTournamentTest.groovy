@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
@@ -37,6 +39,9 @@ class CreateTournamentTest extends Specification {
     TopicRepository topicRepository
 
     @Autowired
+    CourseExecutionRepository courseExecutionRepository
+
+    @Autowired
     TournamentRepository tournamentRepository
 
     @Autowired
@@ -44,13 +49,18 @@ class CreateTournamentTest extends Specification {
 
     def creator
     def topic
+    def courseExecution
 
     def setup() {
         "Create a objects"
+        courseExecution = new CourseExecution()
+        courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         creator = new User(NAME_1, USERNAME, KEY, User.Role.STUDENT)
+        creator.addCourse(courseExecution)
         topic = new Topic()
         topic.setName(NAME_1)
         "Store data in DB"
+        courseExecutionRepository.save(courseExecution)
         userRepository.save(creator)
         topicRepository.save(topic)
     }
@@ -63,6 +73,7 @@ class CreateTournamentTest extends Specification {
         topicsId.add(topic.getId())
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution.getId())
         dto.setStartTime(NOW.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
@@ -74,6 +85,7 @@ class CreateTournamentTest extends Specification {
         Tournament tournament = tournamentRepository.findById(dtoCreated.getId()).orElse(null)
         tournament != null
         tournament.getCreator().getId() == dto.getCreatorId()
+        tournament.getCourseExecution().getId() == dto.getCourseExecutionId()
         tournament.getStartTime() == dto.getStartTime()
         tournament.getEndTime() == dto.getEndTime()
         tournament.getNrQuestions() == dto.getNrQuestions()
@@ -93,6 +105,7 @@ class CreateTournamentTest extends Specification {
         topicsId.add(topic.getId())
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution.getId())
         dto.setStartTime(StartTime)
         dto.setEndTime(EndTime)
         dto.setNrQuestions(nQuestions)
@@ -142,6 +155,7 @@ class CreateTournamentTest extends Specification {
         topicsId.add(topic.getId())
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution.getId())
         dto.setStartTime(NOW.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
@@ -154,6 +168,7 @@ class CreateTournamentTest extends Specification {
         Tournament tournament_1 = tournamentRepository.findById(dtoCreated_1.getId()).orElse(null)
         tournament_1 != null
         tournament_1.getCreator().getId() == dto.getCreatorId()
+        tournament_1.getCourseExecution().getId() == dto.getCourseExecutionId()
         tournament_1.getStartTime() == dto.getStartTime()
         tournament_1.getEndTime() == dto.getEndTime()
         tournament_1.getNrQuestions() == dto.getNrQuestions()
@@ -162,6 +177,7 @@ class CreateTournamentTest extends Specification {
         Tournament tournament_2 = tournamentRepository.findById(dtoCreated_2.getId()).orElse(null)
         tournament_2 != null
         tournament_2.getCreator().getId() == dto.getCreatorId()
+        tournament_2.getCourseExecution().getId() == dto.getCourseExecutionId()
         tournament_2.getStartTime() == dto.getStartTime()
         tournament_2.getEndTime() == dto.getEndTime()
         tournament_2.getNrQuestions() == dto.getNrQuestions()
@@ -176,6 +192,7 @@ class CreateTournamentTest extends Specification {
         Set<Integer> topicsId = new HashSet<>()
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution.getId())
         dto.setStartTime(NOW.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
@@ -201,6 +218,7 @@ class CreateTournamentTest extends Specification {
         topicsId.add(topic_2.getId())
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution.getId())
         dto.setStartTime(NOW.plusHours(1))
         dto.setEndTime(dto.getStartTime().plusMinutes(5))
         dto.setNrQuestions(5)
@@ -212,11 +230,60 @@ class CreateTournamentTest extends Specification {
         Tournament tournament = tournamentRepository.findById(dtoCreated.getId()).orElse(null)
         tournament != null
         tournament.getCreator().getId() == dto.getCreatorId()
+        tournament.getCourseExecution().getId() == dto.getCourseExecutionId()
         tournament.getStartTime() == dto.getStartTime()
         tournament.getEndTime() == dto.getEndTime()
         tournament.getNrQuestions() == dto.getNrQuestions()
         tournament.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
+    }
+
+    def "Create a tournament with an inactive course execution" () {
+
+        given: "an inactive course execution"
+        courseExecution.setStatus(CourseExecution.Status.INACTIVE)
+        and: "a tournament dto"
+        def dto = new TournamentDto()
+        Set<Integer> topicsId = new HashSet<>()
+        topicsId.add(topic.getId())
+        dto.setCreatorId(creator.getId())
+        dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution.getId())
+        dto.setStartTime(NOW.plusHours(1))
+        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setNrQuestions(5)
+
+        when: "given a dto to tournament service"
+        tournamentService.createTournament(dto)
+
+        then: "check if an exception was thrown"
+        def error = thrown(TutorException)
+        error.getErrorMessage() == COURSE_EXECUTION_NOT_ACTIVE
+    }
+
+    def "Create a tournament with a course execution that the creator does not frequents" () {
+
+        given: "a course execution"
+        def courseExecution_2 = new CourseExecution()
+        courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
+        courseExecutionRepository.save(courseExecution_2)
+        and: "a tournament dto"
+        def dto = new TournamentDto()
+        Set<Integer> topicsId = new HashSet<>()
+        topicsId.add(topic.getId())
+        dto.setCreatorId(creator.getId())
+        dto.setTopicsId(topicsId)
+        dto.setCourseExecutionId(courseExecution_2.getId())
+        dto.setStartTime(NOW.plusHours(1))
+        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setNrQuestions(5)
+
+        when: "given a dto to tournament service"
+        tournamentService.createTournament(dto)
+
+        then: "check if an exception was thrown"
+        def error = thrown(TutorException)
+        error.getErrorMessage() == CREATOR_DOES_NOT_FREQUENTS_COURSE_EXECUTION
     }
 
     @TestConfiguration
