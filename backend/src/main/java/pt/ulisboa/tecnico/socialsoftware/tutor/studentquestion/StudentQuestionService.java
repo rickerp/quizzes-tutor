@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
@@ -17,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@Service
 public class StudentQuestionService {
 
     @Autowired
