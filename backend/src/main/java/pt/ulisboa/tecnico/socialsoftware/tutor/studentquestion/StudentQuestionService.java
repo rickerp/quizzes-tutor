@@ -17,6 +17,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentQuestionService {
@@ -35,6 +37,12 @@ public class StudentQuestionService {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    public List<StudentQuestionDto> list(int courseId, int userId) {
+        return studentQuestionRepository.find(courseId, userId).stream()
+                .map(StudentQuestionDto::new)
+                .collect(Collectors.toList());
+    }
 
     public StudentQuestionDto createStudentQuestion(int courseId, StudentQuestionDto studentQuestionDto) {
 
