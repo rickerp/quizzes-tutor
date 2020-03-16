@@ -75,6 +75,14 @@ public class ClarificationRequestService {
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
         return user;
     }
-    
+
+    public List<ClarificationRequestDto> getClarificationRequests(String username, int executionId) {
+        return null;
+    }
+
+    public ClarificationRequestDto getClarificationRequest(int clarificationRequestId) {
+        return null;
+    }
+
 }
 
