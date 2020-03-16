@@ -77,11 +77,26 @@ public class ClarificationRequestService {
     }
 
     public List<ClarificationRequestDto> getClarificationRequests(String username, int executionId) {
-        return null;
+        User user = this.getUser(username);
+
+
+        if (user.getRole() == User.Role.STUDENT) {
+            return user.getClarificationRequests().stream()
+                    .filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz()
+                            .getCourseExecution().getId() == executionId)
+                    .map(ClarificationRequestDto::new)
+                    .collect(Collectors.toList());
+        } else {
+            return clarificationRequestRepository.findAll().stream().filter(clarification -> clarification.getQuestionAnswer()
+                            .getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
+                    .map(ClarificationRequestDto::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     public ClarificationRequestDto getClarificationRequest(int clarificationRequestId) {
-        return null;
+        return new ClarificationRequestDto(clarificationRequestRepository.findById(clarificationRequestId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND)));
     }
 
 }
