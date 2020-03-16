@@ -64,5 +64,11 @@ public class StudentQuestionService {
         return new StudentQuestionDto(studentQuestion);
     }
 
+    public StudentQuestionDto findById(Integer studentQuestionId) {
+        StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND));
+        return new StudentQuestionDto(studentQuestion);
+    }
+
 
 }
