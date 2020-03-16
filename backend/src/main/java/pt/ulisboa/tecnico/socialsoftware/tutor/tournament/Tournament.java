@@ -29,9 +29,14 @@ public class Tournament {
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
-
+    
+    @Column(name = "nr_questions")
     private Integer nrQuestions;
+
+    @Column(name = "start_time")
     private LocalDateTime startTime;
+
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     public Tournament() {}
