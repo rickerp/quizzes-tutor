@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
@@ -33,7 +33,7 @@ public class QuestionAnswer {
     private Integer sequence;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch=FetchType.LAZY)
-    private Set<Clarification> clarifications = new HashSet<>();
+    private Set<ClarificationRequest> clarificationRequests = new HashSet<>();
 
     public QuestionAnswer() {
     }
@@ -124,11 +124,11 @@ public class QuestionAnswer {
         return getOption() != null && getOption().getCorrect();
     }
 
-    public Set<Clarification> getClarifications() { return this.clarifications; }
+    public Set<ClarificationRequest> getClarificationRequests() { return this.clarificationRequests; }
 
-    public void setClarifications(Set<Clarification> clarifications) { this.clarifications = clarifications; }
+    public void setClarificationRequests(Set<ClarificationRequest> clarificationRequests) { this.clarificationRequests = clarificationRequests; }
 
-    public void addClarification(Clarification clarification) { this.clarifications.add(clarification); }
+    public void addClarification(ClarificationRequest clarificationRequest) { this.clarificationRequests.add(clarificationRequest); }
 
     @Override
     public String toString() {

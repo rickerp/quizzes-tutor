@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
@@ -11,8 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Clarifications")
-public class Clarification {
+@Table(name = "Clarification_requests")
+public class ClarificationRequest {
 
     public enum State {UNRESOLVED, RESOLVED}
 
@@ -21,7 +21,7 @@ public class Clarification {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private Clarification.State state;
+    private ClarificationRequest.State state;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -38,12 +38,12 @@ public class Clarification {
     @OneToOne(cascade=CascadeType.ALL)
     private Image image;
 
-    @OneToOne(mappedBy = "clarification")
+    @OneToOne(mappedBy = "clarificationRequest")
     private ClarificationComment clarificationComment;
 
-    public Clarification() {}
+    public ClarificationRequest() {}
 
-    public Clarification(ClarificationDto clarificationsDto, User user, QuestionAnswer questionAnswer) {
+    public ClarificationRequest(ClarificationRequestDto clarificationsDto, User user, QuestionAnswer questionAnswer) {
 
         if (clarificationsDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
         this.content = clarificationsDto.getContent();

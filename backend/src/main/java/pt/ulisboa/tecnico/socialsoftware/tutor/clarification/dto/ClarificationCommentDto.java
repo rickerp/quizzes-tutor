@@ -19,7 +19,7 @@ public class ClarificationCommentDto {
         this.id = clarificationComment.getId();
         this.content = clarificationComment.getContent();
         this.userName = clarificationComment.getUser().getUsername();
-        this.clarificationId = clarificationComment.getClarification().getId();
+        this.clarificationId = clarificationComment.getClarificationRequest().getId();
         this.creationDate = clarificationComment.getCreationDate();
     }
 

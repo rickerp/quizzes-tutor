@@ -5,7 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
@@ -61,7 +61,7 @@ public class User implements UserDetails {
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Clarification> clarifications = new HashSet<>();
+    private Set<ClarificationRequest> clarificationRequests = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<ClarificationComment> clarificationComments = new HashSet<>();
@@ -308,12 +308,12 @@ public class User implements UserDetails {
     }
 
 
-    public Set<Clarification> getClarifications() {
-        return clarifications;
+    public Set<ClarificationRequest> getClarificationRequests() {
+        return clarificationRequests;
     }
 
-    public void setClarifications(Set<Clarification> clarifications) {
-        this.clarifications = clarifications;
+    public void setClarificationRequests(Set<ClarificationRequest> clarificationRequests) {
+        this.clarificationRequests = clarificationRequests;
     }
 
     public Set<ClarificationComment> getClarificationComments() {
@@ -390,7 +390,7 @@ public class User implements UserDetails {
         return this.tournaments;
     }
 
-    public void addClarification(Clarification clarification) { this.clarifications.add(clarification); }
+    public void addClarification(ClarificationRequest clarificationRequest) { this.clarificationRequests.add(clarificationRequest); }
 
     public void addClarificationComment(ClarificationComment clarificationComment) {
         this.clarificationComments.add(clarificationComment);
@@ -416,7 +416,7 @@ public class User implements UserDetails {
                 ", numberOfCorrectStudentAnswers=" + numberOfCorrectStudentAnswers +
                 ", creationDate=" + creationDate +
                 ", courseExecutions=" + courseExecutions +
-                ", clarifications=" + clarifications +
+                ", clarificationRequests=" + clarificationRequests +
                 ", clarificationComments=" + clarificationComments +
                 '}';
     }

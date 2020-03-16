@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -24,12 +27,15 @@ import javax.persistence.PersistenceContext;
 
 
 @Service
-public class ClarificationService {
+public class ClarificationRequestService {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private QuestionAnswerRepository questionAnswerRepository;
+
+    @Autowired
+    private ClarificationRequestRepository clarificationRequestRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -38,28 +44,28 @@ public class ClarificationService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationDto createClarification(ClarificationDto clarificationsDto) {
+    public ClarificationRequestDto createClarificationRequest(int questionAnswerId, ClarificationRequestDto clarificationsDto) {
         if (clarificationsDto == null){
             throw new TutorException(ErrorMessage.CLARIFICATION_IS_EMPTY);
         }
 
         User user = getUser(clarificationsDto.getUserName());
 
-        QuestionAnswer questionAnswer = questionAnswerRepository.findById(clarificationsDto.getQuestionAnswerId())
+        QuestionAnswer questionAnswer = questionAnswerRepository.findById(questionAnswerId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
 
         if (!questionAnswer.getQuizAnswer().isCompleted())
             throw new TutorException(ErrorMessage.CLARIFICATION_QUIZ_NOT_COMPLETED);
 
-        Clarification clarification = new Clarification(clarificationsDto, user, questionAnswer);
+        ClarificationRequest clarificationRequest = new ClarificationRequest(clarificationsDto, user, questionAnswer);
 
-        if (!user.getQuizAnswers().contains(clarification.getQuestionAnswer().getQuizAnswer()))
-            throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarification.getQuestionAnswer().getId());
-        user.addClarification(clarification);
-        questionAnswer.addClarification(clarification);
+        if (!user.getQuizAnswers().contains(clarificationRequest.getQuestionAnswer().getQuizAnswer()))
+            throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarificationRequest.getQuestionAnswer().getId());
+        user.addClarification(clarificationRequest);
+        questionAnswer.addClarification(clarificationRequest);
 
-        this.entityManager.persist(clarification);
-        return new ClarificationDto(clarification);
+        this.entityManager.persist(clarificationRequest);
+        return new ClarificationRequestDto(clarificationRequest);
     }
 
     private User getUser(String username) {
@@ -69,5 +75,6 @@ public class ClarificationService {
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
         return user;
     }
+    
 }
 

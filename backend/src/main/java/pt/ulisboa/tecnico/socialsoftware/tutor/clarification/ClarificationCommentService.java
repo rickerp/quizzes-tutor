@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
 
 import javax.persistence.PersistenceContext;
 import javax.persistence.EntityManager;
@@ -34,7 +34,7 @@ public class ClarificationCommentService {
     private UserRepository userRepository;
 
     @Autowired
-    private ClarificationRepository clarificationRepository;
+    private ClarificationRequestRepository clarificationRequestRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -53,34 +53,34 @@ public class ClarificationCommentService {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER);
         }
 
-        Clarification clarification = getClarification(clarificationCommentDto);
+        ClarificationRequest clarificationRequest = getClarification(clarificationCommentDto);
 
-        verifyCourse(user, clarification);
+        verifyCourse(user, clarificationRequest);
 
-        ClarificationComment clarificationComment = new ClarificationComment(clarificationCommentDto, user, clarification);
+        ClarificationComment clarificationComment = new ClarificationComment(clarificationCommentDto, user, clarificationRequest);
 
         user.addClarificationComment(clarificationComment);
-        clarification.setClarificationComment(clarificationComment);
+        clarificationRequest.setClarificationComment(clarificationComment);
 
         this.entityManager.persist(clarificationComment);
         return new ClarificationCommentDto(clarificationComment);
     }
 
-    private void verifyCourse(User user, Clarification clarification) {
-        CourseExecution clarificationCourseExecution = clarification.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution();
+    private void verifyCourse(User user, ClarificationRequest clarificationRequest) {
+        CourseExecution clarificationCourseExecution = clarificationRequest.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution();
         if (!user.getCourseExecutions().contains(clarificationCourseExecution)) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER_COURSE);
         }
     }
 
-    private Clarification getClarification(ClarificationCommentDto clarificationCommentDto) {
-        Clarification clarification = clarificationRepository.findById(clarificationCommentDto.getClarificationId())
+    private ClarificationRequest getClarification(ClarificationCommentDto clarificationCommentDto) {
+        ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationCommentDto.getClarificationId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.COMMENT_INVALID_CLARIFICATION));
 
-        if (clarification.getState() != Clarification.State.UNRESOLVED) {
+        if (clarificationRequest.getState() != ClarificationRequest.State.UNRESOLVED) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE);
         }
-        return clarification;
+        return clarificationRequest;
     }
 
 }

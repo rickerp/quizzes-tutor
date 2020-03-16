@@ -6,6 +6,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarificatio
 
 
 public interface ClarificationCommentRepository extends JpaRepository<ClarificationComment, Integer> {
-    @Query (value = "SELECT * FROM Comments WHERE clarification_id = :clarificationId", nativeQuery = true)
-    ClarificationComment findComment(int clarificationId);
+    @Query (value = "SELECT * FROM Comments WHERE clarification_request_id = :clarificationRequestId", nativeQuery = true)
+    ClarificationComment findComment(int clarificationRequestId);
 }
