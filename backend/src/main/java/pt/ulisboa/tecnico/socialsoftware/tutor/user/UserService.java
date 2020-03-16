@@ -84,6 +84,14 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<ClarificationRequestDto> getClarificationRequests(String username) {
+        User user = this.userRepository.findByUsername(username);
+
+        return user.getClarificationRequests().stream().map(ClarificationRequestDto::new).collect(Collectors.toList());
+    }
+
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void addCourseExecution(String username, int executionId) {
 
         User user =  this.userRepository.findByUsername(username);

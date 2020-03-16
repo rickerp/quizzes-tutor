@@ -29,4 +29,20 @@ public class ClarificationController {
         return clarificationRequestService.createClarificationRequest(questionAnswerId, clarificationRequestDto);
     }
 
+    @GetMapping("/executions/{executionId}/clarifications")
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public List<ClarificationRequestDto> getClarifications(Principal principal, @PathVariable int executionId) {
+
+        User user = (User) ((Authentication) principal).getPrincipal();
+
+        if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
+
+        return clarificationRequestService.getClarificationRequests(user.getUsername(), executionId);
+    }
+
+    @GetMapping("/clarifications/{clarificationId}")
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER') and hasPermission(#clarificationId, 'CLARIFICATION.ACCESS')")
+    public ClarificationRequestDto getClarification(int clarificationId) {
+        return clarificationRequestService.getClarificationRequest(clarificationId);
+    }
 }
