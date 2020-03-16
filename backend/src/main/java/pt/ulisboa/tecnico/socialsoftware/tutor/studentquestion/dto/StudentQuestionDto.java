@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
 import java.io.Serializable;
 
@@ -10,7 +9,7 @@ public class StudentQuestionDto implements Serializable {
 
     private Integer id;
     private QuestionDto question;
-    private StudentDto student;
+    private String student;
 
     public StudentQuestionDto() {
 
@@ -18,7 +17,7 @@ public class StudentQuestionDto implements Serializable {
     public StudentQuestionDto(StudentQuestion studentQuestion) {
         this.id = studentQuestion.getId();
         this.question = new QuestionDto(studentQuestion.getQuestion());
-        this.student = new StudentDto(studentQuestion.getStudent());
+        this.student = studentQuestion.getStudent().getUsername();
     }
 
     public Integer getId() {
@@ -37,12 +36,12 @@ public class StudentQuestionDto implements Serializable {
         this.question = question;
     }
 
-    public StudentDto getStudent() {
+    public String getStudent() {
         return student;
     }
 
-    public void setStudent(StudentDto user) {
-        this.student = user;
+    public void setStudent(String student) {
+        this.student = student;
     }
 
     @Override

@@ -51,15 +51,11 @@ public class StudentQuestionService {
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
 
         QuestionDto questionDto = studentQuestionDto.getQuestion();
-        StudentDto studentDto = studentQuestionDto.getStudent();
 
         if (questionDto == null)
             throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
 
-        if (studentDto == null)
-            throw new TutorException(ErrorMessage.USER_NOT_FOUND);
-
-        User user = userService.findByUsername(studentDto.getUsername());
+        User user = userService.findByUsername(studentQuestionDto.getStudent());
         if (user == null)
             throw new TutorException(ErrorMessage.USER_NOT_FOUND);
 
