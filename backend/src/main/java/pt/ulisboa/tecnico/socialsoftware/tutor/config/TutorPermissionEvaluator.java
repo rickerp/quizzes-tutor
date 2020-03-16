@@ -5,6 +5,7 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import pt.ulisboa.tecnico.socialsoftware.tutor.administration.AdministrationService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.AssessmentService;
@@ -13,6 +14,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.QuizService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.AnswerService;
 
 import java.io.Serializable;
 
@@ -35,6 +37,12 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
 
     @Autowired
     private QuizService quizService;
+
+    @Autowired
+    private AnswerService answerService;
+
+    @Autowired
+    private ClarificationRequestService clarificationRequestService;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -72,10 +80,11 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                     return userHasThisExecution(username, assessmentService.findAssessmentCourseExecution(id).getCourseExecutionId());
                 case "QUIZ.ACCESS":
                     return userHasThisExecution(username, quizService.findQuizCourseExecution(id).getCourseExecutionId());
+                case "QUESTION_ANSWER.ACCESS":
+                    return userRespondedToThisQuestion(username, answerService.findQuizAnswer(id).getId());
                 default: return false;
             }
         }
-
         return false;
     }
 
@@ -89,7 +98,12 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 .anyMatch(course -> course.getCourseExecutionId() == id);
     }
 
-     @Override
+    private boolean userRespondedToThisQuestion(String username, int id) {
+        return userService.getQuizAnswers(username).stream()
+                .anyMatch(quizAnswer -> quizAnswer.getId() == id);
+    }
+
+    @Override
     public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {
         return false;
     }

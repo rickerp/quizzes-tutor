@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.CorrectAnswerDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuizAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.AnswersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.AnswersXmlImport;
@@ -160,6 +162,14 @@ public class AnswerService {
         }
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public QuizAnswerDto findQuizAnswer(int questionAnswerId) {
+        return this.questionAnswerRepository.findById(questionAnswerId)
+                .map(QuestionAnswer::getQuizAnswer)
+                .map(QuizAnswerDto::new)
+                .orElseThrow(() -> new TutorException(QUESTION_ANSWER_NOT_FOUND, questionAnswerId));
+    }
+
     private boolean isNotQuestionOption(QuizQuestion quizQuestion, Option option) {
         return quizQuestion.getQuestion().getOptions().stream().map(Option::getId).noneMatch(value -> value.equals(option.getId()));
     }
@@ -177,7 +187,6 @@ public class AnswerService {
 
         return xmlExport.export(quizAnswerRepository.findAll());
     }
-
 
     @Retryable(
       value = { SQLException.class },
