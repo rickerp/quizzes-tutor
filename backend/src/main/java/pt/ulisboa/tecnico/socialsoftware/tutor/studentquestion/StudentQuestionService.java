@@ -39,7 +39,8 @@ public class StudentQuestionService {
     EntityManager entityManager;
 
     public List<StudentQuestionDto> list(int courseId, int userId) {
-        return studentQuestionRepository.find(courseId, userId).stream()
+        return studentQuestionRepository.find(userId).stream()
+                .filter(s -> s.getQuestion().getCourse().getId() == courseId)
                 .map(StudentQuestionDto::new)
                 .collect(Collectors.toList());
     }

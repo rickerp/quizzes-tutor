@@ -14,7 +14,7 @@ public class StudentQuestion {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "user_id")
     private User student;
 
     @OneToOne
