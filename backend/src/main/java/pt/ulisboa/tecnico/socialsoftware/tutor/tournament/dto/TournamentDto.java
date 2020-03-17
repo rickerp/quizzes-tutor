@@ -11,8 +11,8 @@ public class TournamentDto implements Serializable {
 
     private int id;
     private int creatorId;
-    private Set<Integer> topicsId;
     private int courseExecutionId;
+    private Set<Integer> topicsId;
     private Integer nrQuestions;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

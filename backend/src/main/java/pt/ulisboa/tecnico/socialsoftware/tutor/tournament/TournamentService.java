@@ -80,14 +80,7 @@ public class TournamentService {
         Tournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
-        if (!tournament.isOpened()) {
-            throw new TutorException(ErrorMessage.TOURNAMENT_NOT_OPENED);
-        }
-        if (player.getRole() != User.Role.STUDENT) {
-            throw new TutorException(ErrorMessage.USER_NOT_STUDENT, playerId);
-        }
         tournament.playerEnroll(player);
-        player.tournamentEnroll(tournament);
     }
 
     @Retryable(

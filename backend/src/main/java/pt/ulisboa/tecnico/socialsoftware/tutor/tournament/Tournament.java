@@ -62,14 +62,16 @@ public class Tournament {
 
     public void setId(Integer id) { this.id = id; }
 
-    public void playerEnroll(User player) {
-        if (!players.add(player)) {
-            throw new TutorException(DUPLICATE_TOURNAMENT_ENROLL);
-        }
-    }
+    public boolean isOpened() { return startTime.compareTo(LocalDateTime.now()) > 0; }
 
-    public boolean isOpened() {
-        return startTime.compareTo(LocalDateTime.now()) > 0;
+    public void playerEnroll(User player) {
+        if (player == null || player.getRole() != User.Role.STUDENT)
+            throw new TutorException(USER_NOT_STUDENT, player == null ? -1 : player.getId());
+
+        if (!isOpened()) throw new TutorException(TOURNAMENT_NOT_OPENED);
+        if (!players.add(player)) throw new TutorException(DUPLICATE_TOURNAMENT_ENROLL);
+
+        player.getTournaments().add(this);
     }
 
     public Set<User> getPlayers() { return this.players; }
