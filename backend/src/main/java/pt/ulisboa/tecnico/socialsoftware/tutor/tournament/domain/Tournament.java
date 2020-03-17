@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.tournament;
+package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -54,8 +54,11 @@ public class Tournament {
         setStartTime(startTime);
         setEndTime(endTime);
 
-        if (startTime == null || startTime.compareTo(LocalDateTime.now()) <= 0)
-            throw new TutorException(TOURNAMENT_START_TIME_INVALID, startTime == null ? "" : startTime.toString());
+        if (startTime.compareTo(LocalDateTime.now()) <= 0)
+            throw new TutorException(TOURNAMENT_START_TIME_INVALID, startTime.toString());
+
+        if (endTime.compareTo(startTime) <= 0)
+            throw new TutorException(TOURNAMENT_END_TIME_INVALID, endTime.toString());
     }
 
     public Integer getId() { return id; }
@@ -110,7 +113,7 @@ public class Tournament {
     }
 
     public void setNrQuestions(Integer nrQuestions) {
-        if (nrQuestions == null || nrQuestions < 1) throw new TutorException(TOURNAMENT_NR_QUESTIONS_INVALID);
+        if (nrQuestions == null || nrQuestions <= 0) throw new TutorException(TOURNAMENT_NR_QUESTIONS_INVALID);
         this.nrQuestions = nrQuestions;
     }
 
@@ -128,8 +131,7 @@ public class Tournament {
     }
 
     public void setEndTime(LocalDateTime endTime) {
-        if (endTime == null || endTime.compareTo(getStartTime()) <= 0)
-            throw new TutorException(TOURNAMENT_END_TIME_INVALID, endTime == null ? "" : endTime.toString());
+        if (endTime == null) throw new TutorException(TOURNAMENT_END_TIME_INVALID, "");
         this.endTime = endTime;
     }
 }

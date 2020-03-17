@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
