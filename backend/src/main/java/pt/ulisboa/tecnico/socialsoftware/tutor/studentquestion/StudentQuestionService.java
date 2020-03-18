@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
@@ -16,7 +17,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class StudentQuestionService {
 
     @Autowired
@@ -34,21 +38,24 @@ public class StudentQuestionService {
     @PersistenceContext
     EntityManager entityManager;
 
+    public List<StudentQuestionDto> list(int courseId, int userId) {
+        return studentQuestionRepository.find(userId).stream()
+                .filter(s -> s.getQuestion().getCourse().getId() == courseId)
+                .map(StudentQuestionDto::new)
+                .collect(Collectors.toList());
+    }
+
     public StudentQuestionDto createStudentQuestion(int courseId, StudentQuestionDto studentQuestionDto) {
 
         if (studentQuestionDto == null)
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
 
         QuestionDto questionDto = studentQuestionDto.getQuestion();
-        StudentDto studentDto = studentQuestionDto.getStudent();
 
         if (questionDto == null)
             throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
 
-        if (studentDto == null)
-            throw new TutorException(ErrorMessage.USER_NOT_FOUND);
-
-        User user = userService.findByUsername(studentDto.getUsername());
+        User user = userService.findByUsername(studentQuestionDto.getStudent());
         if (user == null)
             throw new TutorException(ErrorMessage.USER_NOT_FOUND);
 

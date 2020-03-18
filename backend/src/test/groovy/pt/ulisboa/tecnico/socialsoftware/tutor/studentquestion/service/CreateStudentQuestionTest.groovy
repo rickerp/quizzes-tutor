@@ -41,7 +41,7 @@ class CreateStudentQuestionTest extends Specification {
     @Autowired
     CourseRepository courseRepository
 
-    def course
+    Course course
 
     def setup() {
         def user = new User("name", USERNAME, 1, User.Role.STUDENT)
@@ -54,8 +54,7 @@ class CreateStudentQuestionTest extends Specification {
     def "user not found"() {
         given:
         def studentQuestionDto = new StudentQuestionDto()
-        def user = new User("name", "123", 1, User.Role.STUDENT)
-        studentQuestionDto.setStudent(new StudentDto(user))
+        studentQuestionDto.setStudent("321")
         studentQuestionDto.setQuestion(new QuestionDto())
         when:
         studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
@@ -87,9 +86,7 @@ class CreateStudentQuestionTest extends Specification {
     def "create studentQuestion with no question"() {
         given:
         def studentQuestionDto = new StudentQuestionDto()
-        def studentDto = new StudentDto()
-        studentDto.setUsername(USERNAME)
-        studentQuestionDto.setStudent(studentDto)
+        studentQuestionDto.setStudent(USERNAME)
         studentQuestionDto.setQuestion(null)
         when: "no question exists"
         studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
@@ -99,9 +96,7 @@ class CreateStudentQuestionTest extends Specification {
     }
 
     def "createStudentQuestion" () {
-        given: "a User"
-        def user = new User("name", USERNAME, 1, User.Role.STUDENT)
-        and: "a questionDto"
+        given: "a questionDto"
         def questionDto = new QuestionDto()
         questionDto.setKey(1)
         questionDto.setTitle("title")
@@ -116,7 +111,7 @@ class CreateStudentQuestionTest extends Specification {
         questionDto.setOptions(options)
         def studentQuestionDto = new StudentQuestionDto()
         studentQuestionDto.setQuestion(questionDto)
-        studentQuestionDto.setStudent(new StudentDto(user))
+        studentQuestionDto.setStudent(USERNAME)
 
         when: "a student question is created"
         studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto);

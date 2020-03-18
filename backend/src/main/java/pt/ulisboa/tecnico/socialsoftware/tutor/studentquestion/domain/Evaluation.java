@@ -33,6 +33,8 @@ public class Evaluation {
         this.studentQuestion = studentQuestion;
         this.accepted = accepted;
         this.justification = justification;
+
+        studentQuestion.setEvaluation(this);
     }
 
     public int getId() {
