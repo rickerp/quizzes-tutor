@@ -44,12 +44,13 @@ public class ClarificationRequestService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationRequestDto createClarificationRequest(int questionAnswerId, ClarificationRequestDto clarificationsDto) {
-        if (clarificationsDto == null){
+    public ClarificationRequestDto createClarificationRequest(int questionAnswerId, ClarificationRequestDto clarificationRequestDto) {
+
+        if (clarificationRequestDto == null){
             throw new TutorException(ErrorMessage.CLARIFICATION_IS_EMPTY);
         }
 
-        User user = getUser(clarificationsDto.getUserName());
+        User user = getUser(clarificationRequestDto.getUsername());
 
         QuestionAnswer questionAnswer = questionAnswerRepository.findById(questionAnswerId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
@@ -57,10 +58,11 @@ public class ClarificationRequestService {
         if (!questionAnswer.getQuizAnswer().isCompleted())
             throw new TutorException(ErrorMessage.CLARIFICATION_QUIZ_NOT_COMPLETED);
 
-        ClarificationRequest clarificationRequest = new ClarificationRequest(clarificationsDto, user, questionAnswer);
+        ClarificationRequest clarificationRequest = new ClarificationRequest(clarificationRequestDto, user, questionAnswer);
 
         if (!user.getQuizAnswers().contains(clarificationRequest.getQuestionAnswer().getQuizAnswer()))
             throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarificationRequest.getQuestionAnswer().getId());
+
         user.addClarification(clarificationRequest);
         questionAnswer.addClarification(clarificationRequest);
 
@@ -69,35 +71,33 @@ public class ClarificationRequestService {
     }
 
     private User getUser(String username) {
-
         User user = userRepository.findByUsername(username);
         if (user == null)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
         return user;
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<ClarificationRequestDto> getClarificationRequests(String username, int executionId) {
+
         User user = this.getUser(username);
-
-
-        if (user.getRole() == User.Role.STUDENT) {
-            return user.getClarificationRequests().stream()
-                    .filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz()
-                            .getCourseExecution().getId() == executionId)
-                    .map(ClarificationRequestDto::new)
-                    .collect(Collectors.toList());
-        } else {
-            return clarificationRequestRepository.findAll().stream().filter(clarification -> clarification.getQuestionAnswer()
-                            .getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
-                    .map(ClarificationRequestDto::new)
-                    .collect(Collectors.toList());
-        }
+        return user.getRole() == User.Role.STUDENT ? getClarificationOfStudent(user, executionId) : getClarificationOfTeacher(executionId);
     }
 
-    public ClarificationRequestDto getClarificationRequest(int clarificationRequestId) {
-        return new ClarificationRequestDto(clarificationRequestRepository.findById(clarificationRequestId)
-                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND)));
+    private List<ClarificationRequestDto> getClarificationOfStudent(User user, int executionId) {
+        return user.getClarificationRequests().stream()
+                .filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
+                .map(ClarificationRequestDto::new)
+                .collect(Collectors.toList());
     }
 
+    private List<ClarificationRequestDto> getClarificationOfTeacher(int executionId) {
+        return clarificationRequestRepository.findAll().stream().filter(clarification -> clarification.getQuestionAnswer()
+                .getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
+                .map(ClarificationRequestDto::new)
+                .collect(Collectors.toList());
+    }
 }
-

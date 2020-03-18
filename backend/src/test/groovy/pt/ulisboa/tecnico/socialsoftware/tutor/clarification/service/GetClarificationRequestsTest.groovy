@@ -125,7 +125,7 @@ class GetClarificationRequestsTest extends Specification {
         clarificationRequestDto = new ClarificationRequestDto()
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
-        clarificationRequestDto.setUserName(student.getUsername())
+        clarificationRequestDto.setUsername(student.getUsername())
 
     }
 
@@ -165,7 +165,7 @@ class GetClarificationRequestsTest extends Specification {
         quizAnswerRepository.save(quizAnswer)
         and: "Two Clarifications"
         clarificationRequestService.createClarificationRequest(questionAnswer1.getId(), clarificationRequestDto)
-        clarificationRequestDto.setUserName(newStudent.getUsername())
+        clarificationRequestDto.setUsername(newStudent.getUsername())
         clarificationRequestService.createClarificationRequest(questionAnswer2.getId(), clarificationRequestDto)
 
         when:
@@ -188,24 +188,6 @@ class GetClarificationRequestsTest extends Specification {
         def clarificationRequestList = clarificationRequestService.getClarificationRequests(student.getUsername(), courseExecution.getId())
         then:
         clarificationRequestList.size() == 0
-    }
-
-    def "Get a clarification request with a clarification comment using a clarificationId"() {
-        given: "Create a Clarification request"
-        def clarificationRequestDto = clarificationRequestService.createClarificationRequest(questionAnswer1.getId(), clarificationRequestDto)
-        and: "Create a Clarification Comment"
-        def clarificationCommentDto = new ClarificationCommentDto()
-        clarificationCommentDto.setContent("Content")
-        clarificationCommentDto.setUserName(teacher.getUsername())
-        clarificationCommentDto.setClarificationId(clarificationRequestDto.getId())
-        clarificationCommentDto = clarificationCommentService.createComment(clarificationCommentDto)
-
-        when:
-        def clarificationRequestDtoReceived = clarificationRequestService.getClarificationRequest(clarificationRequestDto.getId())
-
-        then:
-        clarificationRequestDto.getId() == clarificationRequestDtoReceived.getId()
-        clarificationCommentDto.getId() == clarificationRequestDtoReceived.getClarificationComment().getId()
     }
 
     @TestConfiguration

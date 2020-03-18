@@ -110,7 +110,7 @@ class SubmitCommentTest extends Specification {
 
         commentDto = new ClarificationCommentDto()
         commentDto.setContent(COMMENT_CONTENT)
-        commentDto.setUserName(user.getUsername())
+        commentDto.setUsername(user.getUsername())
         commentDto.setClarificationId(clarificationRequest.getId())
         commentDto.setCreationDate(creationDate)
     }
@@ -129,7 +129,7 @@ class SubmitCommentTest extends Specification {
         def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
         comment.getId() != null
         comment.getContent() == commentDto.getContent()
-        comment.getUser().getUsername() == commentDto.getUserName()
+        comment.getUser().getUsername() == commentDto.getUsername()
         comment.getClarificationRequest().getId() == commentDto.getClarificationId()
         comment.getCreationDate() == commentDto.getCreationDate();
     }
@@ -165,7 +165,7 @@ class SubmitCommentTest extends Specification {
     @Unroll("Test: #username | #content | clarificationRequestState || #message")
     def "submit comment with wrong arguments"() {
         given: "Update commentDto"
-        commentDto.setUserName(username)
+        commentDto.setUsername(username)
         commentDto.setContent(content)
         and: "ClarificationRequest update"
         clarificationRequest.setState(clarificationRequestState)
@@ -201,7 +201,7 @@ class SubmitCommentTest extends Specification {
         and: "update clarification request"
         clarificationRequest.setUser(newUser)
         and: "update commentDto"
-        commentDto.setUserName(newUser.getUsername())
+        commentDto.setUsername(newUser.getUsername())
 
         when:
         commentService.createComment(commentDto)

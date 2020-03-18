@@ -10,7 +10,7 @@ public class ClarificationRequestDto {
     private int id;
     private ClarificationRequest.State state;
     private String content;
-    private String userName;
+    private String username;
     private LocalDateTime creationDate;
     private QuestionAnswerDto questionAnswer;
     private ClarificationCommentDto clarificationComment;
@@ -19,11 +19,12 @@ public class ClarificationRequestDto {
     public ClarificationRequestDto() {}
 
     public ClarificationRequestDto(ClarificationRequest clarificationRequest) {
+
         this.id =  clarificationRequest.getId();
         this.state = clarificationRequest.getState();
         this.content = clarificationRequest.getContent();
         this.creationDate = clarificationRequest.getCreationDate();
-        this.userName = clarificationRequest.getUser().getUsername();
+        this.username = clarificationRequest.getUser().getUsername();
         this.questionAnswer = new QuestionAnswerDto(clarificationRequest.getQuestionAnswer());
         if (clarificationRequest.getClarificationComment() != null) {
             this.clarificationComment = new ClarificationCommentDto(clarificationRequest.getClarificationComment());
@@ -66,12 +67,12 @@ public class ClarificationRequestDto {
         this.creationDate = creationDate;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public ImageDto getImage() {

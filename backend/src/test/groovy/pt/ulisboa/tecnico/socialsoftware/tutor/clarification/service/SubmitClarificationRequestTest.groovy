@@ -105,7 +105,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
         clarificationRequestDto.setCreationDate(LocalDateTime.now())
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
-        clarificationRequestDto.setUserName(user.getUsername())
+        clarificationRequestDto.setUsername(user.getUsername())
 
     }
 
@@ -120,7 +120,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestCreated.getState() == clarificationRequestDto.getState()
         clarificationRequestCreated.getContent() == clarificationRequestDto.getContent()
         clarificationRequestCreated.getCreationDate() == clarificationRequestDto.getCreationDate()
-        clarificationRequestCreated.getUser().getUsername() == clarificationRequestDto.getUserName()
+        clarificationRequestCreated.getUser().getUsername() == clarificationRequestDto.getUsername()
     }
 
     def "Submit a clarification request with an image"() {
@@ -194,14 +194,14 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestCreated.getCreationDate() != null
     }
 
-    @Unroll("Test: #userName | #content | #state || #message")
+    @Unroll("Test: #username | #content | #state || #message")
     def "submit a clarification request with wrong arguments"() {
         given: "Another clarificationRequestDto"
         def clarificationRequestCreated = new ClarificationRequestDto()
         clarificationRequestCreated.setContent(content)
         clarificationRequestCreated.setCreationDate(LocalDateTime.now())
         clarificationRequestCreated.setState(state)
-        clarificationRequestCreated.setUserName(userName)
+        clarificationRequestCreated.setUsername(username)
 
         when:
             clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestCreated)
@@ -211,7 +211,7 @@ class SubmitClarificationRequestTest extends Specification {
         error.getErrorMessage() == message
 
         where:
-             userName      |       content         |            state               ||                  message
+             username      |       content         |            state               ||                  message
         user.getUsername() | CLARIFICATION_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.CLARIFICATION_INVALID_STATE
         user.getUsername() | CLARIFICATION_CONTENT | null                           || ErrorMessage.CLARIFICATION_INVALID_STATE
         null               | CLARIFICATION_CONTENT | ClarificationRequest.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_USER
@@ -237,7 +237,7 @@ class SubmitClarificationRequestTest extends Specification {
         user = new User("User_S", "User_Name", 2, User.Role.STUDENT)
         userRepository.save(user)
         and: "Change username"
-        clarificationRequestDto.setUserName(user.getUsername())
+        clarificationRequestDto.setUsername(user.getUsername())
 
         when:
         clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestDto)
@@ -270,7 +270,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestDtoCreated.getId() == clarificationRequestCreated.getId()
         clarificationRequestDtoCreated.getState() == clarificationRequestDto.getState()
         clarificationRequestDtoCreated.getContent() == clarificationRequestDto.getContent()
-        clarificationRequestDtoCreated.getUserName() == clarificationRequestDto.getUserName()
+        clarificationRequestDtoCreated.getUsername() == clarificationRequestDto.getUsername()
         clarificationRequestDtoCreated.getCreationDate() == clarificationRequestDto.getCreationDate()
     }
 

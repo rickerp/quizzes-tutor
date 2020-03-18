@@ -48,7 +48,7 @@ public class ClarificationCommentService {
             throw new TutorException(ErrorMessage.COMMENT_IS_EMPTY);
         }
 
-        User user =  userRepository.findByUsername(clarificationCommentDto.getUserName());
+        User user =  userRepository.findByUsername(clarificationCommentDto.getUsername());
         if (user == null || user.getRole() != User.Role.TEACHER) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER);
         }

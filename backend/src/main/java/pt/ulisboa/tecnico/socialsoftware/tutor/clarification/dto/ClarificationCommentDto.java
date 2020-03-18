@@ -9,7 +9,7 @@ public class ClarificationCommentDto {
 
     private int id;
     private String content;
-    private String userName;
+    private String username;
     private int clarificationId;
     private LocalDateTime creationDate;
 
@@ -18,7 +18,7 @@ public class ClarificationCommentDto {
     public ClarificationCommentDto(ClarificationComment clarificationComment) {
         this.id = clarificationComment.getId();
         this.content = clarificationComment.getContent();
-        this.userName = clarificationComment.getUser().getUsername();
+        this.username = clarificationComment.getUser().getUsername();
         this.clarificationId = clarificationComment.getClarificationRequest().getId();
         this.creationDate = clarificationComment.getCreationDate();
     }
@@ -39,12 +39,12 @@ public class ClarificationCommentDto {
         this.content = content;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getClarificationId() {

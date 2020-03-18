@@ -43,21 +43,21 @@ public class ClarificationRequest {
 
     public ClarificationRequest() {}
 
-    public ClarificationRequest(ClarificationRequestDto clarificationsDto, User user, QuestionAnswer questionAnswer) {
+    public ClarificationRequest(ClarificationRequestDto clarificationRequestDto, User user, QuestionAnswer questionAnswer) {
 
-        if (clarificationsDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
-        this.content = clarificationsDto.getContent();
+        if (clarificationRequestDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
+        this.content = clarificationRequestDto.getContent();
 
-        if (clarificationsDto.getState() != State.UNRESOLVED)
+        if (clarificationRequestDto.getState() != State.UNRESOLVED)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
 
         this.state = State.UNRESOLVED;
         this.user = user;
         this.questionAnswer = questionAnswer;
 
-        if (clarificationsDto.getImage() != null) this.image = new Image(clarificationsDto.getImage());
+        if (clarificationRequestDto.getImage() != null) this.image = new Image(clarificationRequestDto.getImage());
 
-        this.creationDate = clarificationsDto.getCreationDate() == null ? LocalDateTime.now() : clarificationsDto.getCreationDate();
+        this.creationDate = clarificationRequestDto.getCreationDate() == null ? LocalDateTime.now() : clarificationRequestDto.getCreationDate();
 
     }
 

@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -8,6 +10,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.administration.AdministrationServ
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.ImportExportController;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.AssessmentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
@@ -82,8 +85,6 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                     return userHasThisExecution(username, quizService.findQuizCourseExecution(id).getCourseExecutionId());
                 case "QUESTION_ANSWER.ACCESS":
                     return userRespondedToThisQuestion(username, answerService.findQuizAnswer(id).getId());
-                case "CLARIFICATION.ACCESS":
-                    return userHasThisClarificationRequest(username,id);
                 default: return false;
             }
         }
@@ -103,11 +104,6 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     private boolean userRespondedToThisQuestion(String username, int id) {
         return userService.getQuizAnswers(username).stream()
                 .anyMatch(quizAnswer -> quizAnswer.getId() == id);
-    }
-
-    private boolean userHasThisClarificationRequest(String username, int id) {
-        return userService.getClarificationRequests(username).stream()
-                .anyMatch(clarificationRequest -> clarificationRequest.getId() == id);
     }
 
     @Override
