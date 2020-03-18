@@ -68,7 +68,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="queryType">Update Statement</stringProp>
-          <stringProp name="query">UPDATE topics SET status = 2 WHERE id BETWEEN 82 AND 86;
+          <stringProp name="query">UPDATE topics SET status = &apos;AVAILABLE&apos; WHERE id BETWEEN 82 AND 86;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
