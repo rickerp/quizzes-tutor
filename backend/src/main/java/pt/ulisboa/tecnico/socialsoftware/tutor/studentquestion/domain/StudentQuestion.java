@@ -21,8 +21,7 @@ public class StudentQuestion {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToOne
-    @JoinColumn(name = "evaluation_id")
+    @OneToOne(mappedBy = "studentQuestion")
     private Evaluation evaluation;
 
     public StudentQuestion() {

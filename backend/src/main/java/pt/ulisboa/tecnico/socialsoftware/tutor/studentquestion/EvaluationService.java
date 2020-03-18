@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.EvaluationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.EvaluationRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository;
 
+import java.sql.SQLException;
+
 @Service
 public class EvaluationService {
     @Autowired
@@ -20,6 +24,9 @@ public class EvaluationService {
     @Autowired
     private EvaluationRepository evaluationRepository;
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public EvaluationDto createEvaluation(EvaluationDto evaluationDto) {
         if(evaluationDto.getStudentQuestionDto() == null){

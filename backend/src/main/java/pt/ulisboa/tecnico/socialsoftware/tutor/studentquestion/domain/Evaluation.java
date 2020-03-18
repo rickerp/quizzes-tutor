@@ -14,7 +14,7 @@ public class Evaluation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_question_id")
     private StudentQuestion studentQuestion;
 
