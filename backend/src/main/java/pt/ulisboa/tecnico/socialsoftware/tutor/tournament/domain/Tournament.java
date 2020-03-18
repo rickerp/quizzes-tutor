@@ -21,11 +21,11 @@ public class Tournament {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToMany(mappedBy = "tournaments")
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<User> players = new HashSet<>();
 
-    @ManyToMany
-    private Set<Topic> topics;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Topic> topics = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "course_execution_id")

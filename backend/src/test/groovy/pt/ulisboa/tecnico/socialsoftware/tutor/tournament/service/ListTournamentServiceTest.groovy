@@ -59,7 +59,7 @@ class ListTournamentServiceTest extends Specification {
         userRepository.save(creator)
         "Create Topics"
         topics = new HashSet<Topic>()
-        1.upto(1, {
+        1.upto(5, {
             Topic topic = new Topic()
             topic.setName(NAME + it)
             topicRepository.save(topic)
@@ -95,6 +95,7 @@ class ListTournamentServiceTest extends Specification {
     }
 
     def "List one Opened Tournament"() {
+
         given: "a Set of Executions id"
         def executionsId = new HashSet<>()
         executionsId.add(courseExecution.getId())
@@ -108,6 +109,7 @@ class ListTournamentServiceTest extends Specification {
     }
 
     def 'List two Opened Tournaments ordered by StartTime'() {
+
         given: "a Set of Executions id"
         def executionsId = new HashSet<>()
         executionsId.add(courseExecution.getId())
@@ -131,6 +133,7 @@ class ListTournamentServiceTest extends Specification {
     }
 
     def 'List Zero Opened Tournaments'() {
+
         given: "a Course Execution"
         def courseExecution_2 = new CourseExecution()
         courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
@@ -147,6 +150,7 @@ class ListTournamentServiceTest extends Specification {
     }
 
     def 'List the Opened Tournament of a Course Execution in DB'() {
+
         given: "a Course Execution"
         def courseExecution_2 = new CourseExecution()
         courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
@@ -173,6 +177,7 @@ class ListTournamentServiceTest extends Specification {
     }
 
     def 'List Opened Tournaments of all Course Executions in DB'() {
+
         given: "a Course Execution"
         def courseExecution_2 = new CourseExecution()
         courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)

@@ -31,6 +31,8 @@ public class TournamentDto implements Serializable {
 
     public int getId() { return id; }
 
+    public void setId(int id) { this.id = id; }
+
     public int getCreatorId() { return creatorId; }
 
     public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
