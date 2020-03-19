@@ -74,7 +74,7 @@ public class TournamentService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void enrollPlayer(Integer playerId, Integer tournamentId) {
+    public TournamentDto enrollPlayer(Integer playerId, Integer tournamentId) {
 
         User player = userRepository.findById(playerId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, playerId));
@@ -82,13 +82,21 @@ public class TournamentService {
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
         tournament.playerEnroll(player);
+        return new TournamentDto(tournament);
     }
 
     @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<TournamentDto> getOpenedTournaments(Set<Integer> executionsId) {
+    public List<TournamentDto> getUserOpenedTournaments(Integer userId) {
+
+        Set<Integer> executionsId = userRepository.findById(userId)
+                .map(User::getCourseExecutions)
+                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, userId))
+                .stream()
+                .map(CourseExecution::getId)
+                .collect(Collectors.toSet());
 
         return tournamentRepository.findOpenedTournaments(executionsId)
                 .stream()
