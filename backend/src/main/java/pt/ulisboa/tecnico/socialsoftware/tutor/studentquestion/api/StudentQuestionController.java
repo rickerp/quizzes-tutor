@@ -9,12 +9,14 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.validation.Valid;
 
 import java.security.Principal;
+import java.util.List;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
 
@@ -35,4 +37,10 @@ public class StudentQuestionController {
         return studentQuestionService.createStudentQuestion(courseId, studentQuestionDto);
     }
 
+    @GetMapping("/courses/{courseId}/studentquestions")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public List<StudentQuestionDto> getStudentQuestions(Principal principal, @PathVariable int courseId){
+        User user = (User) ((Authentication) principal).getPrincipal();
+        return studentQuestionService.list(courseId, user.getId());
+    }
 }
