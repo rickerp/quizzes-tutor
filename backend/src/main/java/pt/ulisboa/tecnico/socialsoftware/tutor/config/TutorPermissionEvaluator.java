@@ -1,16 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import pt.ulisboa.tecnico.socialsoftware.tutor.administration.AdministrationService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.ImportExportController;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.AssessmentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
@@ -84,7 +80,7 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 case "QUIZ.ACCESS":
                     return userHasThisExecution(username, quizService.findQuizCourseExecution(id).getCourseExecutionId());
                 case "QUESTION_ANSWER.ACCESS":
-                    return userRespondedToThisQuestion(username, answerService.findQuizAnswer(id).getId());
+                    return userRespondedToThisQuestionAnswer(username, id);
                 default: return false;
             }
         }
@@ -101,9 +97,8 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 .anyMatch(course -> course.getCourseExecutionId() == id);
     }
 
-    private boolean userRespondedToThisQuestion(String username, int id) {
-        return userService.getQuizAnswers(username).stream()
-                .anyMatch(quizAnswer -> quizAnswer.getId() == id);
+    private boolean userRespondedToThisQuestionAnswer(String username, int id) {
+        return answerService.findQuizAnswer(id).getUsername().equals(username);
     }
 
     @Override

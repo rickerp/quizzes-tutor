@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
+
 import java.time.LocalDateTime;
 
 public class ClarificationRequestDto {
@@ -10,21 +12,22 @@ public class ClarificationRequestDto {
     private int id;
     private ClarificationRequest.State state;
     private String content;
-    private String username;
     private LocalDateTime creationDate;
+    private UserDto user;
     private QuestionAnswerDto questionAnswer;
     private ClarificationCommentDto clarificationComment;
     private ImageDto image;
 
-    public ClarificationRequestDto() {}
+    public ClarificationRequestDto() {
+    }
 
     public ClarificationRequestDto(ClarificationRequest clarificationRequest) {
 
-        this.id =  clarificationRequest.getId();
+        this.id = clarificationRequest.getId();
         this.state = clarificationRequest.getState();
         this.content = clarificationRequest.getContent();
         this.creationDate = clarificationRequest.getCreationDate();
-        this.username = clarificationRequest.getUser().getUsername();
+        this.user = new UserDto(clarificationRequest.getUser());
         this.questionAnswer = new QuestionAnswerDto(clarificationRequest.getQuestionAnswer());
         if (clarificationRequest.getClarificationComment() != null) {
             this.clarificationComment = new ClarificationCommentDto(clarificationRequest.getClarificationComment());
@@ -67,13 +70,9 @@ public class ClarificationRequestDto {
         this.creationDate = creationDate;
     }
 
-    public String getUsername() {
-        return username;
-    }
+    public UserDto getUser() { return user; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public void setUser(UserDto user) { this.user = user; }
 
     public ImageDto getImage() {
         return image;
@@ -98,4 +97,5 @@ public class ClarificationRequestDto {
     public void setQuestionAnswer(QuestionAnswerDto questionAnswer) {
         this.questionAnswer = questionAnswer;
     }
+
 }

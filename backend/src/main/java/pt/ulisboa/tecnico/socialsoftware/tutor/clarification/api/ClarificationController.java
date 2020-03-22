@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationReques
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import java.security.Principal;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ClarificationController {
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
 
-        clarificationRequestDto.setUsername(user.getUsername());
+        clarificationRequestDto.setUser(new UserDto(user));
         return clarificationRequestService.createClarificationRequest(questionAnswerId, clarificationRequestDto);
     }
 
@@ -37,7 +38,7 @@ public class ClarificationController {
 
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
-        return clarificationRequestService.getClarificationRequests(user.getUsername(), executionId);
+        return clarificationRequestService.getClarificationRequests(user.getId(), executionId);
     }
 
 }

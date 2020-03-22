@@ -25,7 +25,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 
 import java.time.LocalDateTime
 import spock.lang.Specification
@@ -96,7 +96,7 @@ class SubmitClarificationRequestPerformanceTest extends Specification {
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
         clarificationRequestDto.setCreationDate(LocalDateTime.now())
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
-        clarificationRequestDto.setUsername(user.getUsername())
+        clarificationRequestDto.setUser(new UserDto(user))
 
         when:
         1.upto(10000, {

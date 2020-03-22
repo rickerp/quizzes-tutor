@@ -192,8 +192,7 @@ WHERE user_id = 678;
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
    &quot;state&quot;: &quot;UNRESOLVED&quot;,&#xd;
-   &quot;content&quot;: &quot;Content&quot;,&#xd;
-   &quot;username&quot;: &quot;Demo-Student&quot;&#xd;
+   &quot;content&quot;: &quot;Content&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>

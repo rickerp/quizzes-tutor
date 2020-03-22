@@ -30,6 +30,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 
 import java.time.LocalDateTime
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
@@ -105,8 +106,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
         clarificationRequestDto.setCreationDate(LocalDateTime.now())
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
-        clarificationRequestDto.setUsername(user.getUsername())
-
+        clarificationRequestDto.setUser(new UserDto(user))
     }
 
     def "Submit a clarification request to a question that has no clarifications submited"() {
@@ -120,7 +120,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestCreated.getState() == clarificationRequestDto.getState()
         clarificationRequestCreated.getContent() == clarificationRequestDto.getContent()
         clarificationRequestCreated.getCreationDate() == clarificationRequestDto.getCreationDate()
-        clarificationRequestCreated.getUser().getUsername() == clarificationRequestDto.getUsername()
+        clarificationRequestCreated.getUser().getUsername() == clarificationRequestDto.getUser().getUsername()
     }
 
     def "Submit a clarification request with an image"() {
@@ -194,14 +194,14 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestCreated.getCreationDate() != null
     }
 
-    @Unroll("Test: #username | #content | #state || #message")
+    @Unroll("Test: #content | #state || #message")
     def "submit a clarification request with wrong arguments"() {
         given: "Another clarificationRequestDto"
         def clarificationRequestCreated = new ClarificationRequestDto()
         clarificationRequestCreated.setContent(content)
         clarificationRequestCreated.setCreationDate(LocalDateTime.now())
         clarificationRequestCreated.setState(state)
-        clarificationRequestCreated.setUsername(username)
+        clarificationRequestCreated.setUser(new UserDto(user))
 
         when:
             clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestCreated)
@@ -211,15 +211,28 @@ class SubmitClarificationRequestTest extends Specification {
         error.getErrorMessage() == message
 
         where:
-             username      |       content         |            state               ||                  message
-        user.getUsername() | CLARIFICATION_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.CLARIFICATION_INVALID_STATE
-        user.getUsername() | CLARIFICATION_CONTENT | null                           || ErrorMessage.CLARIFICATION_INVALID_STATE
-        null               | CLARIFICATION_CONTENT | ClarificationRequest.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_USER
-        "User_R"           | CLARIFICATION_CONTENT | ClarificationRequest.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_USER
-        user.getUsername() | null                  | ClarificationRequest.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_CONTENT
+              content         |                state                  ||               message
+        CLARIFICATION_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.CLARIFICATION_INVALID_STATE
+        CLARIFICATION_CONTENT | null                                  || ErrorMessage.CLARIFICATION_INVALID_STATE
+        null                  | ClarificationRequest.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_CONTENT
     }
 
-    @Unroll("Test: #questionAnswerId")
+    @Unroll("Test: userId: #userId")
+    def "Submit a clarification request with a user that doesn't exist"() {
+        given:
+        clarificationRequestDto.getUser().setId(userId)
+        when:
+        clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestDto)
+
+        then:
+        def error = thrown(TutorException)
+        error.getErrorMessage() == ErrorMessage.CLARIFICATION_INVALID_USER
+
+        where:
+        userId << [500, 0]
+    }
+
+    @Unroll("Test: questionAnswerId: #questionAnswerId")
     def "Submit a clarification request with a question answer that doesn't exist"() {
         when:
         clarificationRequestService.createClarificationRequest(questionAnswerId, clarificationRequestDto)
@@ -237,7 +250,7 @@ class SubmitClarificationRequestTest extends Specification {
         user = new User("User_S", "User_Name", 2, User.Role.STUDENT)
         userRepository.save(user)
         and: "Change username"
-        clarificationRequestDto.setUsername(user.getUsername())
+        clarificationRequestDto.setUser(new UserDto(user))
 
         when:
         clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestDto)
@@ -270,7 +283,7 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestDtoCreated.getId() == clarificationRequestCreated.getId()
         clarificationRequestDtoCreated.getState() == clarificationRequestDto.getState()
         clarificationRequestDtoCreated.getContent() == clarificationRequestDto.getContent()
-        clarificationRequestDtoCreated.getUsername() == clarificationRequestDto.getUsername()
+        clarificationRequestDtoCreated.getUser().getUsername() == clarificationRequestDto.getUser().getUsername()
         clarificationRequestDtoCreated.getCreationDate() == clarificationRequestDto.getCreationDate()
     }
 

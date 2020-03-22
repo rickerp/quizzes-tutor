@@ -50,7 +50,8 @@ public class ClarificationRequestService {
             throw new TutorException(ErrorMessage.CLARIFICATION_IS_EMPTY);
         }
 
-        User user = getUser(clarificationRequestDto.getUsername());
+        User user = userRepository.findById(clarificationRequestDto.getUser().getId())
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER));
 
         QuestionAnswer questionAnswer = questionAnswerRepository.findById(questionAnswerId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
@@ -70,20 +71,14 @@ public class ClarificationRequestService {
         return new ClarificationRequestDto(clarificationRequest);
     }
 
-    private User getUser(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null)
-            throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
-        return user;
-    }
-
     @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<ClarificationRequestDto> getClarificationRequests(String username, int executionId) {
+    public List<ClarificationRequestDto> getClarificationRequests(int userId, int executionId) {
 
-        User user = this.getUser(username);
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
         return user.getRole() == User.Role.STUDENT ? getClarificationOfStudent(user, executionId) : getClarificationOfTeacher(executionId);
     }
 

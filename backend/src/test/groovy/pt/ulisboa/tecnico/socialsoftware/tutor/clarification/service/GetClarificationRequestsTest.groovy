@@ -11,7 +11,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionReposit
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import spock.lang.Specification
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
@@ -125,7 +125,7 @@ class GetClarificationRequestsTest extends Specification {
         clarificationRequestDto = new ClarificationRequestDto()
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
-        clarificationRequestDto.setUsername(student.getUsername())
+        clarificationRequestDto.setUser(new UserDto(student))
 
     }
 
@@ -135,7 +135,7 @@ class GetClarificationRequestsTest extends Specification {
         clarificationRequestService.createClarificationRequest(questionAnswer2.getId(), clarificationRequestDto)
 
         when:
-            def clarificationRequestList = clarificationRequestService.getClarificationRequests(student.getUsername(), courseExecution.getId())
+            def clarificationRequestList = clarificationRequestService.getClarificationRequests(student.getId(), courseExecution.getId())
 
         then:
             clarificationRequestList.size() == 2
@@ -147,7 +147,7 @@ class GetClarificationRequestsTest extends Specification {
         clarificationRequestService.createClarificationRequest(questionAnswer2.getId(), clarificationRequestDto)
 
         when:
-        def clarificationRequestList = clarificationRequestService.getClarificationRequests(teacher.getUsername(), courseExecution.getId())
+        def clarificationRequestList = clarificationRequestService.getClarificationRequests(teacher.getId(), courseExecution.getId())
 
         then:
         clarificationRequestList.size() == 2
@@ -165,11 +165,11 @@ class GetClarificationRequestsTest extends Specification {
         quizAnswerRepository.save(quizAnswer)
         and: "Two Clarifications"
         clarificationRequestService.createClarificationRequest(questionAnswer1.getId(), clarificationRequestDto)
-        clarificationRequestDto.setUsername(newStudent.getUsername())
+        clarificationRequestDto.setUser(new UserDto(newStudent))
         clarificationRequestService.createClarificationRequest(questionAnswer2.getId(), clarificationRequestDto)
 
         when:
-        def clarificationRequestList = clarificationRequestService.getClarificationRequests(teacher.getUsername(), courseExecution.getId())
+        def clarificationRequestList = clarificationRequestService.getClarificationRequests(teacher.getId(), courseExecution.getId())
 
         then:
         clarificationRequestList.size() == 2
@@ -177,7 +177,7 @@ class GetClarificationRequestsTest extends Specification {
 
     def "A teacher that has no student clarifications requests"(){
         when:
-        def clarificationRequestList = clarificationRequestService.getClarificationRequests(teacher.getUsername(), courseExecution.getId())
+        def clarificationRequestList = clarificationRequestService.getClarificationRequests(teacher.getId(), courseExecution.getId())
 
         then:
         clarificationRequestList.size() == 0
@@ -185,7 +185,7 @@ class GetClarificationRequestsTest extends Specification {
 
     def "A Student that has no clarifications requests"() {
         when:
-        def clarificationRequestList = clarificationRequestService.getClarificationRequests(student.getUsername(), courseExecution.getId())
+        def clarificationRequestList = clarificationRequestService.getClarificationRequests(student.getId(), courseExecution.getId())
         then:
         clarificationRequestList.size() == 0
     }

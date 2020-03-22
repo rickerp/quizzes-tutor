@@ -187,8 +187,7 @@ WHERE user_id = 678;
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
    &quot;state&quot;: &quot;UNRESOLVED&quot;,&#xd;
-   &quot;content&quot;: &quot;Content&quot;,&#xd;
-   &quot;username&quot;: &quot;Demo-Student&quot;&#xd;
+   &quot;content&quot;: &quot;Content&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
@@ -228,7 +227,7 @@ WHERE user_id = 678;
             </JSONPathAssertion>
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert username" enabled="true">
-              <stringProp name="JSON_PATH">$.username</stringProp>
+              <stringProp name="JSON_PATH">$.user.username</stringProp>
               <stringProp name="EXPECTED_VALUE">Demo-Student</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
