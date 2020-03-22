@@ -86,19 +86,6 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 default: return false;
             }
         }
-
-        if (targetDomainObject instanceof TournamentDto) {
-            TournamentDto tournamentDto = (TournamentDto) targetDomainObject;
-            String permissionValue = (String) permission;
-            switch (permissionValue) {
-                case "TOURNAMENT.CREATE":
-                    return  userHasThisExecution(username, tournamentDto.getCourseExecutionId()) &&
-                            executionHasTopics(tournamentDto.getCourseExecutionId(), tournamentDto.getTopicsId());
-                default:
-                    return false;
-            }
-        }
-
         return false;
     }
 
@@ -118,8 +105,21 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 .allMatch(courseDto -> courseDto.getCourseId() == courseId);
     }
 
-     @Override
+    @Override
     public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {
+         String username = ((User) authentication.getPrincipal()).getUsername();
+
+         if (serializable instanceof TournamentDto) {
+             TournamentDto tournamentDto = (TournamentDto) serializable;
+             Integer executionId = (Integer) o;
+             switch (s) {
+                 case "TOURNAMENT.CREATE":
+                     return  userHasThisExecution(username, executionId) &&
+                             executionHasTopics(executionId, tournamentDto.getTopicsId());
+                 default:
+                     return false;
+             }
+         }
         return false;
     }
 }

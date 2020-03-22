@@ -90,16 +90,9 @@ public class TournamentService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<TournamentDto> getUserOpenedTournaments(Integer userId) {
+    public List<TournamentDto> getExecutionOpenedTournaments(Integer executionId) {
 
-        Set<Integer> executionsId = userRepository.findById(userId)
-                .map(User::getCourseExecutions)
-                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, userId))
-                .stream()
-                .map(CourseExecution::getId)
-                .collect(Collectors.toSet());
-
-        return tournamentRepository.findOpenedTournaments(executionsId)
+        return tournamentRepository.findOpenedTournaments(executionId)
                 .stream()
                 .map(TournamentDto::new)
                 .sorted(Comparator.comparing(TournamentDto::getStartTime))

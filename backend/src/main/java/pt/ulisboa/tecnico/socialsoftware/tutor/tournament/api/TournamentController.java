@@ -20,13 +20,14 @@ public class TournamentController {
     @Autowired
     private TournamentService tournamentService;
 
-    @PostMapping("/tournaments")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#tournamentDto, 'TOURNAMENT.CREATE')")
-    public TournamentDto createTournament(Principal principal, @RequestBody TournamentDto tournamentDto) {
+    @PostMapping("/executions/{executionId}/tournaments")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#tournamentDto, 'TOURNAMENT.CREATE', #executionId)")
+    public TournamentDto createTournament(Principal principal, @RequestBody TournamentDto tournamentDto, @PathVariable int executionId) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
         tournamentDto.setCreatorId(user.getId());
+        tournamentDto.setCourseExecutionId(executionId);
         return tournamentService.createTournament(tournamentDto);
     }
 
