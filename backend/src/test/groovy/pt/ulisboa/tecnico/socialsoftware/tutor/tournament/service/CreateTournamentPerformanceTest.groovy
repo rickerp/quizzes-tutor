@@ -74,7 +74,7 @@ class CreateTournamentPerformanceTest extends Specification {
                 .collect(Collectors.toSet()))
 
         when: "Create a Valid Tournament"
-        1.upto(1000, { tournamentService.createTournament(dto) })
+        1.upto(1, { tournamentService.createTournament(dto) })
 
         then: true
     }
