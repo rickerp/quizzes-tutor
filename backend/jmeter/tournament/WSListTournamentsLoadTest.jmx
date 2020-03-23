@@ -42,13 +42,13 @@
         <stringProp name="driver">org.postgresql.Driver</stringProp>
         <stringProp name="initQuery"></stringProp>
         <boolProp name="keepAlive">true</boolProp>
-        <stringProp name="password">1642</stringProp>
+        <stringProp name="password"></stringProp>
         <stringProp name="poolMax">0</stringProp>
         <boolProp name="preinit">false</boolProp>
         <stringProp name="timeout">10000</stringProp>
         <stringProp name="transactionIsolation">DEFAULT</stringProp>
         <stringProp name="trimInterval">60000</stringProp>
-        <stringProp name="username">psql</stringProp>
+        <stringProp name="username"></stringProp>
       </JDBCDataSource>
       <hashTree/>
       <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group" enabled="true">
@@ -337,8 +337,8 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete created tournaments" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
-            <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id IN (SELECT id FROM tournaments WHERE start_time &gt; &apos;3000/01/01 00:00&apos;);
-DELETE FROM tournaments WHERE start_time &gt; &apos;3000/01/01 00:00&apos;;
+            <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id = 100 OR tournament_id = 101;
+DELETE FROM tournaments WHERE id = 100 or id = 101;
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
