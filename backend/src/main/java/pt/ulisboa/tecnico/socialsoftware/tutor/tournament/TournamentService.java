@@ -106,6 +106,9 @@ public class TournamentService {
                 .collect(Collectors.toList());
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public CourseDto findTournamentCourseExecution(int tournamentId) {
         return this.tournamentRepository.findById(tournamentId)
