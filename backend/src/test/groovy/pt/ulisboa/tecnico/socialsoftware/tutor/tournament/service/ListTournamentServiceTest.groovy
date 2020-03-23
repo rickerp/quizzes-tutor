@@ -22,10 +22,8 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 @DataJpaTest
 class ListTournamentServiceTest extends Specification {
     public static final String NAME = "Name"
-    public static final String USERNAME_1 = "Username_1"
-    public static final String USERNAME_2 = "Username_2"
-    public static final Integer KEY_1 = 1
-    public static final Integer KEY_2 = 2
+    public static final String USERNAME = "Username"
+    public static final Integer KEY = 1
     public static final LocalDateTime NOW = LocalDateTime.now()
 
     @Autowired
@@ -56,7 +54,7 @@ class ListTournamentServiceTest extends Specification {
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution)
         "Create User"
-        creator = new User(NAME, USERNAME_1, KEY_1, STUDENT)
+        creator = new User(NAME, USERNAME, KEY, STUDENT)
         creator.addCourse(courseExecution)
         userRepository.save(creator)
         "Create Topics"
@@ -99,7 +97,7 @@ class ListTournamentServiceTest extends Specification {
     def "List one Opened Tournament"() {
 
         when: "Get data from DB"
-        def tournaments = tournamentService.getUserOpenedTournaments(creator.getId())
+        def tournaments = tournamentService.getExecutionOpenedTournaments(courseExecution.getId())
 
         then: "Check data in DB"
         tournaments.size() == 1
@@ -119,7 +117,7 @@ class ListTournamentServiceTest extends Specification {
         tournamentRepository.save(opened_t_2)
 
         when: "Get data from DB"
-        def tournaments = tournamentService.getUserOpenedTournaments(creator.getId())
+        def tournaments = tournamentService.getExecutionOpenedTournaments(courseExecution.getId())
 
         then: "Check data in DB"
         tournaments.size() == 2
@@ -133,13 +131,9 @@ class ListTournamentServiceTest extends Specification {
         def courseExecution_2 = new CourseExecution()
         courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution_2)
-        and: "another User"
-        def user = new User(NAME, USERNAME_2, KEY_2, STUDENT)
-        user.addCourse(courseExecution_2)
-        userRepository.save(user)
 
         when: "Get data from DB"
-        def tournaments = tournamentService.getUserOpenedTournaments(user.getId())
+        def tournaments = tournamentService.getExecutionOpenedTournaments(courseExecution_2.getId())
 
         then: "Check data in DB"
         tournaments.size() == 0
@@ -151,10 +145,6 @@ class ListTournamentServiceTest extends Specification {
         def courseExecution_2 = new CourseExecution()
         courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution_2)
-        and: "another User"
-        def user = new User(NAME, USERNAME_2, KEY_2, STUDENT)
-        user.addCourse(courseExecution_2)
-        userRepository.save(user)
         and: "an Opened Tournament"
         def opened_t_2 = new Tournament()
         opened_t_2.setCreator(creator)
@@ -166,38 +156,11 @@ class ListTournamentServiceTest extends Specification {
         tournamentRepository.save(opened_t_2)
 
         when: "Get data from DB"
-        def tournaments = tournamentService.getUserOpenedTournaments(user.getId())
+        def tournaments = tournamentService.getExecutionOpenedTournaments(courseExecution_2.getId())
 
         then: "Check data in DB"
         tournaments.size() == 1
         tournaments.get(0).getId() == opened_t_2.getId()
-    }
-
-    def 'List Opened Tournaments of all Course Executions in DB'() {
-
-        given: "a Course Execution"
-        def courseExecution_2 = new CourseExecution()
-        courseExecution_2.setStatus(CourseExecution.Status.ACTIVE)
-        courseExecutionRepository.save(courseExecution_2)
-        and: "add the Course Execution to Creator"
-        creator.addCourse(courseExecution_2)
-        and: "an Opened Tournament"
-        def opened_t_2 = new Tournament()
-        opened_t_2.setCreator(creator)
-        opened_t_2.setNrQuestions(10)
-        opened_t_2.setTopics(topics)
-        opened_t_2.setCourseExecution(courseExecution_2)
-        opened_t_2.setStartTime(NOW.plusMinutes(5))
-        opened_t_2.setEndTime(NOW.plusMinutes(15))
-        tournamentRepository.save(opened_t_2)
-
-        when: "Get data from DB"
-        def tournaments = tournamentService.getUserOpenedTournaments(creator.getId())
-
-        then: "Check data in DB"
-        tournaments.size() == 2
-        tournaments.get(0).getId() == opened_t_2.getId()
-        tournaments.get(1).getId() == opened_t.getId()
     }
 
     @TestConfiguration

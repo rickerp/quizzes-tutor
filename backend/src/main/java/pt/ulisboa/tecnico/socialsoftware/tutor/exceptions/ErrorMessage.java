@@ -58,6 +58,7 @@ public enum ErrorMessage {
     ACCESS_DENIED("You do not have permission to view this resource"),
     CANNOT_OPEN_FILE("Cannot open file"),
 
+    NO_TOURNAMENT_IN_EXECUTION("There is no tournament with id %d in the specified course execution"),
     TOURNAMENT_NOT_FOUND("Tournament not found with id %d"),
     TOURNAMENT_NOT_OPENED("The Tournament is not Opened for Enrollments"),
     USER_NOT_STUDENT("The user %d should be a student"),
