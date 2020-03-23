@@ -220,19 +220,19 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
           <hashTree>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert Tournament 1" enabled="true">
               <stringProp name="JSON_PATH">$[?(@.id == 100)]</stringProp>
-              <stringProp name="EXPECTED_VALUE"></stringProp>
-              <boolProp name="JSONVALIDATION">false</boolProp>
+              <stringProp name="EXPECTED_VALUE">[]</stringProp>
+              <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
-              <boolProp name="INVERT">false</boolProp>
+              <boolProp name="INVERT">true</boolProp>
               <boolProp name="ISREGEX">false</boolProp>
             </JSONPathAssertion>
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert Tournament 2" enabled="true">
               <stringProp name="JSON_PATH">$[?(@.id == 101)]</stringProp>
-              <stringProp name="EXPECTED_VALUE"></stringProp>
-              <boolProp name="JSONVALIDATION">false</boolProp>
+              <stringProp name="EXPECTED_VALUE">[]</stringProp>
+              <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
-              <boolProp name="INVERT">false</boolProp>
+              <boolProp name="INVERT">true</boolProp>
               <boolProp name="ISREGEX">false</boolProp>
             </JSONPathAssertion>
             <hashTree/>
