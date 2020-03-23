@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.security.Principal;
+import java.util.List;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
 
@@ -32,11 +33,19 @@ public class TournamentController {
     }
 
     @PutMapping("/tournaments/{tournamentId}")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#tournamentId, 'TOURNMENT.ACCESS')")
-    public void enrollPlayer(Principal principal, @PathVariable int tournamentId) {
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
+    public TournamentDto enrollPlayer(Principal principal, @PathVariable int tournamentId) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
-        tournamentService.enrollPlayer(user.getId(), tournamentId);
+        return tournamentService.enrollPlayer(user.getId(), tournamentId);
+    }
+
+    @GetMapping("/tournaments")
+    public List<TournamentDto> getUserOpenedTournaments(Principal principal) {
+        User user = (User) ((Authentication) principal).getPrincipal();
+        if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
+
+        return tournamentService.getUserOpenedTournaments(user.getId());
     }
 }
