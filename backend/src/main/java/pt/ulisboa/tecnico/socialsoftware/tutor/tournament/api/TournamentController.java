@@ -13,6 +13,7 @@ import java.security.Principal;
 import java.util.List;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.NO_TOURNAMENT_IN_EXECUTION;
 
 @RestController
 public class TournamentController {
@@ -37,15 +38,16 @@ public class TournamentController {
         User user = (User) ((Authentication) principal).getPrincipal();
         if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
+        if (tournamentService.findTournamentCourseExecution(tournamentId).getCourseExecutionId() != executionId) {
+            throw new TutorException(NO_TOURNAMENT_IN_EXECUTION, tournamentId);
+        }
+
         return tournamentService.enrollPlayer(user.getId(), tournamentId);
     }
 
     @GetMapping("/executions/{executionId}/tournaments")
     @PreAuthorize("hasPermission(#executionId, 'EXECUTION.ACCESS')")
-    public List<TournamentDto> getUserOpenedTournaments(Principal principal, @PathVariable int executionId) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-        return tournamentService.getExecutionOpenedTournaments(user.getId());
+    public List<TournamentDto> getUserOpenedTournaments(@PathVariable int executionId) {
+        return tournamentService.getExecutionOpenedTournaments(executionId);
     }
 }
