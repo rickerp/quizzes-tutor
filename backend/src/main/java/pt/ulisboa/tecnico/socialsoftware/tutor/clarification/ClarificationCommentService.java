@@ -43,24 +43,25 @@ public class ClarificationCommentService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationCommentDto createComment(ClarificationCommentDto clarificationCommentDto) {
+    public ClarificationCommentDto createClarificationComment(int clarificationRequestId, ClarificationCommentDto clarificationCommentDto) {
         if (clarificationCommentDto == null) {
             throw new TutorException(ErrorMessage.COMMENT_IS_EMPTY);
         }
 
-        User user =  userRepository.findByUsername(clarificationCommentDto.getUsername());
-        if (user == null || user.getRole() != User.Role.TEACHER) {
+        User user = userRepository.findById(clarificationCommentDto.getUser().getId())
+                .orElseThrow(() -> new TutorException(ErrorMessage.COMMENT_INVALID_USER));
+        if (user.getRole() != User.Role.TEACHER) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER);
         }
 
-        ClarificationRequest clarificationRequest = getClarification(clarificationCommentDto);
-
+        ClarificationRequest clarificationRequest = getClarification(clarificationRequestId);
         verifyCourse(user, clarificationRequest);
 
         ClarificationComment clarificationComment = new ClarificationComment(clarificationCommentDto, user, clarificationRequest);
-
         user.addClarificationComment(clarificationComment);
+
         clarificationRequest.setClarificationComment(clarificationComment);
+        clarificationRequest.setState(ClarificationRequest.State.RESOLVED);
 
         this.entityManager.persist(clarificationComment);
         return new ClarificationCommentDto(clarificationComment);
@@ -73,8 +74,8 @@ public class ClarificationCommentService {
         }
     }
 
-    private ClarificationRequest getClarification(ClarificationCommentDto clarificationCommentDto) {
-        ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationCommentDto.getClarificationId())
+    private ClarificationRequest getClarification(int clarificationRequestId) {
+        ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationRequestId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.COMMENT_INVALID_CLARIFICATION));
 
         if (clarificationRequest.getState() != ClarificationRequest.State.UNRESOLVED) {

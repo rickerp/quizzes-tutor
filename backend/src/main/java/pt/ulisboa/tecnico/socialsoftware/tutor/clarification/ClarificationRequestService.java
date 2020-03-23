@@ -10,12 +10,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
@@ -94,5 +98,18 @@ public class ClarificationRequestService {
                 .getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
                 .map(ClarificationRequestDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public CourseDto findClarificationCourseExecution(int clarificationRequestId) {
+        return new CourseDto(clarificationRequestRepository.findById(clarificationRequestId)
+                .map(ClarificationRequest::getQuestionAnswer)
+                .map(QuestionAnswer::getQuizAnswer)
+                .map(QuizAnswer::getQuiz)
+                .map(Quiz::getCourseExecution)
+                .orElseThrow(() -> new TutorException((ErrorMessage.CLARIFICATION_NOT_FOUND))));
     }
 }

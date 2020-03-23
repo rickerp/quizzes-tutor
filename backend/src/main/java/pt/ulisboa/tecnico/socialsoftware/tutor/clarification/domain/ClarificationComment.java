@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Comments")
+@Table(name = "Clarification_comments")
 public class ClarificationComment {
 
     @Id

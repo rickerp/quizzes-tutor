@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
@@ -41,7 +42,7 @@ import org.springframework.context.annotation.Bean
 import java.time.LocalDateTime
 
 @DataJpaTest
-class SubmitCommentTest extends Specification {
+class SubmitClarificationCommentTest extends Specification {
 
     public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
     public static final String COMMENT_CONTENT = "Teacher Answer"
@@ -72,6 +73,12 @@ class SubmitCommentTest extends Specification {
 
     @Autowired
     ClarificationCommentRepository clarificationCommentRepository
+
+    @Shared
+    def user
+
+    def clarificationRequest
+    def commentDto
 
     def setup() {
         def course = new Course()
@@ -110,28 +117,20 @@ class SubmitCommentTest extends Specification {
 
         commentDto = new ClarificationCommentDto()
         commentDto.setContent(COMMENT_CONTENT)
-        commentDto.setUsername(user.getUsername())
-        commentDto.setClarificationId(clarificationRequest.getId())
+        commentDto.setUser(new UserDto(user))
         commentDto.setCreationDate(creationDate)
     }
 
-    @Shared
-    def user
-    def clarificationRequest
-
-    def commentDto
-
     def "submit a comment to a clarification request"() {
         when:
-        commentService.createComment(commentDto)
+        commentService.createClarificationComment(clarificationRequest.getId(), commentDto)
 
         then: "the comment data is correct"
         def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
         comment.getId() != null
         comment.getContent() == commentDto.getContent()
-        comment.getUser().getUsername() == commentDto.getUsername()
-        comment.getClarificationRequest().getId() == commentDto.getClarificationId()
-        comment.getCreationDate() == commentDto.getCreationDate();
+        comment.getUser().getUsername() == user.getUsername()
+        comment.getCreationDate() == commentDto.getCreationDate()
     }
 
     def "submit a comment without a creationTime"() {
@@ -139,7 +138,7 @@ class SubmitCommentTest extends Specification {
         commentDto.setCreationDate(null)
 
         when:
-        commentService.createComment(commentDto)
+        commentService.createClarificationComment(clarificationRequest.getId(), commentDto)
 
         then:
         def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
@@ -148,11 +147,8 @@ class SubmitCommentTest extends Specification {
 
     @Unroll("Test: #clarificationId")
     def "submit comment to an non existing clarification request"() {
-        given: "Update commentDto"
-        commentDto.setClarificationId(clarificationId)
-
         when:
-        commentService.createComment(commentDto)
+        commentService.createClarificationComment(clarificationId, commentDto)
 
         then:
         def error = thrown(TutorException)
@@ -162,32 +158,36 @@ class SubmitCommentTest extends Specification {
         clarificationId << [500, 0]
     }
 
-    @Unroll("Test: #username | #content | clarificationRequestState || #message")
+    @Unroll("Test: #content | clarificationRequestState || #message")
     def "submit comment with wrong arguments"() {
         given: "Update commentDto"
-        commentDto.setUsername(username)
         commentDto.setContent(content)
         and: "ClarificationRequest update"
         clarificationRequest.setState(clarificationRequestState)
 
         when:
-        commentService.createComment(commentDto)
+        commentService.createClarificationComment(clarificationRequest.getId(), commentDto)
 
         then:
         def error = thrown(TutorException)
         error.getErrorMessage() == message
-
+        /*
         where:
             username       |    content      |       clarificationRequestState       ||         message
         "Username2"        | COMMENT_CONTENT | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_USER
         null               | COMMENT_CONTENT | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_USER
         user.getUsername() | null            | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
         user.getUsername() | COMMENT_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
+        */
+        where:
+            content      |       clarificationRequestState       ||         message
+         null            | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
+         COMMENT_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
     }
 
     def "submit an empty comment"() {
         when:
-        commentService.createComment(null)
+        commentService.createClarificationComment(clarificationRequest.getId(), null)
 
         then:
         def error = thrown(TutorException)
@@ -201,10 +201,10 @@ class SubmitCommentTest extends Specification {
         and: "update clarification request"
         clarificationRequest.setUser(newUser)
         and: "update commentDto"
-        commentDto.setUsername(newUser.getUsername())
+        commentDto.setUser(new UserDto(newUser))
 
         when:
-        commentService.createComment(commentDto)
+        commentService.createClarificationComment(clarificationRequest.getId(), commentDto)
 
         then:
         def error = thrown(TutorException)
@@ -226,7 +226,7 @@ class SubmitCommentTest extends Specification {
         user.setCourseExecutions(courseExecutions)
 
         when:
-        commentService.createComment(commentDto)
+        commentService.createClarificationComment(clarificationRequest.getId(), commentDto)
 
         then:
         def error = thrown(TutorException)

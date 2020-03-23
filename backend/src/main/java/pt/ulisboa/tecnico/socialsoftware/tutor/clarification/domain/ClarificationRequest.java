@@ -38,7 +38,7 @@ public class ClarificationRequest {
     @OneToOne(cascade=CascadeType.ALL)
     private Image image;
 
-    @OneToOne(mappedBy = "clarificationRequest")
+    @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
     private ClarificationComment clarificationComment;
 
     public ClarificationRequest() {}

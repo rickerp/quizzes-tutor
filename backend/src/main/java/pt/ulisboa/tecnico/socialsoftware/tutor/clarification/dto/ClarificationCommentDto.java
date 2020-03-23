@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +10,7 @@ public class ClarificationCommentDto {
 
     private int id;
     private String content;
-    private String username;
-    private int clarificationId;
+    private UserDto user;
     private LocalDateTime creationDate;
 
     public ClarificationCommentDto() {}
@@ -18,9 +18,7 @@ public class ClarificationCommentDto {
     public ClarificationCommentDto(ClarificationComment clarificationComment) {
         this.id = clarificationComment.getId();
         this.content = clarificationComment.getContent();
-        this.username = clarificationComment.getUser().getUsername();
-        this.clarificationId = clarificationComment.getClarificationRequest().getId();
-        this.creationDate = clarificationComment.getCreationDate();
+        this.user = new UserDto(clarificationComment.getUser());
     }
 
     public int getId() {
@@ -39,20 +37,12 @@ public class ClarificationCommentDto {
         this.content = content;
     }
 
-    public String getUsername() {
-        return username;
+    public UserDto getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getClarificationId() {
-        return clarificationId;
-    }
-
-    public void setClarificationId(int clarificationId) {
-        this.clarificationId = clarificationId;
+    public void setUser(UserDto user) {
+        this.user = user;
     }
 
     public LocalDateTime getCreationDate() {
