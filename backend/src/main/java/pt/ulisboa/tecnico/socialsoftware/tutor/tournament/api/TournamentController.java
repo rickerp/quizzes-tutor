@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -32,20 +31,21 @@ public class TournamentController {
         return tournamentService.createTournament(tournamentDto);
     }
 
-    @PutMapping("/tournaments/{tournamentId}")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
-    public TournamentDto enrollPlayer(Principal principal, @PathVariable int tournamentId) {
+    @PutMapping("/executions/{executionId}/tournaments/{tournamentId}")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public TournamentDto enrollPlayer(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
         return tournamentService.enrollPlayer(user.getId(), tournamentId);
     }
 
-    @GetMapping("/tournaments")
-    public List<TournamentDto> getUserOpenedTournaments(Principal principal) {
+    @GetMapping("/executions/{executionId}/tournaments")
+    @PreAuthorize("hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public List<TournamentDto> getUserOpenedTournaments(Principal principal, @PathVariable int executionId) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
-        return tournamentService.getUserOpenedTournaments(user.getId());
+        return tournamentService.getExecutionOpenedTournaments(user.getId());
     }
 }
