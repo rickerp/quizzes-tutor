@@ -42,9 +42,10 @@ class CreateStudentQuestionTest extends Specification {
     CourseRepository courseRepository
 
     Course course
+    User user
 
     def setup() {
-        def user = new User("name", USERNAME, 1, User.Role.STUDENT)
+        user = new User("name", USERNAME, 1, User.Role.STUDENT)
         userRepository.save(user)
 
         course = new Course("course", Course.Type.TECNICO)
@@ -54,19 +55,7 @@ class CreateStudentQuestionTest extends Specification {
     def "user not found"() {
         given:
         def studentQuestionDto = new StudentQuestionDto()
-        studentQuestionDto.setStudent("321")
-        studentQuestionDto.setQuestion(new QuestionDto())
-        when:
-        studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
-        then:
-        def error = thrown(TutorException)
-        error.errorMessage == ErrorMessage.USER_NOT_FOUND
-    }
-
-    def "user not passed"() {
-        given:
-        def studentQuestionDto = new StudentQuestionDto()
-        studentQuestionDto.setStudent(null)
+        studentQuestionDto.setStudent(123)
         studentQuestionDto.setQuestion(new QuestionDto())
         when:
         studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
@@ -86,7 +75,7 @@ class CreateStudentQuestionTest extends Specification {
     def "create studentQuestion with no question"() {
         given:
         def studentQuestionDto = new StudentQuestionDto()
-        studentQuestionDto.setStudent(USERNAME)
+        studentQuestionDto.setStudent(user.getId())
         studentQuestionDto.setQuestion(null)
         when: "no question exists"
         studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto)
@@ -111,7 +100,7 @@ class CreateStudentQuestionTest extends Specification {
         questionDto.setOptions(options)
         def studentQuestionDto = new StudentQuestionDto()
         studentQuestionDto.setQuestion(questionDto)
-        studentQuestionDto.setStudent(USERNAME)
+        studentQuestionDto.setStudent(user.getId())
 
         when: "a student question is created"
         studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto);

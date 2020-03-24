@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
@@ -17,8 +14,6 @@ import javax.validation.Valid;
 
 import java.security.Principal;
 import java.util.List;
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
 
 @RestController
 public class StudentQuestionController {
@@ -33,7 +28,7 @@ public class StudentQuestionController {
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public StudentQuestionDto submitStudentQuestion(Principal principal, @PathVariable int courseId, @Valid @RequestBody StudentQuestionDto studentQuestionDto) {
         User user = (User) ((Authentication) principal).getPrincipal();
-        studentQuestionDto.setStudent(user.getUsername());
+        studentQuestionDto.setStudent(user.getId());
         return studentQuestionService.createStudentQuestion(courseId, studentQuestionDto);
     }
 

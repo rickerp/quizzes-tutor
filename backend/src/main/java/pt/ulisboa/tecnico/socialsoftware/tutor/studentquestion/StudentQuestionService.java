@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQue
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
@@ -44,6 +45,8 @@ public class StudentQuestionService {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    UserRepository userRepository;
 
     @Retryable(
             value = { SQLException.class },
@@ -70,7 +73,7 @@ public class StudentQuestionService {
         if (questionDto == null)
             throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
 
-        User user = userService.findByUsername(studentQuestionDto.getStudent());
+        User user = userRepository.findById(studentQuestionDto.getStudent()).orElse(null);
         if (user == null)
             throw new TutorException(ErrorMessage.USER_NOT_FOUND);
 

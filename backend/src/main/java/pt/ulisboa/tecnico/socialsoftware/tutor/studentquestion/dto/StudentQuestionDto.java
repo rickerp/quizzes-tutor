@@ -9,7 +9,7 @@ public class StudentQuestionDto implements Serializable {
 
     private Integer id;
     private QuestionDto question;
-    private String student;
+    private int student;
 
     public StudentQuestionDto() {
 
@@ -17,7 +17,7 @@ public class StudentQuestionDto implements Serializable {
     public StudentQuestionDto(StudentQuestion studentQuestion) {
         this.id = studentQuestion.getId();
         this.question = new QuestionDto(studentQuestion.getQuestion());
-        this.student = studentQuestion.getStudent().getUsername();
+        this.student = studentQuestion.getStudent().getId();
     }
 
     public Integer getId() {
@@ -36,11 +36,11 @@ public class StudentQuestionDto implements Serializable {
         this.question = question;
     }
 
-    public String getStudent() {
+    public int getStudent() {
         return student;
     }
 
-    public void setStudent(String student) {
+    public void setStudent(int student) {
         this.student = student;
     }
 

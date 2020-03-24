@@ -80,7 +80,7 @@ class CreateEvaluationServicePerformanceTest extends Specification {
         questionRepository.save(question)
     }
 
-    def "performance testing to create 10000 evaluations"() {
+    def "performance testing to create 1000 evaluations"() {
         given: "a studentQuestion"
         def studentQuestion = new StudentQuestion(user, question)
         studentQuestionRepository.save(studentQuestion)
@@ -91,7 +91,7 @@ class CreateEvaluationServicePerformanceTest extends Specification {
         evaluationDto.setJustification(null)
 
         when:
-        1.upto(10000, {evaluationService.createEvaluation(evaluationDto)})
+        1.upto(1000, {evaluationService.createEvaluation(evaluationDto)})
 
         then:
         true
