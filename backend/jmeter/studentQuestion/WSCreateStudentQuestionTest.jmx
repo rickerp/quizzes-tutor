@@ -56,7 +56,7 @@
           <stringProp name="checkQuery"></stringProp>
           <stringProp name="dbUrl">jdbc:postgresql://localhost:5432/tutordb?autoReconnect=true</stringProp>
           <stringProp name="driver">org.postgresql.Driver</stringProp>
-          <stringProp name="username">afonso</stringProp>
+          <stringProp name="username">tomlopes</stringProp>
           <stringProp name="password">123</stringProp>
           <stringProp name="connectionProperties"></stringProp>
         </JDBCDataSource>
@@ -219,7 +219,7 @@
           <hashTree>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert student" enabled="true">
               <stringProp name="JSON_PATH">$.student</stringProp>
-              <stringProp name="EXPECTED_VALUE">Demo-Student</stringProp>
+              <stringProp name="EXPECTED_VALUE">676</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
               <boolProp name="INVERT">false</boolProp>
@@ -355,7 +355,7 @@
           <stringProp name="checkQuery"></stringProp>
           <stringProp name="dbUrl">jdbc:postgresql://localhost:5432/tutordb?autoReconnect=true</stringProp>
           <stringProp name="driver">org.postgresql.Driver</stringProp>
-          <stringProp name="username">afonso</stringProp>
+          <stringProp name="username">tomlopes</stringProp>
           <stringProp name="password">123</stringProp>
           <stringProp name="connectionProperties"></stringProp>
         </JDBCDataSource>

@@ -199,7 +199,7 @@ INSERT INTO student_questions(id, question_id, user_id) values (&apos;1&apos;,&a
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert username" enabled="true">
               <stringProp name="JSON_PATH">$[0].student</stringProp>
-              <stringProp name="EXPECTED_VALUE">Demo-Student</stringProp>
+              <stringProp name="EXPECTED_VALUE">676</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
               <boolProp name="INVERT">false</boolProp>
