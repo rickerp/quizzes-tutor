@@ -2,9 +2,11 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
 import spock.lang.Specification
-import java.time.LocalDateTime
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
@@ -25,23 +27,19 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository
-
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationCommentRepository
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
 @DataJpaTest
-class SubmitClarificationCommentPerformanceTest extends Specification {
+class GetClarificationRequestsPerformanceTest extends Specification {
 
     public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
-    public static final String COMMENT_CONTENT = "Teacher Answer"
 
     @Autowired
-    ClarificationCommentService clarificationCommentService
+    ClarificationRequestService clarificationRequestService
 
     @Autowired
     UserRepository userRepository
@@ -53,7 +51,13 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
     CourseExecutionRepository courseExecutionRepository
 
     @Autowired
+    QuestionRepository questionRepository
+
+    @Autowired
     QuizRepository quizRepository
+
+    @Autowired
+    QuizQuestionRepository quizQuestionRepository
 
     @Autowired
     QuizAnswerRepository quizAnswerRepository
@@ -64,22 +68,17 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
     @Autowired
     ClarificationRequestRepository clarificationRequestRepository
 
-    @Autowired
-    ClarificationCommentRepository clarificationCommentRepository
-
-
     def user
-    def userDto
     def questionAnswer
+    def courseExecution
     def clarificationRequest
-    def clarificationCommentDto
 
-    def setup (){
+    def setup() {
         def course = new Course()
         course.setName("course")
         courseRepository.save(course)
 
-        def courseExecution = new CourseExecution()
+        courseExecution = new CourseExecution()
         courseExecution.setCourse(course)
         courseExecutionRepository.save(courseExecution)
 
@@ -87,23 +86,34 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         user.addCourse(courseExecution)
         courseExecution.addUser(user)
         userRepository.save(user)
-        userDto = new UserDto(user)
 
         def quiz = new Quiz()
         quiz.setKey(1)
         quiz.setCourseExecution(courseExecution)
+        quiz.setType(Quiz.QuizType.GENERATED)
         quizRepository.save(quiz)
 
-        def quizAnswer = new QuizAnswer()
-        quizAnswer.setQuiz(quiz)
+        def question = new Question()
+        question.setKey(1)
+        questionRepository.save(question)
+
+        def quizQuestion = new QuizQuestion(quiz, question, 0)
+        quizQuestion.setQuestion(question)
+        quizQuestionRepository.save(quizQuestion)
+
+        def quizAnswer = new QuizAnswer(user, quiz)
+        quizAnswer.setCompleted(true)
         quizAnswerRepository.save(quizAnswer)
 
         questionAnswer = new QuestionAnswer()
+        questionAnswer.setQuizQuestion(quizQuestion)
         questionAnswer.setQuizAnswer(quizAnswer)
         questionAnswerRepository.save(questionAnswer)
 
-        1.upto(10000, {
+
+        1.upto(1000, {
             clarificationRequest = new ClarificationRequest()
+            clarificationRequest.setUser(user)
             clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
             clarificationRequest.setContent(CLARIFICATION_CONTENT)
             clarificationRequest.setQuestionAnswer(questionAnswer)
@@ -111,29 +121,40 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         })
     }
 
-    def "performance test creating 10000 clarification comments"() {
-        given: "a clarification comment dto"
-        def creationDate = LocalDateTime.now()
-        clarificationCommentDto = new ClarificationCommentDto()
-        clarificationCommentDto.setContent(COMMENT_CONTENT)
-        clarificationCommentDto.setUser(userDto)
-        clarificationCommentDto.setCreationDate(creationDate)
-
+    def "performance testing a student getting 1000 clarification requests 10000 times"() {
         when:
         1.upto(10000, {
-            clarificationCommentService.createClarificationComment(it, clarificationCommentDto)
+            clarificationRequestService.getClarificationRequests(user.getId(), courseExecution.getId())
         })
 
         then:
         true
     }
 
+
+    def "performance testing a teacher getting 1000 clarification requests 10000 times"() {
+        given: "a teacher"
+        def teacher =  new User("NameTeacher", "UsernameTeacher", 2, User.Role.TEACHER)
+        teacher.addCourse(courseExecution)
+        courseExecution.addUser(teacher)
+        userRepository.save(teacher)
+
+        when:
+        1.upto(10000, {
+            clarificationRequestService.getClarificationRequests(teacher.getId(), courseExecution.getId())
+        })
+
+        then:
+        true
+    }
+
+
     @TestConfiguration
-    static class SubmitClarificationCommentServiceImplPerformanceTestContextConfiguration {
+    static class GetClarificationRequestsServiceImplPerformanceTestContextConfiguration {
 
         @Bean
-        ClarificationCommentService ClarificationCommentService() {
-            return new ClarificationCommentService()
+        ClarificationRequestService ClarificationRequestService() {
+            return new ClarificationRequestService()
         }
     }
 }
