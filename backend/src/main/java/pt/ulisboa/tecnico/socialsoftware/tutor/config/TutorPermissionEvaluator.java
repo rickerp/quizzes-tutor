@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.AssessmentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.QuizService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
@@ -49,6 +50,9 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private StudentQuestionService studentQuestionService;
+
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         String username = ((User) authentication.getPrincipal()).getUsername();
@@ -79,6 +83,9 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                     return userHasThisExecution(username, id);
                 case "QUESTION.ACCESS":
                     return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(id).getCourseId());
+                case "STUDENTQUESTION.ACCESS":
+                    int questionId = studentQuestionService.findById(id).getQuestion().getId();
+                    return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(questionId).getCourseId());
                 case "TOPIC.ACCESS":
                     return userHasAnExecutionOfTheCourse(username, topicService.findTopicCourse(id).getCourseId());
                 case "ASSESSMENT.ACCESS":

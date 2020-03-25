@@ -14,12 +14,15 @@ public class StudentQuestion {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "user_id")
     private User student;
 
     @OneToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @OneToOne(mappedBy = "studentQuestion")
+    private Evaluation evaluation;
 
     public StudentQuestion() {
 
@@ -28,6 +31,14 @@ public class StudentQuestion {
     public StudentQuestion(User user, Question question) {
         this.student = user;
         this.question = question;
+    }
+
+    public Evaluation getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
     }
 
     public Question getQuestion() {
