@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Comments")
+@Table(name = "Clarification_comments")
 public class ClarificationComment {
 
     @Id
@@ -25,14 +25,14 @@ public class ClarificationComment {
     private User user;
 
     @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "clarification_id")
-    private Clarification clarification;
+    @JoinColumn(name = "clarification_request_id")
+    private ClarificationRequest clarificationRequest;
 
     private LocalDateTime creationDate;
 
     public ClarificationComment() {}
 
-    public ClarificationComment(ClarificationCommentDto clarificationCommentDto, User user, Clarification clarification) {
+    public ClarificationComment(ClarificationCommentDto clarificationCommentDto, User user, ClarificationRequest clarificationRequest) {
 
         if (clarificationCommentDto.getContent() == null) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_CONTENT);
@@ -40,7 +40,7 @@ public class ClarificationComment {
 
         this.content = clarificationCommentDto.getContent();
         this.user = user;
-        this.clarification = clarification;
+        this.clarificationRequest = clarificationRequest;
         this.creationDate = clarificationCommentDto.getCreationDate() == null ?
                             LocalDateTime.now() : clarificationCommentDto.getCreationDate();
     }
@@ -69,12 +69,12 @@ public class ClarificationComment {
         this.user = user;
     }
 
-    public Clarification getClarification() {
-        return clarification;
+    public ClarificationRequest getClarificationRequest() {
+        return clarificationRequest;
     }
 
-    public void setClarification(Clarification clarification) {
-        this.clarification = clarification;
+    public void setClarificationRequest(ClarificationRequest clarificationRequest) {
+        this.clarificationRequest = clarificationRequest;
     }
 
     public LocalDateTime getCreationDate() {

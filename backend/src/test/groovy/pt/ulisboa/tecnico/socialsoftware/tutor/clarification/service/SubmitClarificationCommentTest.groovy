@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
-
 import spock.lang.Shared
 import spock.lang.Unroll
 import spock.lang.Specification
@@ -19,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
@@ -29,8 +29,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepos
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarification
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService
@@ -42,13 +42,13 @@ import org.springframework.context.annotation.Bean
 import java.time.LocalDateTime
 
 @DataJpaTest
-class SubmitCommentTest extends Specification {
+class SubmitClarificationCommentTest extends Specification {
 
-    public static final String CLARIFICATION_CONTENT = "Clarification Question"
+    public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
     public static final String COMMENT_CONTENT = "Teacher Answer"
 
     @Autowired
-    ClarificationCommentService commentService
+    ClarificationCommentService clarificationCommentService
 
     @Autowired
     UserRepository userRepository
@@ -69,10 +69,16 @@ class SubmitCommentTest extends Specification {
     QuestionAnswerRepository questionAnswerRepository
 
     @Autowired
-    ClarificationRepository clarificationRepository
+    ClarificationRequestRepository clarificationRequestRepository
 
     @Autowired
     ClarificationCommentRepository clarificationCommentRepository
+
+    @Shared
+    def user
+
+    def clarificationRequest
+    def clarificationCommentDto
 
     def setup() {
         def course = new Course()
@@ -101,59 +107,65 @@ class SubmitCommentTest extends Specification {
         questionAnswer.setQuizAnswer(quizAnswer)
         questionAnswerRepository.save(questionAnswer)
 
-        clarification = new Clarification()
-        clarification.setState(Clarification.State.UNRESOLVED)
-        clarification.setContent(CLARIFICATION_CONTENT)
-        clarification.setQuestionAnswer(questionAnswer)
-        clarificationRepository.save(clarification)
+        clarificationRequest = new ClarificationRequest()
+        clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
+        clarificationRequest.setContent(CLARIFICATION_CONTENT)
+        clarificationRequest.setQuestionAnswer(questionAnswer)
+        clarificationRequestRepository.save(clarificationRequest)
 
         def creationDate = LocalDateTime.now()
 
-        commentDto = new ClarificationCommentDto()
-        commentDto.setContent(COMMENT_CONTENT)
-        commentDto.setUserName(user.getUsername())
-        commentDto.setClarificationId(clarification.getId())
-        commentDto.setCreationDate(creationDate)
+        clarificationCommentDto = new ClarificationCommentDto()
+        clarificationCommentDto.setContent(COMMENT_CONTENT)
+        clarificationCommentDto.setUser(new UserDto(user))
+        clarificationCommentDto.setCreationDate(creationDate)
     }
-
-    @Shared
-    def user
-    def clarification
-
-    def commentDto
 
     def "submit a comment to a clarification request"() {
         when:
-        commentService.createComment(commentDto)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then: "the comment data is correct"
-        def comment = clarificationCommentRepository.findComment(clarification.getId())
+        def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
         comment.getId() != null
-        comment.getContent() == commentDto.getContent()
-        comment.getUser().getUsername() == commentDto.getUserName()
-        comment.getClarification().getId() == commentDto.getClarificationId()
-        comment.getCreationDate() == commentDto.getCreationDate();
+        comment.getContent() == clarificationCommentDto.getContent()
+        comment.getUser().getUsername() == user.getUsername()
+        comment.getCreationDate() == clarificationCommentDto.getCreationDate()
     }
 
     def "submit a comment without a creationTime"() {
         given: "Update commentDto"
-        commentDto.setCreationDate(null)
+        clarificationCommentDto.setCreationDate(null)
 
         when:
-        commentService.createComment(commentDto)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then:
-        def comment = clarificationCommentRepository.findComment(clarification.getId())
+        def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
         comment.getCreationDate() != null
+    }
+
+    @Unroll("Test: #userId")
+    def "submit a clarification comment with a user that doesn't exist"() {
+        given:"update clarification comment dto"
+        clarificationCommentDto.getUser().setId(userId)
+        when:
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
+
+        then:
+        def error = thrown(TutorException)
+        error.getErrorMessage() == ErrorMessage.COMMENT_INVALID_USER
+
+        where:
+        userId << [500, 0]
     }
 
     @Unroll("Test: #clarificationId")
     def "submit comment to an non existing clarification request"() {
-        given: "Update commentDto"
-        commentDto.setClarificationId(clarificationId)
-
+        given: "update clarification request"
+        clarificationRequest.setId(clarificationId)
         when:
-        commentService.createComment(commentDto)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then:
         def error = thrown(TutorException)
@@ -163,32 +175,30 @@ class SubmitCommentTest extends Specification {
         clarificationId << [500, 0]
     }
 
-    @Unroll("Test: #username | #content | clarificationState || #message")
+    @Unroll("Test: #content | clarificationRequestState || #message")
     def "submit comment with wrong arguments"() {
         given: "Update commentDto"
-        commentDto.setUserName(username)
-        commentDto.setContent(content)
-        and: "Clarification update"
-        clarification.setState(clarificationState)
+        clarificationCommentDto.setContent(content)
+        and: "ClarificationRequest update"
+        clarificationRequest.setState(clarificationRequestState)
 
         when:
-        commentService.createComment(commentDto)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then:
         def error = thrown(TutorException)
         error.getErrorMessage() == message
 
         where:
-            username       |    content      |       clarificationState       ||         message
-        "Username2"        | COMMENT_CONTENT | Clarification.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_USER
-        null               | COMMENT_CONTENT | Clarification.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_USER
-        user.getUsername() | null            | Clarification.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
-        user.getUsername() | COMMENT_CONTENT | Clarification.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
+            content     |       clarificationRequestState       ||         message
+        null            | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
+        COMMENT_CONTENT | null                                  || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
+        COMMENT_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
     }
 
     def "submit an empty comment"() {
         when:
-        commentService.createComment(null)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), null)
 
         then:
         def error = thrown(TutorException)
@@ -199,13 +209,13 @@ class SubmitCommentTest extends Specification {
         given: "another user"
         def newUser = new User("Name2", "Username2", 2, User.Role.STUDENT)
         userRepository.save(newUser)
-        and: "update clarification"
-        clarification.setUser(newUser)
+        and: "update clarification request"
+        clarificationRequest.setUser(newUser)
         and: "update commentDto"
-        commentDto.setUserName(newUser.getUsername())
+        clarificationCommentDto.setUser(new UserDto(newUser))
 
         when:
-        commentService.createComment(commentDto)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then:
         def error = thrown(TutorException)
@@ -227,7 +237,7 @@ class SubmitCommentTest extends Specification {
         user.setCourseExecutions(courseExecutions)
 
         when:
-        commentService.createComment(commentDto)
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then:
         def error = thrown(TutorException)

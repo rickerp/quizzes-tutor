@@ -6,6 +6,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuizAnswerDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -72,6 +74,21 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<QuizAnswerDto> getQuizAnswers(String username) {
+        User user = this.userRepository.findByUsername(username);
+
+        return user.getQuizAnswers().stream().map(QuizAnswerDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<ClarificationRequestDto> getClarificationRequests(String username) {
+        User user = this.userRepository.findByUsername(username);
+
+        return user.getClarificationRequests().stream().map(ClarificationRequestDto::new).collect(Collectors.toList());
+    }
+
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void addCourseExecution(String username, int executionId) {
 
         User user =  this.userRepository.findByUsername(username);
@@ -81,6 +98,7 @@ public class UserService {
         user.addCourse(courseExecution);
         courseExecution.addUser(user);
     }
+
 
     public String exportUsers() {
         UsersXmlExport xmlExporter = new UsersXmlExport();
