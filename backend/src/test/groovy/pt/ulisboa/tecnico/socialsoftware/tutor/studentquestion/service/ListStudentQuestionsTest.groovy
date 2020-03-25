@@ -34,9 +34,6 @@ class ListStudentQuestionsTest extends Specification {
     UserRepository userRepository
 
     @Autowired
-    UserService userService
-
-    @Autowired
     CourseRepository courseRepository
 
     @Autowired

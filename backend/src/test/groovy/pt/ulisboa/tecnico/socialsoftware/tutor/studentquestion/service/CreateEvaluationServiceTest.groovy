@@ -33,9 +33,6 @@ class CreateEvaluationServiceTest extends Specification {
     static final USERNAME = 'username'
 
     @Autowired
-    StudentQuestionService studentQuestionService
-
-    @Autowired
     EvaluationService evaluationService
 
     @Autowired

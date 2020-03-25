@@ -26,13 +26,8 @@ import spock.lang.Specification
 
 @DataJpaTest
 class CreateEvaluationServicePerformanceTest extends Specification {
-    static final String JUSTIFICATION_ONE = "Não gostei da pergunta. Reformule por favor"
     static final boolean ACCEPTED = true
-    static final boolean REJECTED = false
     static final USERNAME = 'username'
-
-    @Autowired
-    StudentQuestionService studentQuestionService
 
     @Autowired
     EvaluationService evaluationService
@@ -42,9 +37,6 @@ class CreateEvaluationServicePerformanceTest extends Specification {
 
     @Autowired
     UserRepository userRepository
-
-    @Autowired
-    UserService userService
 
     @Autowired
     CourseRepository courseRepository

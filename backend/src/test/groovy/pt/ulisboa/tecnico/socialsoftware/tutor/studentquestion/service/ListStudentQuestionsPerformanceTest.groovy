@@ -11,8 +11,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.image.repository.ImageRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService
@@ -35,9 +33,6 @@ class ListStudentQuestionsPerformanceTest extends Specification{
 
     @Autowired
     UserRepository userRepository
-
-    @Autowired
-    UserService userService
 
     @Autowired
     CourseRepository courseRepository

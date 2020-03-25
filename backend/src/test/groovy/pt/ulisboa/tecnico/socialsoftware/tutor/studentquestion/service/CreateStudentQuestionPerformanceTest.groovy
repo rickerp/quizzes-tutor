@@ -33,9 +33,6 @@ class CreateStudentQuestionPerformanceTest extends Specification {
     UserRepository userRepository
 
     @Autowired
-    UserService userService
-
-    @Autowired
     CourseRepository courseRepository
 
     Course course
