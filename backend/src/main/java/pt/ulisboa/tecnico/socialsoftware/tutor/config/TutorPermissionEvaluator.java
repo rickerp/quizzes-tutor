@@ -5,16 +5,19 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import pt.ulisboa.tecnico.socialsoftware.tutor.administration.AdministrationService;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.AssessmentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.QuizService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Component
 public class TutorPermissionEvaluator implements PermissionEvaluator {
@@ -35,6 +38,12 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
 
     @Autowired
     private QuizService quizService;
+
+    @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private TournamentService tournamentService;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -75,7 +84,6 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 default: return false;
             }
         }
-
         return false;
     }
 
@@ -89,9 +97,27 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 .anyMatch(course -> course.getCourseExecutionId() == id);
     }
 
-     @Override
-    public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {
-        return false;
+    private boolean executionHasTopics(int executionId, Set<Integer> topicsId) {
+        int courseId = courseService.getCourseByExecutionId(executionId).getCourseId();
+        return topicsId.stream().map(topicId -> topicService.findTopicCourse(topicId))
+                .allMatch(courseDto -> courseDto.getCourseId() == courseId);
     }
 
+    @Override
+    public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {
+         String username = ((User) authentication.getPrincipal()).getUsername();
+
+         if (serializable instanceof TournamentDto) {
+             TournamentDto tournamentDto = (TournamentDto) serializable;
+             Integer executionId = (Integer) o;
+             switch (s) {
+                 case "TOURNAMENT.CREATE":
+                     return  userHasThisExecution(username, executionId) &&
+                             executionHasTopics(executionId, tournamentDto.getTopicsId());
+                 default:
+                     return false;
+             }
+         }
+        return false;
+    }
 }
