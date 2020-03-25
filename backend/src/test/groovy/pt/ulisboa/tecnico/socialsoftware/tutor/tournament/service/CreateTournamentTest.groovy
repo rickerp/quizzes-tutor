@@ -52,11 +52,13 @@ class CreateTournamentTest extends Specification {
     def courseExecution
 
     def setup() {
-        "Create a objects"
+        "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
+        "Create a User Creator"
         creator = new User(NAME_1, USERNAME, KEY, User.Role.STUDENT)
         creator.addCourse(courseExecution)
+        "Create a Topic"
         topic = new Topic()
         topic.setName(NAME_1)
         "Store data in DB"

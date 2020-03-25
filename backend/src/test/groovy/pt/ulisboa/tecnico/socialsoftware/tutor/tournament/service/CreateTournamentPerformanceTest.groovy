@@ -43,15 +43,15 @@ class CreateTournamentPerformanceTest extends Specification {
     def topics
 
     def setup() {
-        "Create Course Execution"
+        "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution)
-        "Create User"
+        "Create a User Creator"
         creator = new User(NAME, USERNAME, KEY, STUDENT)
         creator.addCourse(courseExecution)
         userRepository.save(creator)
-        "Create Topics"
+        "Create 5 Topics"
         topics = new HashSet<Topic>()
         1.upto(5, {
             Topic topic = new Topic()
@@ -73,8 +73,8 @@ class CreateTournamentPerformanceTest extends Specification {
         dto.setTopicsId(topics.stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()))
 
-        when: "Create a Valid Tournament"
-        1.upto(1, { tournamentService.createTournament(dto) })
+        when: "Create 1000 Tournaments"
+        1.upto(1000, { tournamentService.createTournament(dto) })
 
         then: true
     }

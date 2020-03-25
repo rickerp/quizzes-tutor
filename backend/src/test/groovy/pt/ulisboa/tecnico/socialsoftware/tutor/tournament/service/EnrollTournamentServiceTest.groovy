@@ -48,15 +48,15 @@ class EnrollTournamentServiceTest extends Specification {
     def tournament
 
     def setup() {
-        "Create Course Execution"
+        "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution)
-        "Create User"
+        "Create a User Creator"
         player = new User(NAME, USERNAME_1, KEY_1, STUDENT)
         player.addCourse(courseExecution)
         userRepository.save(player)
-        "Create Tournament"
+        "Create a Tournament"
         tournament = new Tournament()
         tournament.setCreator(player)
         tournament.setNrQuestions(10)

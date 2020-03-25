@@ -46,15 +46,15 @@ class ListTournamentsPerformanceTest extends Specification {
     def topics
 
     def setup() {
-        "Create Course Execution"
+        "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution)
-        "Create User"
+        "Create a User Creator"
         creator = new User(NAME, USERNAME, KEY, STUDENT)
         creator.addCourse(courseExecution)
         userRepository.save(creator)
-        "Create Topics"
+        "Create 5 Topics"
         topics = new HashSet<Topic>()
         1.upto(5, {
             Topic topic = new Topic()
@@ -66,15 +66,15 @@ class ListTournamentsPerformanceTest extends Specification {
 
     def "Performance Test to List 1000 times 1000 tournaments"() {
 
-        given: "a 1000 tournaments"
-        1.upto(1, {
+        given: "Create 1000 Tournaments"
+        1.upto(1000, {
             tournamentRepository.save(
                     new Tournament(creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
             )
         });
 
-        when: "list 1000 times"
-        1.upto(1, { tournamentService.getExecutionOpenedTournaments(courseExecution.getId())})
+        when: "List 1000 Tournaments 1000 times"
+        1.upto(1000, { tournamentService.getExecutionOpenedTournaments(courseExecution.getId())})
 
         then: true
     }

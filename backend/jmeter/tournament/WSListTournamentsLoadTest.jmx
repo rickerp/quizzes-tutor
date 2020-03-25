@@ -81,30 +81,40 @@
             <stringProp name="resultSetHandler">Store as String</stringProp>
           </JDBCSampler>
           <hashTree/>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create tournaments" enabled="true">
-            <stringProp name="dataSource">sampleReq</stringProp>
-            <stringProp name="queryType">Update Statement</stringProp>
-            <stringProp name="query">INSERT INTO tournaments(id, course_execution_id, creator_id, nr_questions, start_time, end_time) VALUES 
-	(100, 11, 676, 6, &apos;3000-1-1 12:00:00&apos;, &apos;3000-1-1 12:30:00&apos;),
-	(101, 11, 676, 10, &apos;3000-1-2 12:00:00&apos;, &apos;3000-1-2 12:30:00&apos;);
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop 100 times" enabled="true">
+            <boolProp name="LoopController.continue_forever">true</boolProp>
+            <stringProp name="LoopController.loops">100</stringProp>
+          </LoopController>
+          <hashTree>
+            <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Tournament ID" enabled="true">
+              <stringProp name="CounterConfig.start">100</stringProp>
+              <stringProp name="CounterConfig.end">200</stringProp>
+              <stringProp name="CounterConfig.incr">1</stringProp>
+              <stringProp name="CounterConfig.name">tournamentId</stringProp>
+              <stringProp name="CounterConfig.format"></stringProp>
+              <boolProp name="CounterConfig.per_user">false</boolProp>
+            </CounterConfig>
+            <hashTree/>
+            <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create tournament with id : ${tournamentId}" enabled="true">
+              <stringProp name="dataSource">sampleReq</stringProp>
+              <stringProp name="queryType">Update Statement</stringProp>
+              <stringProp name="query">INSERT INTO tournaments(id, course_execution_id, creator_id, nr_questions, start_time, end_time) VALUES 
+	(${tournamentId}, 11, 676, 6, &apos;3000-1-1 12:00:00&apos;, &apos;3000-1-1 12:30:00&apos;);
 
 INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
-	(100, 82),
-	(100, 84),
-	(100, 86),
-	(101, 83),
-	(101, 84),
-	(101, 85),
-	(101, 86);</stringProp>
-            <stringProp name="queryArguments"></stringProp>
-            <stringProp name="queryArgumentsTypes"></stringProp>
-            <stringProp name="variableNames"></stringProp>
-            <stringProp name="resultVariable"></stringProp>
-            <stringProp name="queryTimeout"></stringProp>
-            <stringProp name="resultSetMaxRows"></stringProp>
-            <stringProp name="resultSetHandler">Store as String</stringProp>
-          </JDBCSampler>
-          <hashTree/>
+	(${tournamentId}, 82),
+	(${tournamentId}, 84),
+	(${tournamentId}, 86);</stringProp>
+              <stringProp name="queryArguments"></stringProp>
+              <stringProp name="queryArgumentsTypes"></stringProp>
+              <stringProp name="variableNames"></stringProp>
+              <stringProp name="resultVariable"></stringProp>
+              <stringProp name="queryTimeout"></stringProp>
+              <stringProp name="resultSetMaxRows"></stringProp>
+              <stringProp name="resultSetHandler">Store as String</stringProp>
+            </JDBCSampler>
+            <hashTree/>
+          </hashTree>
         </hashTree>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -337,8 +347,8 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete created tournaments" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
-            <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id = 100 OR tournament_id = 101;
-DELETE FROM tournaments WHERE id = 100 or id = 101;
+            <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id BETWEEN 100 AND 199;
+DELETE FROM tournaments WHERE id BETWEEN 100 AND 199;
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>

@@ -49,15 +49,15 @@ class ListTournamentServiceTest extends Specification {
     def closed_t
 
     def setup() {
-        "Create Course Execution"
+        "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution)
-        "Create User"
+        "Create a User Creator"
         creator = new User(NAME, USERNAME, KEY, STUDENT)
         creator.addCourse(courseExecution)
         userRepository.save(creator)
-        "Create Topics"
+        "Create 5 Topics"
         topics = new HashSet<Topic>()
         1.upto(5, {
             Topic topic = new Topic()

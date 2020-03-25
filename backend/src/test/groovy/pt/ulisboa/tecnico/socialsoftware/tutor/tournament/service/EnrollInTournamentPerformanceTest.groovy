@@ -48,15 +48,15 @@ class EnrollInTournamentPerformanceTest extends Specification {
     def tournamentsIds
 
     def setup() {
-        "Create Course Execution"
+        "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
         courseExecutionRepository.save(courseExecution)
-        "Create User Creator"
+        "Create a User Creator"
         creator = new User(NAME, USERNAME, KEY, STUDENT)
         creator.addCourse(courseExecution)
         userRepository.save(creator)
-        "Create Topics"
+        "Create 5 Topics"
         topics = new HashSet<Topic>()
         1.upto(5, {
             Topic topic = new Topic()
@@ -64,29 +64,29 @@ class EnrollInTournamentPerformanceTest extends Specification {
             topicRepository.save(topic)
             topics.add(topic)
         })
-        "Create empty list of users and tournaments"
-        usersIds = new ArrayList<Integer>()
-        tournamentsIds = new ArrayList<Integer>()
+        "Create Empty Sets of User and Tournament ids"
+        usersIds = new HashSet<Integer>()
+        tournamentsIds = new HashSet<Integer>()
     }
 
-    def "Performance Test to 1000 User(s) Enroll in 100 Tournament(s)"() {
+    def "Performance Test to 1000 Users Enroll in 1000 Tournaments"() {
 
-        given: "100 tournament(s)"
-        1.upto(1, {
+        given: "Create 1000 Tournaments"
+        1.upto(1000, {
             def tournament = new Tournament(creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
             tournamentRepository.save(tournament)
             tournamentsIds.add(tournament.getId())
         })
 
-        and: "1000 user(s)"
-        1.upto(1, {
+        and: "Create 1000 Users"
+        1.upto(1000, {
             def user = new User(NAME, USERNAME+it, KEY+it, STUDENT)
             user.addCourse(courseExecution)
             userRepository.save(user)
             usersIds.add(user.getId())
         })
 
-        when: "each user enrolls in one tournament"
+        when: "Each User Enrolls in all Tournaments"
         for (Integer uId : usersIds) {
             for (Integer tId : tournamentsIds) {
                 tournamentService.enrollPlayer(uId, tId)
