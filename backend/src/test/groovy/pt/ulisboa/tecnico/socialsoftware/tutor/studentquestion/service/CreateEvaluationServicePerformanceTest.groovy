@@ -80,7 +80,7 @@ class CreateEvaluationServicePerformanceTest extends Specification {
         evaluationDto.setJustification(null)
 
         when:
-        1.upto(1000, {evaluationService.createEvaluation(evaluationDto)})
+        1.upto(1, {evaluationService.createEvaluation(evaluationDto)})
 
         then:
         true

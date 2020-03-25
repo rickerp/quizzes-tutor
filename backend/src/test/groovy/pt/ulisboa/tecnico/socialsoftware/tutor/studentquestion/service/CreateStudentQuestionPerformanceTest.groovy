@@ -64,7 +64,7 @@ class CreateStudentQuestionPerformanceTest extends Specification {
         studentQuestionDto.setStudent(user.getId())
 
         when:
-        1.upto(1000, {
+        1.upto(1, {
             questionDto.setKey(it as Integer);
             studentQuestionService.createStudentQuestion(course.getId(), studentQuestionDto);
         })

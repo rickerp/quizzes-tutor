@@ -60,7 +60,7 @@ class ListStudentQuestionsPerformanceTest extends Specification{
 
     def "performance testing to list 1000 student questions"() {
         given: "1000 student questions"
-        1.upto(1000, {
+        1.upto(1, {
             "Create 1000 questions"
             def question = new Question()
             question.setKey(it as Integer)
@@ -94,7 +94,7 @@ class ListStudentQuestionsPerformanceTest extends Specification{
         })
 
         when: "list 1000 times 1000 student questions"
-        1.upto(1000, { studentQuestionService.list(course.getId(), user.getId())})
+        1.upto(1, { studentQuestionService.list(course.getId(), user.getId())})
 
         then:
         true

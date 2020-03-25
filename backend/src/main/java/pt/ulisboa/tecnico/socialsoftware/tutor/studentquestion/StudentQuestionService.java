@@ -71,9 +71,8 @@ public class StudentQuestionService {
         if (questionDto == null)
             throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
 
-        User user = userRepository.findById(studentQuestionDto.getStudent()).orElse(null);
-        if (user == null)
-            throw new TutorException(ErrorMessage.USER_NOT_FOUND);
+        User user = userRepository.findById(studentQuestionDto.getStudent())
+                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND));
 
         QuestionDto createdQuestionDto = questionService.createQuestion(courseId, questionDto);
         int questionId = createdQuestionDto.getId();
