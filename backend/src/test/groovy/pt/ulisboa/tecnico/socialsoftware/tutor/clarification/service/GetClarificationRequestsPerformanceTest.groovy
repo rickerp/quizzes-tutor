@@ -82,7 +82,7 @@ class GetClarificationRequestsPerformanceTest extends Specification {
         courseExecution.setCourse(course)
         courseExecutionRepository.save(courseExecution)
 
-        user = new User("Name", "Username", 1, User.Role.TEACHER)
+        user = new User("Name", "Username", 1, User.Role.STUDENT)
         user.addCourse(courseExecution)
         courseExecution.addUser(user)
         userRepository.save(user)
