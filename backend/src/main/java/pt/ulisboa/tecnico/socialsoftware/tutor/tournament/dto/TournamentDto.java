@@ -1,7 +1,9 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -11,7 +13,9 @@ public class TournamentDto implements Serializable {
 
     private int id;
     private int creatorId;
+    private int courseExecutionId;
     private Set<Integer> topicsId;
+    private Set<Integer> playersId;
     private Integer nrQuestions;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -22,12 +26,16 @@ public class TournamentDto implements Serializable {
         this.id = tournament.getId();
         this.creatorId = tournament.getCreator().getId();
         this.topicsId = tournament.getTopics().stream().map(Topic::getId).collect(Collectors.toSet());
+        this.playersId = tournament.getPlayers().stream().map(User::getId).collect(Collectors.toSet());
+        this.courseExecutionId = tournament.getCourseExecution().getId();
         this.nrQuestions = tournament.getNrQuestions();
         this.startTime = tournament.getStartTime();
         this.endTime = tournament.getEndTime();
     }
 
     public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public int getCreatorId() { return creatorId; }
 
@@ -38,6 +46,14 @@ public class TournamentDto implements Serializable {
     public void setTopicsId(Set<Integer> topicsId) {
         this.topicsId = topicsId;
     }
+
+    public Set<Integer> getPlayersId() { return playersId; }
+
+    public void setPlayersId(Set<Integer> playersId) { this.playersId = playersId; }
+
+    public int getCourseExecutionId() { return courseExecutionId; }
+
+    public void setCourseExecutionId(int courseExecutionId) { this.courseExecutionId = courseExecutionId; }
 
     public Integer getNrQuestions() { return nrQuestions; }
 

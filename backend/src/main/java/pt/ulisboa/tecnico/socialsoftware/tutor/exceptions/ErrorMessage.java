@@ -58,6 +58,7 @@ public enum ErrorMessage {
     ACCESS_DENIED("You do not have permission to view this resource"),
     CANNOT_OPEN_FILE("Cannot open file"),
 
+    NO_TOURNAMENT_IN_EXECUTION("There is no tournament with id %d in the specified course execution"),
     TOURNAMENT_NOT_FOUND("Tournament not found with id %d"),
     TOURNAMENT_NOT_OPENED("The Tournament is not Opened for Enrollments"),
     USER_NOT_STUDENT("The user %d should be a student"),
@@ -66,6 +67,7 @@ public enum ErrorMessage {
     TOURNAMENT_START_TIME_INVALID("The tournament start time should be greater than the system's time. Given: %s"),
     TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
     TOPIC_NOT_AVAILABLE("The topic %d not available"),
+    COURSE_EXECUTION_NOT_ACTIVE("The course execution with id %d is not active"),
 
     CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("Clarification content invalid"),
