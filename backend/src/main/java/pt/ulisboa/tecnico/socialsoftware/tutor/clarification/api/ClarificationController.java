@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService;
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 

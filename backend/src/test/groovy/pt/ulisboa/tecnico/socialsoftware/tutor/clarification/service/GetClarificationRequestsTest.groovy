@@ -4,7 +4,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
@@ -36,7 +35,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.Clarific
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import spock.lang.Unroll
 
 
 @DataJpaTest
@@ -108,7 +106,7 @@ class GetClarificationRequestsTest extends Specification {
         def quizQuestion = new QuizQuestion(quiz, question, 0)
         def quizQuestion2 = new QuizQuestion(quiz, question, 1)
         def quizAnswer = new QuizAnswer(student, quiz)
-        quizAnswer.completed = true
+        quizAnswer.setCompleted(true)
         def questionAnswers = quizAnswer.getQuestionAnswers()
         questionAnswer1 = questionAnswers[0]
         questionAnswer2 = questionAnswers[1]

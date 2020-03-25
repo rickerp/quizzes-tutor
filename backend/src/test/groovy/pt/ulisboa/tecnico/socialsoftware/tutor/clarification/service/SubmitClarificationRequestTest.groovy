@@ -92,7 +92,7 @@ class SubmitClarificationRequestTest extends Specification {
 
         def quizQuestion = new QuizQuestion(quiz, question, 0)
         def quizAnswer = new QuizAnswer(user, quiz)
-        quizAnswer.completed = true
+        quizAnswer.setCompleted(true)
         questionAnswer = quizAnswer.getQuestionAnswers()[0]
 
         userRepository.save(user)
@@ -147,7 +147,7 @@ class SubmitClarificationRequestTest extends Specification {
         given: "Another QuestionAnswer"
         def quizAnswer = new QuizAnswer(user, quiz)
         def questionAnswerCreated = quizAnswer.getQuestionAnswers()[0]
-        quizAnswer.completed = true
+        quizAnswer.setCompleted(true)
         questionAnswerRepository.save(questionAnswerCreated)
 
         when:
@@ -263,7 +263,7 @@ class SubmitClarificationRequestTest extends Specification {
     def "Submit a clarification request with a question answer associated to quiz answer that is not finished"() {
         given: "another QuizAnswer and QuestionAnswer"
         def quizAnswerCreated = new QuizAnswer(user, quiz)
-        quizAnswerCreated.completed = false
+        quizAnswerCreated.setCompleted(false)
         def questionAnswerCreated = quizAnswerCreated.getQuestionAnswers()[0]
         questionAnswerRepository.save(questionAnswerCreated)
 
