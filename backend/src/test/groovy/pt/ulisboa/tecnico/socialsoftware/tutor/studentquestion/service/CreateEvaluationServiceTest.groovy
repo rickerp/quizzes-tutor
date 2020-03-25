@@ -33,9 +33,6 @@ class CreateEvaluationServiceTest extends Specification {
     static final USERNAME = 'username'
 
     @Autowired
-    StudentQuestionService studentQuestionService
-
-    @Autowired
     EvaluationService evaluationService
 
     @Autowired
@@ -43,9 +40,6 @@ class CreateEvaluationServiceTest extends Specification {
 
     @Autowired
     UserRepository userRepository
-
-    @Autowired
-    UserService userService
 
     @Autowired
     CourseRepository courseRepository
@@ -214,24 +208,10 @@ class CreateEvaluationServiceTest extends Specification {
 
     @TestConfiguration
     static class CreateEvaluationServiceImplTestContextConfiguration {
-        @Bean
-        UserService userService() {
-            return new UserService()
-        }
-
-        @Bean
-        StudentQuestionService studentQuestionService() {
-            return new StudentQuestionService()
-        }
 
         @Bean
         EvaluationService evaluationService() {
             return new EvaluationService()
-        }
-
-        @Bean
-        QuestionService questionService() {
-            return new QuestionService()
         }
     }
 }
