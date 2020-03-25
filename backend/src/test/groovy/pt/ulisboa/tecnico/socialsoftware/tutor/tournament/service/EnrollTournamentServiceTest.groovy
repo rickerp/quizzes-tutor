@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
@@ -33,19 +35,32 @@ class EnrollTournamentServiceTest extends Specification {
     UserRepository userRepository
 
     @Autowired
+    CourseExecutionRepository courseExecutionRepository
+
+    @Autowired
     TournamentRepository tournamentRepository
 
     @Autowired
     TournamentService tournamentService
 
     def player
+    def courseExecution
     def tournament
 
     def setup() {
-        "Create User"
+        "Create a Course Execution"
+        courseExecution = new CourseExecution()
+        courseExecution.setStatus(CourseExecution.Status.ACTIVE)
+        courseExecutionRepository.save(courseExecution)
+        "Create a User Creator"
         player = new User(NAME, USERNAME_1, KEY_1, STUDENT)
-        "Create Tournament"
+        player.addCourse(courseExecution)
+        userRepository.save(player)
+        "Create a Tournament"
         tournament = new Tournament()
+        tournament.setCreator(player)
+        tournament.setNrQuestions(10)
+        tournament.setCourseExecution(courseExecution)
         tournament.setStartTime(NOW.plusMinutes(10))
         tournament.setEndTime(NOW.plusMinutes(20))
         "Store data in DB"
@@ -81,38 +96,38 @@ class EnrollTournamentServiceTest extends Specification {
     def "Enroll a Student in an Opened Tournament" () {
 
         when: "Enroll Players in Tournaments"
-        tournamentService.enrollPlayer(player.getId(), tournament.getId())
+        def tournamentDto = tournamentService.enrollPlayer(player.getId(), tournament.getId())
 
         then: "Get DB data"
-        def playerSet = tournament.getPlayers()
         def tournamentSet = player.getTournaments()
         and: "Check DB data"
-        playerSet.contains(player)
         tournamentSet.contains(tournament)
+        tournamentDto.getPlayersId().contains(player.getId())
     }
 
     def "Enroll a Student in two different Opened Tournaments" () {
 
         given: "Create Second Tournament"
         def tournament_2 = new Tournament()
+        tournament_2.setCreator(player)
+        tournament_2.setNrQuestions(10)
+        tournament_2.setCourseExecution(courseExecution)
         tournament_2.setStartTime(NOW.plusMinutes(10))
         tournament_2.setEndTime(NOW.plusMinutes(20))
         and: "Save in DB"
         tournamentRepository.save(tournament_2)
 
         when: "Enroll Players in Tournaments"
-        tournamentService.enrollPlayer(player.getId(), tournament.getId())
-        tournamentService.enrollPlayer(player.getId(), tournament_2.getId())
+        def tournamentDto_1 = tournamentService.enrollPlayer(player.getId(), tournament.getId())
+        def tournamentDto_2 = tournamentService.enrollPlayer(player.getId(), tournament_2.getId())
 
         then: "Get DB data"
         def tournamentSet = player.getTournaments()
-        def playerSet = tournament.getPlayers()
-        def playerSet_2 = tournament_2.getPlayers()
         and: "Check DB data"
         tournamentSet.contains(tournament)
         tournamentSet.contains(tournament_2)
-        playerSet.contains(player)
-        playerSet_2.contains(player)
+        tournamentDto_1.getPlayersId().contains(player.getId())
+        tournamentDto_2.getPlayersId().contains(player.getId())
     }
 
     def "Enroll a Student twice in the same Opened Tournament" () {
@@ -130,22 +145,22 @@ class EnrollTournamentServiceTest extends Specification {
 
         given: "Create Second Player"
         def player_2 = new User(NAME, USERNAME_2, KEY_2, STUDENT)
+        player_2.addCourse(courseExecution)
         and: "Save in DB"
         userRepository.save(player_2)
 
         when: "Enroll Players in Tournaments"
-        tournamentService.enrollPlayer(player.getId(), tournament.getId())
-        tournamentService.enrollPlayer(player_2.getId(), tournament.getId())
+        def tournamentDto_1 = tournamentService.enrollPlayer(player.getId(), tournament.getId())
+        def tournamentDto_2 = tournamentService.enrollPlayer(player_2.getId(), tournament.getId())
 
         then: "Check DB data"
-        def playerSet = tournament.getPlayers()
-        def tournamentSet = player.getTournaments()
+        def tournamentSet_1 = player.getTournaments()
         def tournamentSet_2 = player_2.getTournaments()
         and: "Check DB data"
-        playerSet.contains(player)
-        playerSet.contains(player_2)
-        tournamentSet.contains(tournament)
+        tournamentSet_1.contains(tournament)
         tournamentSet_2.contains(tournament)
+        tournamentDto_1.getPlayersId().contains(player.getId())
+        tournamentDto_2.getPlayersId().contains(player_2.getId())
     }
 
     @TestConfiguration

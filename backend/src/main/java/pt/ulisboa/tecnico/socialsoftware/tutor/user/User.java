@@ -8,11 +8,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -69,7 +67,7 @@ public class User implements UserDetails {
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "players")
     private Set<Tournament> tournaments = new HashSet<>();
 
     public User() {
@@ -378,12 +376,6 @@ public class User implements UserDetails {
 
     public void addCourse(CourseExecution course) {
         this.courseExecutions.add(course);
-    }
-
-    public void tournamentEnroll(Tournament tournament) {
-        if (!tournaments.add(tournament)) {
-            throw new TutorException(ErrorMessage.DUPLICATE_TOURNAMENT_ENROLL);
-        }
     }
 
     public Set<Tournament> getTournaments() {

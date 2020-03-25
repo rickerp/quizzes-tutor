@@ -10,15 +10,14 @@ import java.util.*;
 @Table(name = "topics")
 public class Topic {
 
-    public enum Status {
-        DISABLED, REMOVED, AVAILABLE
-    }
-
-    private Status status = Status.AVAILABLE;
+    public enum Status {DISABLED, REMOVED, AVAILABLE}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.AVAILABLE;
 
     private String name;
 
