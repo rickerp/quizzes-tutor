@@ -6,13 +6,11 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.EvaluationService
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.EvaluationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto
@@ -20,7 +18,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.Evalua
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Specification
 
 
@@ -91,24 +88,11 @@ class CreateEvaluationServicePerformanceTest extends Specification {
 
     @TestConfiguration
     static class CreateEvaluationServicePerformanceImplTestContextConfiguration {
-        @Bean
-        UserService userService() {
-            return new UserService()
-        }
-
-        @Bean
-        StudentQuestionService studentQuestionService() {
-            return new StudentQuestionService()
-        }
 
         @Bean
         EvaluationService evaluationService() {
             return new EvaluationService()
         }
 
-        @Bean
-        QuestionService questionService() {
-            return new QuestionService()
-        }
     }
 }
