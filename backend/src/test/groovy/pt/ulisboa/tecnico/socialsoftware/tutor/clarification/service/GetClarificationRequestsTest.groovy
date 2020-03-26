@@ -91,6 +91,7 @@ class GetClarificationRequestsTest extends Specification {
         courseExecution = new CourseExecution()
         student = new User("student", "studentname", 1, User.Role.STUDENT)
         student.addCourse(courseExecution)
+        courseExecution.addUser(student)
 
         teacher = new User("teacher", "teacherName", 2, User.Role.TEACHER)
         teacher.addCourse(courseExecution)
@@ -155,6 +156,7 @@ class GetClarificationRequestsTest extends Specification {
         given: "A new Student"
         def newStudent = new User("newStudent", "newStudentName", 3, User.Role.STUDENT)
         student.addCourse(courseExecution)
+        courseExecution.addUser(newStudent)
         userRepository.save(newStudent)
         and: "A new Quiz Answer"
         def quizAnswer = new QuizAnswer(newStudent, quiz)
