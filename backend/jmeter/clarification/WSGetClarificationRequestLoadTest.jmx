@@ -595,7 +595,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="query">UPDATE quiz_answers SET user_id = 678 WHERE user_id = 676;
-DELETE FROM clarification_requests WHERE id BETWEEN ${__property(id)} AND (${__property(id)} + 999);</stringProp>
+DELETE FROM clarification_requests WHERE id BETWEEN ${__property(id)} AND (${__property(id)} + 99);</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="queryTimeout"></stringProp>

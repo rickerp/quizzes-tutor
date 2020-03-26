@@ -6,17 +6,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
@@ -40,6 +41,9 @@ public class ClarificationRequestService {
 
     @Autowired
     private ClarificationRequestRepository clarificationRequestRepository;
+
+    @Autowired
+    private CourseExecutionRepository courseExecutionRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -83,19 +87,24 @@ public class ClarificationRequestService {
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
-        return user.getRole() == User.Role.STUDENT ? getClarificationOfStudent(user, executionId) : getClarificationOfTeacher(executionId);
+        return user.getRole() == User.Role.STUDENT ? getClarificationsOfStudent(user, executionId) : getClarificationsOfTeacher(executionId);
     }
 
-    private List<ClarificationRequestDto> getClarificationOfStudent(User user, int executionId) {
-        return user.getClarificationRequests().stream()
-                .filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
-                .map(ClarificationRequestDto::new)
-                .collect(Collectors.toList());
+    private List<ClarificationRequestDto> getClarificationsOfStudent(User user, int executionId) {
+        return filterClarifications(user.getClarificationRequests().stream(), executionId);
     }
 
-    private List<ClarificationRequestDto> getClarificationOfTeacher(int executionId) {
-        return clarificationRequestRepository.findAll().stream().filter(clarification -> clarification.getQuestionAnswer()
-                .getQuizAnswer().getQuiz().getCourseExecution().getId() == executionId)
+    private List<ClarificationRequestDto> getClarificationsOfTeacher(int executionId) {
+        return filterClarifications(courseExecutionRepository.findById(executionId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND))
+                .getUsers().stream()
+                .map(User::getClarificationRequests)
+                .flatMap(Collection::stream), executionId);
+    }
+
+    private List<ClarificationRequestDto> filterClarifications(Stream<ClarificationRequest> clarificationRequests, int executionId) {
+        return clarificationRequests.filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz()
+                .getCourseExecution().getId() == executionId)
                 .map(ClarificationRequestDto::new)
                 .collect(Collectors.toList());
     }
