@@ -25,6 +25,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Specification
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 @DataJpaTest
 class CreateEvaluationServiceTest extends Specification {
     static final String JUSTIFICATION_ONE = "Não gostei da pergunta. Reformule por favor"
@@ -71,6 +74,7 @@ class CreateEvaluationServiceTest extends Specification {
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         questionDto.setOptions(options)
+        questionDto.setCreationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
         question = new Question(course, questionDto)
         questionRepository.save(question)
     }

@@ -1,12 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.image.domain;
-
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "images")
-public class Image {
+public class Image implements DomainEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,6 +22,11 @@ public class Image {
     public Image(ImageDto imageDto) {
         this.url = imageDto.getUrl();
         this.width = imageDto.getWidth();
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visitImage(this);
     }
 
     public Integer getId() {

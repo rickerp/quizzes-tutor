@@ -20,6 +20,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 @DataJpaTest
 class CreateEvaluationServicePerformanceTest extends Specification {
@@ -65,6 +68,7 @@ class CreateEvaluationServicePerformanceTest extends Specification {
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         questionDto.setOptions(options)
+        questionDto.setCreationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
         question = new Question(course, questionDto)
         questionRepository.save(question)
     }
