@@ -25,6 +25,7 @@ import ImpExpView from '@/views/teacher/impexp/ImpExpView.vue';
 import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
+import StudentQuestionsEvaluationView from '@/views/teacher/studentquestions/StudentQuestionsEvaluationView.vue';
 
 Vue.use(Router);
 
@@ -112,6 +113,15 @@ let router = new Router({
           component: ImpExpView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - ImpExp',
+            requiredAuth: 'Teacher'
+          }
+        },
+        {
+          path: 'studentquestions',
+          name: 'studentquestions-management',
+          component: StudentQuestionsEvaluationView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student Questions Evaluation',
             requiredAuth: 'Teacher'
           }
         }
