@@ -61,7 +61,6 @@ public class QuestionAnswer implements DomainEntity {
     }
 
     public void remove() {
-        quizAnswer.getQuestionAnswers().remove(this);
         quizAnswer = null;
 
         quizQuestion.getQuestionAnswers().remove(this);
