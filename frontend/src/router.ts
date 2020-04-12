@@ -6,6 +6,7 @@ import HomeView from './views/HomeView.vue';
 import LoginView from './views/LoginView.vue';
 import CourseSelectionView from './views/CourseSelectionView.vue';
 
+import MyQuestionsView from '@/views/student/MyQuestionsView.vue';
 import ManagementView from '@/views/teacher/ManagementView.vue';
 import QuestionsView from './views/teacher/questions/QuestionsView.vue';
 import TopicsView from './views/teacher/TopicsView.vue';
@@ -122,6 +123,15 @@ let router = new Router({
       name: 'student',
       component: StudentView,
       children: [
+        {
+          path: 'question',
+          name: 'student-question',
+          component: MyQuestionsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - My Questions',
+            requiredAuth: 'Student'
+          }
+        },
         {
           path: 'available',
           name: 'available-quizzes',
