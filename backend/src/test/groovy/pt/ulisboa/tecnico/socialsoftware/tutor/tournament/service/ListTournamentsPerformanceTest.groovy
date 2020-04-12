@@ -67,14 +67,14 @@ class ListTournamentsPerformanceTest extends Specification {
     def "Performance Test to List 1000 times 1000 tournaments"() {
 
         given: "Create 1000 Tournaments"
-        1.upto(1000, {
+        1.upto(1, {
             tournamentRepository.save(
                     new Tournament(creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
             )
         });
 
         when: "List 1000 Tournaments 1000 times"
-        1.upto(1000, { tournamentService.getExecutionOpenedTournaments(courseExecution.getId())})
+        1.upto(1, { tournamentService.getExecutionOpenedTournaments(courseExecution.getId())})
 
         then: true
     }
