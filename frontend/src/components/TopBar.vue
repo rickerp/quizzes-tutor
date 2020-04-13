@@ -107,6 +107,25 @@
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" text dark>
+              Tournaments
+              <v-icon>fas fa-trophy</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/calendar">
+              <v-list-item-action>
+                <v-icon>fas fa-calendar-alt</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Calendar</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" text dark>
               Quizzes
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
