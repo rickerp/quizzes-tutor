@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.Evaluation;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.EvaluationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.EvaluationRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository;
 
@@ -40,6 +41,10 @@ public class EvaluationService {
 
         Evaluation evaluation = new Evaluation(studentQuestion, evaluationDto.isAccepted(), evaluationDto.getJustification());
         evaluationRepository.save(evaluation);
-        return new EvaluationDto(evaluation);
+
+        EvaluationDto evaluation2Dto = new EvaluationDto(evaluation);
+        evaluation2Dto.setStudentQuestionDto(evaluationDto.getStudentQuestionDto());
+
+        return evaluation2Dto;
     }
 }
