@@ -187,6 +187,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
+	&quot;name&quot;: &quot;Demo-Tournament&quot;,&#xd;
 	&quot;topicsId&quot;: [82,83,84,85,86],&#xd;
 	&quot;nrQuestions&quot;: 10,&#xd;
 	&quot;startTime&quot;: [3000,1,1,12,0],&#xd;
@@ -260,6 +261,15 @@
               <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert End Time" enabled="true">
                 <stringProp name="JSON_PATH">$.endTime</stringProp>
                 <stringProp name="EXPECTED_VALUE">[3000,1,1,12,30]</stringProp>
+                <boolProp name="JSONVALIDATION">true</boolProp>
+                <boolProp name="EXPECT_NULL">false</boolProp>
+                <boolProp name="INVERT">false</boolProp>
+                <boolProp name="ISREGEX">false</boolProp>
+              </JSONPathAssertion>
+              <hashTree/>
+              <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert Name" enabled="true">
+                <stringProp name="JSON_PATH">$.name</stringProp>
+                <stringProp name="EXPECTED_VALUE">Demo-Tournament</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>
                 <boolProp name="INVERT">false</boolProp>

@@ -66,7 +66,7 @@ public class TournamentService {
         CourseExecution courseExecution = courseExecutionRepository.findById(dto.getCourseExecutionId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, dto.getCourseExecutionId()));
 
-        Tournament tournament = new Tournament(creator, topics, courseExecution, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
+        Tournament tournament = new Tournament(dto.getName(), creator, topics, courseExecution, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
         entityManager.persist(tournament);
         return new TournamentDto(tournament);
     }

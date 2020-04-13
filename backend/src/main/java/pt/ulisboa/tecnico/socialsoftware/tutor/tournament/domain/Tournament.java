@@ -34,6 +34,9 @@ public class Tournament {
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
+
+    @Column(name = "name")
+    private String name;
     
     @Column(name = "nr_questions")
     private Integer nrQuestions;
@@ -46,7 +49,8 @@ public class Tournament {
 
     public Tournament() {}
 
-    public Tournament(User creator, Set<Topic> topics, CourseExecution courseExecution, Integer nrQuestions, LocalDateTime startTime, LocalDateTime endTime) {
+    public Tournament(String name, User creator, Set<Topic> topics, CourseExecution courseExecution, Integer nrQuestions, LocalDateTime startTime, LocalDateTime endTime) {
+        setName(name);
         setCreator(creator);
         setTopics(topics);
         setCourseExecution(courseExecution);
@@ -64,6 +68,10 @@ public class Tournament {
     public Integer getId() { return id; }
 
     public void setId(Integer id) { this.id = id; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 
     public boolean isOpened() { return startTime.compareTo(LocalDateTime.now()) > 0; }
 

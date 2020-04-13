@@ -12,9 +12,12 @@ import java.util.stream.Collectors;
 public class TournamentDto implements Serializable {
 
     private int id;
+    private String name;
     private int creatorId;
+    private String creatorName;
     private int courseExecutionId;
     private Set<Integer> topicsId;
+    private Set<String> topicsName;
     private Set<Integer> playersId;
     private Integer nrQuestions;
     private LocalDateTime startTime;
@@ -24,8 +27,11 @@ public class TournamentDto implements Serializable {
 
     public TournamentDto(Tournament tournament) {
         this.id = tournament.getId();
+        this.name = tournament.getName();
         this.creatorId = tournament.getCreator().getId();
+        this.creatorName = tournament.getCreator().getUsername();
         this.topicsId = tournament.getTopics().stream().map(Topic::getId).collect(Collectors.toSet());
+        this.topicsName = tournament.getTopics().stream().map(Topic::getName).collect(Collectors.toSet());
         this.playersId = tournament.getPlayers().stream().map(User::getId).collect(Collectors.toSet());
         this.courseExecutionId = tournament.getCourseExecution().getId();
         this.nrQuestions = tournament.getNrQuestions();
@@ -37,15 +43,23 @@ public class TournamentDto implements Serializable {
 
     public void setId(int id) { this.id = id; }
 
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
     public int getCreatorId() { return creatorId; }
 
     public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
+
+    public String getCreatorName() { return creatorName; }
 
     public Set<Integer> getTopicsId() { return topicsId; }
 
     public void setTopicsId(Set<Integer> topicsId) {
         this.topicsId = topicsId;
     }
+
+    public Set<String> getTopicsName() { return topicsName; }
 
     public Set<Integer> getPlayersId() { return playersId; }
 

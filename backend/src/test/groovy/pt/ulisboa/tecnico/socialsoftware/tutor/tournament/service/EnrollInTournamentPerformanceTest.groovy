@@ -21,6 +21,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 
 @DataJpaTest
 class EnrollInTournamentPerformanceTest extends Specification {
+    public static final String T_NAME = "Demo-Tournament"
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
@@ -73,7 +74,7 @@ class EnrollInTournamentPerformanceTest extends Specification {
 
         given: "Create 1000 Tournaments"
         1.upto(1, {
-            def tournament = new Tournament(creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
+            def tournament = new Tournament(T_NAME, creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
             tournamentRepository.save(tournament)
             tournamentsIds.add(tournament.getId())
         })

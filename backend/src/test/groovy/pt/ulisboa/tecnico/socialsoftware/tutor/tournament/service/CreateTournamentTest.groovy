@@ -26,6 +26,7 @@ import java.time.LocalDateTime
 
 @DataJpaTest
 class CreateTournamentTest extends Specification {
+    public static final String T_NAME = "Demo-Tournament"
     public static final String NAME_1 = "Name_1"
     public static final String NAME_2 = "Name_2"
     public static final String USERNAME = "Username"
@@ -73,6 +74,7 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
@@ -105,6 +107,7 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
@@ -155,6 +158,7 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
@@ -192,6 +196,7 @@ class CreateTournamentTest extends Specification {
         given: "a tournament dto"
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
@@ -218,6 +223,7 @@ class CreateTournamentTest extends Specification {
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
         topicsId.add(topic_2.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
@@ -248,6 +254,7 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())

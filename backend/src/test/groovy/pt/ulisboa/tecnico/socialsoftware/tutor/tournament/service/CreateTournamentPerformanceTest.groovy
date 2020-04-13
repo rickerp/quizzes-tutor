@@ -21,6 +21,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 
 @DataJpaTest
 class CreateTournamentPerformanceTest extends Specification {
+    public static final String T_NAME = "Demo-Tournament"
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
@@ -65,6 +66,7 @@ class CreateTournamentPerformanceTest extends Specification {
 
         given: "a TournamentDto"
         def dto = new TournamentDto()
+        dto.setName(T_NAME);
         dto.setCourseExecutionId(courseExecution.getId())
         dto.setCreatorId(creator.getId())
         dto.setNrQuestions(10)
