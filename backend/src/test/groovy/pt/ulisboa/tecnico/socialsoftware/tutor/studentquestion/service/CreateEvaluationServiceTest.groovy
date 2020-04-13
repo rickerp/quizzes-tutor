@@ -85,15 +85,13 @@ class CreateEvaluationServiceTest extends Specification {
         studentQuestionRepository.save(studentQuestion)
         and: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto(studentQuestion))
         evaluationDto.setAccepted(ACCEPTED)
         evaluationDto.setJustification(null)
 
         when:
-        def result = evaluationService.createEvaluation(evaluationDto)
+        def result = evaluationService.createEvaluation(evaluationDto, studentQuestion.getId())
 
         then: "the returned data is correct"
-        result.getStudentQuestionDto().getId() == studentQuestion.getId()
         result.isAccepted()
         result.getJustification() == null
         and: "evaluation is created"
@@ -108,32 +106,15 @@ class CreateEvaluationServiceTest extends Specification {
     def "studentQuestion does not exist"(){
         given: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto())
-        evaluationDto.getStudentQuestionDto().setId(1)
         evaluationDto.setAccepted(ACCEPTED)
         evaluationDto.setJustification(null)
 
         when: "there is no studentQuestion"
-        evaluationService.createEvaluation(evaluationDto)
+        evaluationService.createEvaluation(evaluationDto, -1)
 
         then: "an exception is thrown"
         def error = thrown(TutorException)
         error.errorMessage == ErrorMessage.STUDENT_QUESTION_NOT_FOUND
-    }
-
-    def "studentQuestion is empty"(){
-        given: "an evaluationDto"
-        def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(null)
-        evaluationDto.setAccepted(ACCEPTED)
-        evaluationDto.setJustification(null)
-
-        when: "studentQuestion is empty"
-        evaluationService.createEvaluation(evaluationDto)
-
-        then: "an exception is thrown"
-        def error = thrown(TutorException)
-        error.errorMessage == ErrorMessage.STUDENT_QUESTION_IS_EMPTY
     }
 
     def "studentQuestion and evaluation exist"(){
@@ -142,19 +123,16 @@ class CreateEvaluationServiceTest extends Specification {
         studentQuestionRepository.save(studentQuestion)
         and: "an evaluation"
         def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto(studentQuestion))
         evaluationDto.setAccepted(REJECTED)
         evaluationDto.setJustification(JUSTIFICATION_ONE)
-        evaluationService.createEvaluation(evaluationDto)
+        evaluationService.createEvaluation(evaluationDto, studentQuestion.getId())
 
         when: "create another evaluation"
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto(studentQuestion))
         evaluationDto.setAccepted(ACCEPTED)
         evaluationDto.setJustification(null)
-        def result = evaluationService.createEvaluation(evaluationDto)
+        def result = evaluationService.createEvaluation(evaluationDto, studentQuestion.getId())
 
         then: "overwrite the older one"
-        result.getStudentQuestionDto().getId() == studentQuestion.getId()
         result.isAccepted()
         result.getJustification() == null
         and: "evaluation is created"
@@ -172,12 +150,11 @@ class CreateEvaluationServiceTest extends Specification {
         studentQuestionRepository.save(studentQuestion)
         and: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto(studentQuestion))
         evaluationDto.setAccepted(REJECTED)
         evaluationDto.setJustification(null)
 
         when: "create evaluation"
-        evaluationService.createEvaluation(evaluationDto)
+        evaluationService.createEvaluation(evaluationDto, studentQuestion.getId())
 
         then: "an exception is thrown"
         def error = thrown(TutorException)
@@ -190,15 +167,13 @@ class CreateEvaluationServiceTest extends Specification {
         studentQuestionRepository.save(studentQuestion)
         and: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto(studentQuestion))
         evaluationDto.setAccepted(REJECTED)
         evaluationDto.setJustification(JUSTIFICATION_ONE)
 
         when: "create evaluation"
-        def result = evaluationService.createEvaluation(evaluationDto)
+        def result = evaluationService.createEvaluation(evaluationDto, studentQuestion.getId())
 
         then:
-        result.getStudentQuestionDto().getId() == studentQuestion.getId()
         !result.isAccepted()
         result.getJustification() == JUSTIFICATION_ONE
         and: "evaluation is created"

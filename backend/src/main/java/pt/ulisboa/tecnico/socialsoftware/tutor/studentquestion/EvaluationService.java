@@ -29,12 +29,14 @@ public class EvaluationService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public EvaluationDto createEvaluation(EvaluationDto evaluationDto) {
+    public EvaluationDto createEvaluation(EvaluationDto evaluationDto, int studentQuestionId) {
+        /*
         if(evaluationDto.getStudentQuestionDto() == null){
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
         }
+        */
 
-        StudentQuestion studentQuestion = studentQuestionRepository.findById(evaluationDto.getStudentQuestionDto().getId()).orElse(null);
+        StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId).orElse(null);
         if(studentQuestion == null){
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND);
         }
@@ -42,9 +44,6 @@ public class EvaluationService {
         Evaluation evaluation = new Evaluation(studentQuestion, evaluationDto.isAccepted(), evaluationDto.getJustification());
         evaluationRepository.save(evaluation);
 
-        EvaluationDto evaluation2Dto = new EvaluationDto(evaluation);
-        evaluation2Dto.setStudentQuestionDto(evaluationDto.getStudentQuestionDto());
-
-        return evaluation2Dto;
+        return new EvaluationDto(evaluation);
     }
 }

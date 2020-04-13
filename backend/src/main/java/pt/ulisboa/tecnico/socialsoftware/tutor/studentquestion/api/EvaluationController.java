@@ -18,6 +18,6 @@ public class EvaluationController {
     @PostMapping("/studentquestions/{studentQuestionId}/evaluation")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#studentQuestionId, 'STUDENTQUESTION.ACCESS')")
     public EvaluationDto createEvaluation(@RequestBody EvaluationDto evaluationDto, @PathVariable Integer studentQuestionId){
-        return evaluationService.createEvaluation(evaluationDto);
+        return evaluationService.createEvaluation(evaluationDto, studentQuestionId);
     }
 }

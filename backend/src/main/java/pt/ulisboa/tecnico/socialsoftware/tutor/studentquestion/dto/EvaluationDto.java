@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 public class EvaluationDto implements Serializable {
     private int id;
-    private StudentQuestionDto studentQuestionDto;
     private boolean accepted;
     private String justification;
 
@@ -26,14 +25,6 @@ public class EvaluationDto implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public StudentQuestionDto getStudentQuestionDto() {
-        return studentQuestionDto;
-    }
-
-    public void setStudentQuestionDto(StudentQuestionDto studentQuestionDto) {
-        this.studentQuestionDto = studentQuestionDto;
     }
 
     public boolean isAccepted() {

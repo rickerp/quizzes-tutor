@@ -18,10 +18,8 @@ public class StudentQuestionDto implements Serializable {
     public StudentQuestionDto(StudentQuestion studentQuestion) {
         this.id = studentQuestion.getId();
 
-        if (studentQuestion.getEvaluation() != null) {
+        if (studentQuestion.getEvaluation() != null)
             this.evaluation = new EvaluationDto(studentQuestion.getEvaluation());
-            this.evaluation.setStudentQuestionDto(this);
-        }
 
         this.question = new QuestionDto(studentQuestion.getQuestion());
         this.student = studentQuestion.getStudent().getId();
