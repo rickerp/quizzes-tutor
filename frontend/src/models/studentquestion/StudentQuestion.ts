@@ -9,7 +9,9 @@ export default class StudentQuestion {
   constructor(jsonObj?: StudentQuestion) {
     if (jsonObj) {
       this.id = jsonObj.id;
-      this.evaluation = new Evaluation(jsonObj.evaluation);
+
+      if (jsonObj.evaluation)
+        this.evaluation = new Evaluation(jsonObj.evaluation);
       this.question = new Question(jsonObj.question);
       this.student = jsonObj.student;
     }
