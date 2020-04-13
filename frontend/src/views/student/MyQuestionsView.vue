@@ -6,6 +6,21 @@
       :items-per-page="15"
       multi-sort
     >
+      <template v-slot:top>
+        <v-card-title>
+          <!-- <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            class="mx-2"
+          /> -->
+
+          <v-spacer />
+          <v-btn color="primary" dark @click="newQuestion"
+            >Submit new Question</v-btn
+          >
+        </v-card-title>
+      </template>
       <template v-slot:item.content="{ item }">
         <p
           v-html="convertMarkDownNoFigure(item.content)"
@@ -21,6 +36,12 @@
         >
       </template>
     </v-data-table>
+
+    <submit-question-dialog
+      v-model="newQuestionDialog"
+      v-on:submit-question="onSubmitQuestion"
+      v-on:close-submit-question-dialog="onCloseSubmitQuestionDialog"
+    />
 
     <evaluation-dialog
       v-if="currentEvaluation"
@@ -48,9 +69,12 @@ import Question from '@/models/management/Question';
 import ShowQuestionDialog from '@/views/teacher/questions/ShowQuestionDialog.vue';
 import Evaluation from '@/models/studentquestion/Evaluation';
 import EvaluationDialog from '@/views/student/EvaluationDialog.vue';
+import SubmitQuestionDialog from '@/views/student/SubmitQuestionDialog.vue';
+import { Student } from '../../models/management/Student';
 
 @Component({
   components: {
+    'submit-question-dialog': SubmitQuestionDialog,
     'evaluation-dialog': EvaluationDialog,
     'show-question-dialog': ShowQuestionDialog
   }
@@ -63,18 +87,26 @@ export default class StatsView extends Vue {
   currentEvaluation: Evaluation | null = null;
   evaluationDialog = false;
   questionDialog = false;
+
+  newQuestionDialog = false;
+
   headers = [
     ...(this.teacherView ? [{ text: 'Student', value: 'student' }] : []),
     { text: 'Title', value: 'title' },
     { text: 'Question', value: 'content' },
-    { text: 'Topics', value: 'topics' },
     { text: 'Creation Date', value: 'creationDate' },
     { text: 'Evaluation', value: 'evaluation' }
   ];
   questions: StudentQuestion[] = [];
 
   async created() {
-    this.questions = await RemoteServices.listStudentQuestions();
+    await this.$store.dispatch('loading');
+    try {
+      this.questions = await RemoteServices.listStudentQuestions();
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
   }
 
   get displayQuestions() {
@@ -122,6 +154,19 @@ export default class StatsView extends Vue {
         ? 'Accepted'
         : 'Rejected'
       : 'Pending';
+  }
+
+  newQuestion() {
+    this.newQuestionDialog = true;
+  }
+
+  onCloseSubmitQuestionDialog() {
+    this.newQuestionDialog = false;
+  }
+
+  onSubmitQuestion(studentQuestion: StudentQuestion) {
+    this.questions.unshift(studentQuestion);
+    this.newQuestionDialog = false;
   }
 }
 </script>
