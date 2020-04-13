@@ -103,7 +103,6 @@
             </v-list-item>
           </v-list>
         </v-menu>
-
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" text dark>
@@ -119,6 +118,14 @@
               <v-list-item-content>
                 <v-list-item-title>Available</v-list-item-title>
               </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/clarifications">
+              <v-list-item-action>
+                <v-icon>fas fa-comments </v-icon>
+              </v-list-item-action>
+              <v-list-item-action>
+                <v-list-item-title>Clarifications</v-list-item-title>
+              </v-list-item-action>
             </v-list-item>
             <v-list-item to="/student/create">
               <v-list-item-action>
