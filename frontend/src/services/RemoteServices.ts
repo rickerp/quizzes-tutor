@@ -592,6 +592,22 @@ export default class RemoteServices {
     }
   }
 
+  static async submitStudentQuestion(
+    studentQuestion: StudentQuestion
+  ): Promise<StudentQuestion> {
+    return httpClient
+      .post(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestion`,
+        studentQuestion
+      )
+      .then(response => {
+        return new StudentQuestion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async listStudentQuestions(): Promise<StudentQuestion[]> {
     return httpClient
       .get(
