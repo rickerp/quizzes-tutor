@@ -14,6 +14,7 @@ import AuthDto from '@/models/user/AuthDto';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswer } from '@/models/management/QuizAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
+import StudentQuestion from '@/models/studentquestion/StudentQuestion';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -590,5 +591,20 @@ export default class RemoteServices {
       console.log(error);
       return 'Unknown Error - Contact admin';
     }
+  }
+
+  static async listStudentQuestions(): Promise<StudentQuestion[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestions`
+      )
+      .then(response => {
+        return response.data.map((studentQuestion: any) => {
+          return new StudentQuestion(studentQuestion);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
   }
 }

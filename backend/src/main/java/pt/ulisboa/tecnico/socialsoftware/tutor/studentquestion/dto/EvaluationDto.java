@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.Evaluation;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
 
 import java.io.Serializable;
 
@@ -15,7 +16,6 @@ public class EvaluationDto implements Serializable {
 
     public EvaluationDto(Evaluation evaluation) {
         this.id = evaluation.getId();
-        this.studentQuestionDto = new StudentQuestionDto(evaluation.getStudentQuestion());
         this.accepted = evaluation.isAccepted();
         this.justification = evaluation.getJustification();
     }

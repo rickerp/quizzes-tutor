@@ -99,7 +99,7 @@ class SubmitClarificationRequestPerformanceTest extends Specification {
         clarificationRequestDto.setUser(new UserDto(user))
 
         when:
-        1.upto(10000, {
+        1.upto(10, {
             clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestDto)})
 
         then:

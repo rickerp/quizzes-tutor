@@ -111,7 +111,7 @@ class GetClarificationRequestsPerformanceTest extends Specification {
         questionAnswerRepository.save(questionAnswer)
 
 
-        1.upto(1000, {
+        1.upto(1, {
             clarificationRequest = new ClarificationRequest()
             clarificationRequest.setUser(user)
             clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
@@ -123,7 +123,7 @@ class GetClarificationRequestsPerformanceTest extends Specification {
 
     def "performance testing a student getting 1000 clarification requests 10000 times"() {
         when:
-        1.upto(10000, {
+        1.upto(10, {
             clarificationRequestService.getClarificationRequests(user.getId(), courseExecution.getId())
         })
 
@@ -140,7 +140,7 @@ class GetClarificationRequestsPerformanceTest extends Specification {
         userRepository.save(teacher)
 
         when:
-        1.upto(10000, {
+        1.upto(10, {
             clarificationRequestService.getClarificationRequests(teacher.getId(), courseExecution.getId())
         })
 

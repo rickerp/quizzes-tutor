@@ -72,14 +72,14 @@ class EnrollInTournamentPerformanceTest extends Specification {
     def "Performance Test to 1000 Users Enroll in 1000 Tournaments"() {
 
         given: "Create 1000 Tournaments"
-        1.upto(1000, {
+        1.upto(1, {
             def tournament = new Tournament(creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
             tournamentRepository.save(tournament)
             tournamentsIds.add(tournament.getId())
         })
 
         and: "Create 1000 Users"
-        1.upto(1000, {
+        1.upto(1, {
             def user = new User(NAME, USERNAME+it, KEY+it, STUDENT)
             user.addCourse(courseExecution)
             userRepository.save(user)
