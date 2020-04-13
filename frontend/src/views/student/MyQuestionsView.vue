@@ -11,10 +11,27 @@
           v-html="convertMarkDownNoFigure(item.content)"
           @click="showQuestionDialog(item)"
       /></template>
+
+      <template v-slot:item.evaluation="{ item }">
+        <v-chip
+          @click="showEvaluationDialog(item.evaluation)"
+          :color="getEvaluationColor(item.evaluation)"
+          dark
+          >{{ getEvaluationLabel(item.evaluation) }}</v-chip
+        >
+      </template>
     </v-data-table>
+
+    <evaluation-dialog
+      v-if="currentEvaluation"
+      v-model="evaluationDialog"
+      :evaluation="currentEvaluation"
+      v-on:close-evaluation-dialog="onCloseEvaluationDialog"
+    />
+
     <show-question-dialog
       v-if="currentQuestion"
-      :dialog="questionDialog"
+      v-model="questionDialog"
       :question="currentQuestion"
       v-on:close-show-question-dialog="onCloseShowQuestionDialog"
     />
@@ -22,23 +39,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop, Model } from 'vue-property-decorator';
 import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
 import RemoteServices from '@/services/RemoteServices';
 import StudentQuestion from '@/models/studentquestion/StudentQuestion';
 import Image from '@/models/management/Image';
 import Question from '@/models/management/Question';
 import ShowQuestionDialog from '@/views/teacher/questions/ShowQuestionDialog.vue';
+import Evaluation from '@/models/studentquestion/Evaluation';
+import EvaluationDialog from '@/views/student/EvaluationDialog.vue';
 
 @Component({
   components: {
+    'evaluation-dialog': EvaluationDialog,
     'show-question-dialog': ShowQuestionDialog
   }
 })
 export default class StatsView extends Vue {
+  @Prop({ type: Boolean, required: false, default: true })
+  readonly teacherView!: boolean;
+
   currentQuestion: Question | null = null;
+  currentEvaluation: Evaluation | null = null;
+  evaluationDialog = false;
   questionDialog = false;
   headers = [
+    ...(this.teacherView ? [{ text: 'Student', value: 'student' }] : []),
     { text: 'Title', value: 'title' },
     { text: 'Question', value: 'content' },
     { text: 'Topics', value: 'topics' },
@@ -57,7 +83,7 @@ export default class StatsView extends Vue {
         question: s.question,
         ...s.question,
         topics: s.question.topics.map(t => t.name).join(', '),
-        evaluation: s.evaluation ? '?' : 'Pending'
+        ...s
       };
     });
   }
@@ -71,8 +97,31 @@ export default class StatsView extends Vue {
     this.questionDialog = true;
   }
 
+  showEvaluationDialog(evaluation: Evaluation) {
+    this.currentEvaluation = evaluation;
+    this.evaluationDialog = true;
+  }
+
+  onCloseEvaluationDialog() {
+    this.evaluationDialog = false;
+  }
+
   onCloseShowQuestionDialog() {
     this.questionDialog = false;
+  }
+
+  getEvaluationColor(evaluation: Evaluation | null) {
+    if (!evaluation) return 'orange';
+    if (evaluation.accepted) return 'green';
+    return 'red';
+  }
+
+  getEvaluationLabel(evaluation: Evaluation | null) {
+    return evaluation
+      ? evaluation.accepted
+        ? 'Accepted'
+        : 'Rejected'
+      : 'Pending';
   }
 }
 </script>
