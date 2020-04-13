@@ -102,7 +102,7 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         questionAnswer.setQuizAnswer(quizAnswer)
         questionAnswerRepository.save(questionAnswer)
 
-        1.upto(10, {
+        1.upto(1, {
             clarificationRequest = new ClarificationRequest()
             clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
             clarificationRequest.setContent(CLARIFICATION_CONTENT)
@@ -120,7 +120,7 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         clarificationCommentDto.setCreationDate(creationDate)
 
         when:
-        1.upto(10, {
+        1.upto(1, {
             clarificationCommentService.createClarificationComment(it, clarificationCommentDto)
         })
 
