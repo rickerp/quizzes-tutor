@@ -40,6 +40,7 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @DataJpaTest
 class SubmitClarificationCommentTest extends Specification {
@@ -77,6 +78,7 @@ class SubmitClarificationCommentTest extends Specification {
     @Shared
     def user
 
+    def DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     def clarificationRequest
     def clarificationCommentDto
 
@@ -113,7 +115,7 @@ class SubmitClarificationCommentTest extends Specification {
         clarificationRequest.setQuestionAnswer(questionAnswer)
         clarificationRequestRepository.save(clarificationRequest)
 
-        def creationDate = LocalDateTime.now()
+        def creationDate = LocalDateTime.now().format(formatter)
 
         clarificationCommentDto = new ClarificationCommentDto()
         clarificationCommentDto.setContent(COMMENT_CONTENT)
@@ -130,7 +132,7 @@ class SubmitClarificationCommentTest extends Specification {
         comment.getId() != null
         comment.getContent() == clarificationCommentDto.getContent()
         comment.getUser().getUsername() == user.getUsername()
-        comment.getCreationDate() == clarificationCommentDto.getCreationDate()
+        comment.getCreationDate().format(formatter) == clarificationCommentDto.getCreationDate()
     }
 
     def "submit a comment without a creationTime"() {

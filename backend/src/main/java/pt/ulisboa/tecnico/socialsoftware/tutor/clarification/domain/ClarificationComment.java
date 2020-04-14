@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "Clarification_comments")
@@ -42,7 +43,7 @@ public class ClarificationComment {
         this.user = user;
         this.clarificationRequest = clarificationRequest;
         this.creationDate = clarificationCommentDto.getCreationDate() == null ?
-                            LocalDateTime.now() : clarificationCommentDto.getCreationDate();
+                            LocalDateTime.now() : LocalDateTime.parse(clarificationCommentDto.getCreationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     public Integer getId() {

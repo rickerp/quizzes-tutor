@@ -113,11 +113,9 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
 
     def "performance test creating 10000 clarification comments"() {
         given: "a clarification comment dto"
-        def creationDate = LocalDateTime.now()
         clarificationCommentDto = new ClarificationCommentDto()
         clarificationCommentDto.setContent(COMMENT_CONTENT)
         clarificationCommentDto.setUser(userDto)
-        clarificationCommentDto.setCreationDate(creationDate)
 
         when:
         1.upto(1, {
