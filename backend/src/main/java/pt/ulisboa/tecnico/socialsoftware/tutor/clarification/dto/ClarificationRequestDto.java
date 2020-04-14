@@ -4,20 +4,19 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
-
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ClarificationRequestDto {
 
     private int id;
     private ClarificationRequest.State state;
     private String content;
-    private LocalDateTime creationDate;
+    private String creationDate;
     private UserDto user;
     private QuestionAnswerDto questionAnswer;
     private ClarificationCommentDto clarificationComment;
     private ImageDto image;
-
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public ClarificationRequestDto() {
     }
 
@@ -26,7 +25,9 @@ public class ClarificationRequestDto {
         this.id = clarificationRequest.getId();
         this.state = clarificationRequest.getState();
         this.content = clarificationRequest.getContent();
-        this.creationDate = clarificationRequest.getCreationDate();
+        if (clarificationRequest.getCreationDate() != null) {
+            this.creationDate = clarificationRequest.getCreationDate().format(formatter);
+        }
         this.user = new UserDto(clarificationRequest.getUser());
         this.questionAnswer = new QuestionAnswerDto(clarificationRequest.getQuestionAnswer());
         if (clarificationRequest.getClarificationComment() != null) {
@@ -62,11 +63,11 @@ public class ClarificationRequestDto {
         this.content = content;
     }
 
-    public LocalDateTime getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
