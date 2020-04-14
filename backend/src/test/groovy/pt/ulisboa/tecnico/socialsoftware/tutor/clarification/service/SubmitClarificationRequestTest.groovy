@@ -38,8 +38,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import spock.lang.Shared
 
-import java.time.format.DateTimeFormatter
-
 @DataJpaTest
 class SubmitClarificationRequestTest extends Specification {
 
@@ -73,7 +71,6 @@ class SubmitClarificationRequestTest extends Specification {
     @Autowired
     ClarificationRequestRepository clarificationRequestRepository
 
-    def DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     def quiz
     def question
     def clarificationRequestDto
@@ -107,7 +104,7 @@ class SubmitClarificationRequestTest extends Specification {
 
         clarificationRequestDto = new ClarificationRequestDto()
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
-        clarificationRequestDto.setCreationDate(LocalDateTime.now().format(formatter))
+        clarificationRequestDto.setCreationDate(LocalDateTime.now())
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
         clarificationRequestDto.setUser(new UserDto(user))
     }
@@ -122,7 +119,7 @@ class SubmitClarificationRequestTest extends Specification {
         def clarificationRequestCreated = clarificationRequestCreatedList[0]
         clarificationRequestCreated.getState() == clarificationRequestDto.getState()
         clarificationRequestCreated.getContent() == clarificationRequestDto.getContent()
-        clarificationRequestCreated.getCreationDate().format(formatter) == clarificationRequestDto.getCreationDate()
+        clarificationRequestCreated.getCreationDate() == clarificationRequestDto.getCreationDate()
         clarificationRequestCreated.getUser().getUsername() == clarificationRequestDto.getUser().getUsername()
     }
 
@@ -202,7 +199,7 @@ class SubmitClarificationRequestTest extends Specification {
         given: "Another clarificationRequestDto"
         def clarificationRequestCreated = new ClarificationRequestDto()
         clarificationRequestCreated.setContent(content)
-        clarificationRequestCreated.setCreationDate(LocalDateTime.now().format(formatter))
+        clarificationRequestCreated.setCreationDate(LocalDateTime.now())
         clarificationRequestCreated.setState(state)
         clarificationRequestCreated.setUser(new UserDto(user))
 

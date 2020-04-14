@@ -5,15 +5,13 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarificatio
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ClarificationCommentDto {
 
     private int id;
     private String content;
     private UserDto user;
-    private String creationDate;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private LocalDateTime creationDate;
 
     public ClarificationCommentDto() {}
 
@@ -21,7 +19,6 @@ public class ClarificationCommentDto {
         this.id = clarificationComment.getId();
         this.content = clarificationComment.getContent();
         this.user = new UserDto(clarificationComment.getUser());
-        this.creationDate = clarificationComment.getCreationDate().format(formatter);
     }
 
     public int getId() {
@@ -48,11 +45,11 @@ public class ClarificationCommentDto {
         this.user = user;
     }
 
-    public String getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 }

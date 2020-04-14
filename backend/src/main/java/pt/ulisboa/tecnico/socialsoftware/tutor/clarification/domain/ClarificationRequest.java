@@ -9,7 +9,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "Clarification_requests")
@@ -58,7 +57,7 @@ public class ClarificationRequest {
 
         if (clarificationRequestDto.getImage() != null) this.image = new Image(clarificationRequestDto.getImage());
 
-        this.creationDate = clarificationRequestDto.getCreationDate() == null ? LocalDateTime.now() : LocalDateTime.parse(clarificationRequestDto.getCreationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        this.creationDate = clarificationRequestDto.getCreationDate() == null ? LocalDateTime.now() : clarificationRequestDto.getCreationDate();
 
     }
 
