@@ -1,0 +1,25 @@
+import { QuestionAnswer } from '@/models/management/QuestionAnswer';
+import { ClarificationComment } from '@/models/management/ClarificationComment';
+import User from '@/models/user/User';
+
+export class ClarificationRequest {
+  user!: User;
+  id!: number;
+  state!: string;
+  content!: string;
+  creationDate!: string;
+  clarificationComment!: ClarificationComment;
+  questionAnswer!: QuestionAnswer;
+
+  constructor(jsonObj?: ClarificationRequest) {
+    if (jsonObj) {
+      this.id = jsonObj.id;
+      this.state = jsonObj.state;
+      this.content = jsonObj.content;
+      this.creationDate = jsonObj.creationDate;
+      this.user = new User(jsonObj.user);
+      this.questionAnswer = new QuestionAnswer(jsonObj.questionAnswer);
+      if (typeof(jsonObj.clarificationComment) != 'undefined') this.clarificationComment = new ClarificationComment(jsonObj.clarificationComment);
+    }
+  }
+}

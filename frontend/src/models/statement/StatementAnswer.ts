@@ -10,4 +10,5 @@ export default class StatementAnswer {
       this.sequence = jsonObj.sequence;
     }
   }
+
 }
