@@ -14,9 +14,8 @@
             label="Search"
             class="mx-2"
           /> -->
-
           <v-spacer />
-          <v-btn color="primary" dark @click="newQuestion"
+          <v-btn v-if="!teacherView" color="primary" dark @click="newQuestion"
             >Submit new Question</v-btn
           >
         </v-card-title>
@@ -29,7 +28,7 @@
 
       <template v-slot:item.evaluation="{ item }">
         <v-chip
-          @click="showEvaluationDialog(item.evaluation)"
+          @click="showEvaluationDialog(item.studentQuestion)"
           :color="getEvaluationColor(item.evaluation)"
           dark
           >{{ getEvaluationLabel(item.evaluation) }}</v-chip
@@ -38,22 +37,31 @@
     </v-data-table>
 
     <submit-question-dialog
+      v-if="newQuestionDialog"
       v-model="newQuestionDialog"
       v-on:submit-question="onSubmitQuestion"
       v-on:close-submit-question-dialog="onCloseSubmitQuestionDialog"
     />
 
     <evaluation-dialog
-      v-if="currentEvaluation"
+      v-if="studentQuestion && studentQuestion.evaluation"
       v-model="evaluationDialog"
-      :evaluation="currentEvaluation"
+      :evaluation="studentQuestion.evaluation"
       v-on:close-evaluation-dialog="onCloseEvaluationDialog"
     />
 
+    <submit-evaluation-dialog
+      v-if="submitEvaluationDialog && teacherView"
+      v-model="submitEvaluationDialog"
+      :studentQuestion="studentQuestion"
+      v-on:submit-evaluation="onSubmitEvaluation"
+      v-on:close-submit-evaluation-dialog="onCloseSubmitEvaluationDialog"
+    />
+
     <show-question-dialog
-      v-if="currentQuestion"
+      v-if="studentQuestion"
       v-model="questionDialog"
-      :question="currentQuestion"
+      :question="studentQuestion.question"
       v-on:close-show-question-dialog="onCloseShowQuestionDialog"
     />
   </v-card>
@@ -64,30 +72,30 @@ import { Component, Vue, Prop, Model } from 'vue-property-decorator';
 import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
 import RemoteServices from '@/services/RemoteServices';
 import StudentQuestion from '@/models/studentquestion/StudentQuestion';
-import Image from '@/models/management/Image';
 import Question from '@/models/management/Question';
 import ShowQuestionDialog from '@/views/teacher/questions/ShowQuestionDialog.vue';
 import Evaluation from '@/models/studentquestion/Evaluation';
 import EvaluationDialog from '@/views/student/EvaluationDialog.vue';
 import SubmitQuestionDialog from '@/views/student/SubmitQuestionDialog.vue';
-import { Student } from '../../models/management/Student';
+import SubmitEvaluationDialog from '@/views/teacher/studentquestions/SubmitEvaluationDialog.vue';
+import { Student } from '@/models/management/Student';
 
 @Component({
   components: {
     'submit-question-dialog': SubmitQuestionDialog,
     'evaluation-dialog': EvaluationDialog,
-    'show-question-dialog': ShowQuestionDialog
+    'show-question-dialog': ShowQuestionDialog,
+    'submit-evaluation-dialog': SubmitEvaluationDialog
   }
 })
 export default class StatsView extends Vue {
-  @Prop({ type: Boolean, required: false, default: true })
+  @Prop({ type: Boolean, required: false, default: false })
   readonly teacherView!: boolean;
 
-  currentQuestion: Question | null = null;
-  currentEvaluation: Evaluation | null = null;
+  studentQuestion: StudentQuestion | null = null;
   evaluationDialog = false;
   questionDialog = false;
-
+  submitEvaluationDialog = false;
   newQuestionDialog = false;
 
   headers = [
@@ -102,7 +110,11 @@ export default class StatsView extends Vue {
   async created() {
     await this.$store.dispatch('loading');
     try {
-      this.questions = await RemoteServices.listStudentQuestions();
+      if (this.teacherView)
+        this.questions = await RemoteServices.listCourseStudentQuestions();
+      else {
+        this.questions = await RemoteServices.listStudentQuestions();
+      }
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
@@ -112,7 +124,7 @@ export default class StatsView extends Vue {
   get displayQuestions() {
     return this.questions.map(s => {
       return {
-        question: s.question,
+        studentQuestion: s,
         ...s.question,
         topics: s.question.topics.map(t => t.name).join(', '),
         ...s
@@ -125,13 +137,28 @@ export default class StatsView extends Vue {
   }
 
   showQuestionDialog(question: StudentQuestion) {
-    this.currentQuestion = question.question;
+    this.studentQuestion = question;
     this.questionDialog = true;
   }
 
-  showEvaluationDialog(evaluation: Evaluation) {
-    this.currentEvaluation = evaluation;
-    this.evaluationDialog = true;
+  showEvaluationDialog(studentQuestion: StudentQuestion) {
+    this.studentQuestion = studentQuestion;
+
+    if (studentQuestion.evaluation) {
+      this.evaluationDialog = true;
+    } else {
+      this.submitEvaluationDialog = true;
+    }
+  }
+
+  onCloseSubmitEvaluationDialog() {
+    this.submitEvaluationDialog = false;
+  }
+
+  onSubmitEvaluation(evaluation: Evaluation) {
+    if (this.studentQuestion) this.studentQuestion.evaluation = evaluation;
+    this.submitEvaluationDialog = false;
+    this.questions = [...this.questions]; // refresh questions to show the evaluation instantly
   }
 
   onCloseEvaluationDialog() {

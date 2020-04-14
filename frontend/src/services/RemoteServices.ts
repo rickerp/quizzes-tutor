@@ -14,6 +14,7 @@ import AuthDto from '@/models/user/AuthDto';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
 import StudentQuestion from '@/models/studentquestion/StudentQuestion';
+import Evaluation from '@/models/studentquestion/Evaluation';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -617,6 +618,35 @@ export default class RemoteServices {
         return response.data.map((studentQuestion: any) => {
           return new StudentQuestion(studentQuestion);
         });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async listCourseStudentQuestions(): Promise<StudentQuestion[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/coursestudentquestions`
+      )
+      .then(response => {
+        return response.data.map((studentQuestion: any) => {
+          return new StudentQuestion(studentQuestion);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async submitStudentQuestionEvaluation(
+    evaluation: Evaluation,
+    id: number
+  ): Promise<Evaluation> {
+    return httpClient
+      .post(`/studentquestions/${id}/evaluation`, evaluation)
+      .then(response => {
+        return new Evaluation(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

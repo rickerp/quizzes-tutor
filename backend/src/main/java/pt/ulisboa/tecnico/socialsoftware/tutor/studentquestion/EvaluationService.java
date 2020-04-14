@@ -30,12 +30,6 @@ public class EvaluationService {
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public EvaluationDto createEvaluation(EvaluationDto evaluationDto, int studentQuestionId) {
-        /*
-        if(evaluationDto.getStudentQuestionDto() == null){
-            throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
-        }
-        */
-
         StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId).orElse(null);
         if(studentQuestion == null){
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND);
