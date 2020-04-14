@@ -94,6 +94,19 @@ export default class RemoteServices {
       });
   }
 
+  static async playerEnroll(id: number): Promise<Tournament> {
+    return httpClient
+      .put(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}`
+      )
+      .then(response => {
+        return new Tournament(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getUserStats(): Promise<StudentStats> {
     return httpClient
       .get(

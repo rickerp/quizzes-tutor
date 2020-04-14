@@ -35,30 +35,48 @@
       </template>
 
       <template v-slot:item.playersId="{ item }">
-        <span
-          v-if="item.playersId.length === 0"
-          class="font-italic font-weight-medium red--text"
-          >None</span
-        >
-        <span
-          v-else
-          class="font-weight-medium green--text"
-          v-text="item.playersId.length"
-        >
-        </span>
+        <span>{{ item.playersId.length }}</span>
       </template>
 
       <template v-slot:item.topicsName="{ item }">
-        <v-hover v-slot:default="{ hover }">
-          <v-list class="pa-0" :color="hover ? 'white' : 'transparent'">
-            <v-list-group>
-              <v-icon slot="prependIcon" color="primary">category</v-icon>
-              <v-list-item v-for="name in item.topicsName" :key="name" link>
-                <v-list-item-title v-text="name"></v-list-item-title>
-              </v-list-item>
-            </v-list-group>
+        <v-menu transition="slide-x-transition">
+          <template v-slot:activator="{ on }">
+            <v-btn color="primary" class="mr-2" v-on="on">
+              {{ item.topicsName.length }}
+              <v-icon color="white" class="mr-2" v-on="on">category</v-icon>
+              <v-icon color="white" class="mr-2" v-on="on" small
+                >fas fa-chevron-down</v-icon
+              >
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item v-for="name in item.topicsName" :key="name" link>
+              <v-list-item-title v-text="name"></v-list-item-title>
+            </v-list-item>
           </v-list>
-        </v-hover>
+        </v-menu>
+      </template>
+
+      <template v-slot:item.action="{ item }">
+        <v-tooltip v-if="item.playersId.includes(userId)">
+          <template v-slot:activator="{ on }">
+            <v-icon color="green darken-2" class="mr-2" v-on="on"
+              >fas fa-user-check</v-icon
+            >
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              color="primary"
+              class="mr-2"
+              v-on="on"
+              @click="playerEnroll(item.id)"
+              >fas fa-user-plus</v-icon
+            >
+          </template>
+          <span>Enroll</span>
+        </v-tooltip>
       </template>
     </v-data-table>
   </v-card>
@@ -88,12 +106,6 @@ export default class TournamentsView extends Vue {
       width: '10%'
     },
     {
-      text: 'Enrollments',
-      value: 'playersId',
-      align: 'center',
-      width: '5%'
-    },
-    {
       text: 'Start Date',
       value: 'startTime',
       align: 'center',
@@ -115,23 +127,50 @@ export default class TournamentsView extends Vue {
       text: 'Topics',
       value: 'topicsName',
       align: 'center',
+      width: '10%'
+    },
+    {
+      text: 'Enrollments',
+      value: 'playersId',
+      align: 'center',
       width: '5%'
+    },
+    {
+      text: 'Action',
+      value: 'action',
+      align: 'center',
+      width: '10%'
     }
   ];
 
   async created() {
     await this.$store.dispatch('loading');
     try {
-      console.log(this.userId);
       this.tournaments = (await RemoteServices.getTournaments()).sort(
         (ta, tb) => {
-          if (ta.creatorId == this.userId) return -1;
-          if (tb.creatorId == this.userId) return 1;
-          if (ta.playersId.includes(this.userId)) return -1;
-          if (tb.playersId.includes(this.userId)) return 1;
+          let ea = ta.playersId.includes(this.userId);
+          let eb = tb.playersId.includes(this.userId);
+          let ca = ta.creatorId == this.userId;
+          let cb = tb.creatorId == this.userId;
+
+          if (ea) return -1;
+          if (eb) return 1;
+          if (ca) return -1;
+          if (cb) return 1;
           return -1;
         }
       );
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
+  }
+
+  async playerEnroll(id: number) {
+    await this.$store.dispatch('loading');
+    try {
+      let idx = this.tournaments.findIndex(e => e.id === id);
+      this.tournaments.splice(idx, 1, await RemoteServices.playerEnroll(id));
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
