@@ -22,6 +22,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +68,11 @@ public class TournamentService {
         CourseExecution courseExecution = courseExecutionRepository.findById(dto.getCourseExecutionId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, dto.getCourseExecutionId()));
 
-        Tournament tournament = new Tournament(dto.getName(), creator, topics, courseExecution, dto.getNrQuestions(), dto.getStartTime(), dto.getEndTime());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime startTime = LocalDateTime.parse(dto.getStartTime(), formatter);
+        LocalDateTime endTime = LocalDateTime.parse(dto.getEndTime(), formatter);
+
+        Tournament tournament = new Tournament(dto.getName(), creator, topics, courseExecution, dto.getNrQuestions(), startTime, endTime);
         entityManager.persist(tournament);
         return new TournamentDto(tournament);
     }
