@@ -1,63 +1,74 @@
 <template>
-  <v-card class="table">
-    <v-data-table
-      v-if="!viewFullClarification"
-      :headers="headers"
-      :items="clarifications"
-      :search="search"
-      :sort-by="['content']"
-      multi-sort
-      :mobile-breakpoint="0"
-      :items-per-page="15"
-      :footer-props="{ itemsPerPageOptions: [15, 30, 50, 100] }"
-    >
-      <template v-slot:top>
-        <v-card-title>
-          <v-text-field
-            v-model="search"
-            append-icon="search"
-            label="Search"
-            class="mx-2"
-          />
-          <v-spacer />
-          <v-btn color="primary" dark @click="$emit('newClarification')">
-            New Clarification
-          </v-btn>
-        </v-card-title>
-      </template>
-      <template v-slot:item.action="{ item }">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon small class="mr-2" v-on="on" @click="showFullClarification(item)"
-              >visibility</v-icon
-            >
-          </template>
-          <span>Show Question</span>
-        </v-tooltip>
-      </template>
-    </v-data-table>
-    <req-component
-      v-if="viewFullClarification"
-      @closeClarification="closeClarification"
-      :question="questionAnswer.question"
-      :option="questionAnswer.option"
-      :correctOption="correctOption"
-    />
-    <chat-component
-      v-if="viewFullClarification"
-      :request="clarification"
-      :hasComment="hasComment"
-    />
-  </v-card>
+  <div>
+    <v-card v-if="!viewFullClarification" class="table">
+      <v-data-table
+        :headers="headers"
+        :items="clarifications"
+        :search="search"
+        :sort-by="['content']"
+        multi-sort
+        :mobile-breakpoint="0"
+        :items-per-page="15"
+        :footer-props="{ itemsPerPageOptions: [15, 30, 50, 100] }"
+      >
+        <template v-slot:top>
+          <v-card-title>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Search"
+              class="mx-2"
+            />
+            <v-spacer />
+            <v-btn color="primary" dark @click="$emit('newClarification')">
+              New Clarification
+            </v-btn>
+          </v-card-title>
+        </template>
+        <template v-slot:item.action="{ item }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                small
+                class="mr-2"
+                v-on="on"
+                @click="showFullClarification(item)"
+                >visibility</v-icon
+              >
+            </template>
+            <span>Show Clarification</span>
+          </v-tooltip>
+        </template>
+      </v-data-table>
+    </v-card>
+    <v-container v-if="viewFullClarification" class="white" style="width: 55%;">
+      <v-row>
+        <req-component
+          @closeClarification="closeClarification"
+          :question="questionAnswer.question"
+          :option="questionAnswer.option"
+          :correctOption="correctOption"
+        />
+      </v-row>
+      <v-row>
+        <chat-component
+          :request="clarification"
+          :show-toolbar="true"
+          :hasComment="hasComment"
+        />
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { QuestionAnswer } from '@/models/management/QuestionAnswer';
 import ClarificationComponent from '@/views/student/clarification/ClarificationComponent.vue';
 import Option from '@/models/management/Option';
 import ChatComponent from '@/views/student/clarification/ChatComponent.vue';
+import RemoteServices from '@/services/RemoteServices';
 @Component({
   components: {
     'req-component': ClarificationComponent,
@@ -65,14 +76,24 @@ import ChatComponent from '@/views/student/clarification/ChatComponent.vue';
   }
 })
 export default class ClarificationList extends Vue {
-  @Prop({ type: Array, required: true })
-  readonly clarifications!: ClarificationRequest[];
+  clarifications: ClarificationRequest[] = [];
   clarification: ClarificationRequest | undefined;
   hasComment: boolean = false;
   questionAnswer: QuestionAnswer | undefined;
   correctOption: Option | undefined;
   viewFullClarification: boolean = false;
   search: string = '';
+
+  async created() {
+    await this.$store.dispatch('loading');
+    try {
+      this.clarifications = await RemoteServices.getClarifications();
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
+  }
+
   headers: object = [
     {
       text: 'Clarification Request',
@@ -99,6 +120,7 @@ export default class ClarificationList extends Vue {
       width: '5%'
     }
   ];
+
   async showFullClarification(request: ClarificationRequest) {
     this.viewFullClarification = true;
     this.clarification = request;

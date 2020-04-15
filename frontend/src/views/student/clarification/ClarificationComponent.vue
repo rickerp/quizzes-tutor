@@ -1,6 +1,6 @@
 <template>
-  <v-container
-    class="pb-2 mb-2 pt-5 mt-5"
+  <div
+    class="pb-3 mb-3 pt-0 mt-0"
     v-if="question"
     v-bind:class="[
       'question-container',
@@ -49,7 +49,7 @@
         />
       </li>
     </ul>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -80,12 +80,12 @@ export default class ClarificationComponent extends Vue {
   }
   .correct {
     .option-content {
-      background-color: #333333;
+      background-color: #555555;
       color: rgb(255, 255, 255) !important;
     }
 
     .option-letter {
-      background-color: #333333 !important;
+      background-color: #555555 !important;
       color: rgb(255, 255, 255) !important;
     }
   }
@@ -135,12 +135,12 @@ export default class ClarificationComponent extends Vue {
   }
   .correct {
     .option-content {
-      background-color: #333333;
+      background-color: #555555;
       color: rgb(255, 255, 255) !important;
     }
 
     .option-letter {
-      background-color: #333333 !important;
+      background-color: #555555 !important;
       color: rgb(255, 255, 255) !important;
     }
   }

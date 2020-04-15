@@ -16,7 +16,8 @@ import AvailableQuizzesView from '@/views/student/AvailableQuizzesView.vue';
 import SolvedQuizzesView from '@/views/student/SolvedQuizzesView.vue';
 import QuizView from '@/views/student/quiz/QuizView.vue';
 import ResultsView from '@/views/student/quiz/ResultsView.vue';
-import StudentClarificationsView from '@/views/student/clarification/ClarificationsView.vue';
+import ClarificationList from '@/views/student/clarification/ClarificationList.vue';
+
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
 
@@ -135,7 +136,7 @@ let router = new Router({
         {
           path: 'clarifications',
           name: 'clarifications-quizzes',
-          component: StudentClarificationsView,
+          component: ClarificationList,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Clarifications',
             requiredAuth: 'Student'
