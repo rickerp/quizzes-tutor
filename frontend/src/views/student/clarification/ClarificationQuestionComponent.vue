@@ -1,5 +1,5 @@
 <template>
-  <div
+  <v-container fluid
     class="pb-3 mb-3 pt-0 mt-0"
     v-if="question"
     v-bind:class="[
@@ -14,7 +14,7 @@
       <v-icon style="padding-right: 20px"> fas fa-file-alt </v-icon>
       <v-toolbar-title>Question</v-toolbar-title>
       <v-spacer />
-      <v-btn color="primary" dark @click="$emit('closeClarification')">
+      <v-btn color="primary" dark @click="$emit('closeAction')">
         Close
       </v-btn>
     </v-toolbar>
@@ -49,7 +49,7 @@
         />
       </li>
     </ul>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">

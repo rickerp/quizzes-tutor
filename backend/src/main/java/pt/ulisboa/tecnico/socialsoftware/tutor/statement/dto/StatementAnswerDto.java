@@ -6,6 +6,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRe
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,9 @@ public class StatementAnswerDto implements Serializable {
             this.optionId = questionAnswer.getOption().getId();
         }
         this.clarificationRequests = questionAnswer.getClarificationRequests().stream()
-                .map(ClarificationRequestDto::new).collect(Collectors.toList());
+                .map(ClarificationRequestDto::new)
+                .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate)
+                        .reversed()).collect(Collectors.toList());
     }
 
     public Integer getOptionId() {
