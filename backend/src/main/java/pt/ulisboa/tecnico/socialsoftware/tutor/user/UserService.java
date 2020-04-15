@@ -115,12 +115,26 @@ public class UserService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoTeacher() {
-        return this.userRepository.findByUsername("Demo-Teacher");
+        User user = this.userRepository.findByUsername("Demo-Teacher");
+        if (user == null)
+            return createUser("Demo Teacher", "Demo-Teacher", User.Role.TEACHER);
+        return user;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoStudent() {
-        return this.userRepository.findByUsername("Demo-Student");
+        User user = this.userRepository.findByUsername("Demo-Student");
+        if (user == null)
+            return createUser("Demo Student", "Demo-Student", User.Role.STUDENT);
+        return user;
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public User getDemoAdmin() {
+        User user =  this.userRepository.findByUsername("Demo-Admin");
+        if (user == null)
+            return createUser("Demo Admin", "Demo-Admin", User.Role.DEMO_ADMIN);
+        return user;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -138,11 +152,5 @@ public class UserService {
         }
 
         return newDemoUser;
-    }
-
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public User getDemoAdmin() {
-        return this.userRepository.findByUsername("Demo-Admin");
     }
 }
