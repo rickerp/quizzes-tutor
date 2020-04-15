@@ -19,7 +19,12 @@ export class ClarificationRequest {
       this.creationDate = jsonObj.creationDate;
       this.user = new User(jsonObj.user);
       this.questionAnswer = new QuestionAnswer(jsonObj.questionAnswer);
-      if (typeof(jsonObj.clarificationComment) != 'undefined') this.clarificationComment = new ClarificationComment(jsonObj.clarificationComment);
+      if (jsonObj.clarificationComment == null) {
+        return;
+      }
+      this.clarificationComment = new ClarificationComment(
+        jsonObj.clarificationComment
+      );
     }
   }
 }

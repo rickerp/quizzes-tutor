@@ -548,6 +548,17 @@ export default class RemoteServices {
       });
   }
 
+  static async createtClarification(questionAnswerId: number, request: ClarificationRequest): Promise<ClarificationRequest> {
+    return httpClient
+      .post(`/questionAnswers/${questionAnswerId}/clarifications`, request)
+      .then( response => {
+        return new ClarificationRequest(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async createCourse(course: Course): Promise<Course> {
     return httpClient
       .post('/admin/courses/executions', course)

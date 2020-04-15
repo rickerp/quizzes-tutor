@@ -1,6 +1,7 @@
 <template>
-  <v-container fluid
-    class="pb-3 mb-3 pt-0 mt-0"
+  <v-container
+    fluid
+    class="pb-3 mb-3 pt-4 mt-4"
     v-if="question"
     v-bind:class="[
       'question-container',
@@ -10,14 +11,6 @@
         : 'incorrect-question'
     ]"
   >
-    <v-toolbar class="pb-3 mb-3" color="#333333" dark>
-      <v-icon style="padding-right: 20px"> fas fa-file-alt </v-icon>
-      <v-toolbar-title>Question</v-toolbar-title>
-      <v-spacer />
-      <v-btn color="primary" dark @click="$emit('closeAction')">
-        Close
-      </v-btn>
-    </v-toolbar>
     <div class="question">
       <span class="square">
         <span> 1 </span>
@@ -60,7 +53,7 @@ import Question from '@/models/management/Question';
 import Option from '@/models/management/Option';
 
 @Component
-export default class ClarificationComponent extends Vue {
+export default class ClarificationQuestionComponent extends Vue {
   @Prop(Question) readonly question!: Question;
   @Prop(Option) readonly option!: Option;
   @Prop(Option) readonly correctOption!: Option;

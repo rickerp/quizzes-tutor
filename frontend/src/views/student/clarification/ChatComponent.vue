@@ -1,178 +1,42 @@
 <template>
-  <v-container class="'mt-0 pt-0 mr-0 pr-0' : !showToolbar">
-    <v-toolbar v-if="showToolbar" color="#333333" dark>
-      <v-icon style="padding-right: 20px"> fas fa-comments </v-icon>
-      <v-toolbar-title>Clarification</v-toolbar-title>
-    </v-toolbar>
-    <v-list three-line
-      style="max-height: 450px"
-      class="scrollbar">
-      <v-list-item-group>
-        <template>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div>
-            <v-subheader class="font-weight-medium">
-              {{ request.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div v-if="hasComment">
-            <v-subheader class="font-weight-medium">
-              {{ request.clarificationComment.creationDate }}
-            </v-subheader>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-left">
-                  {{ request.clarificationComment.user.username }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="font-weight-bold">
-                  {{ request.clarificationComment.content }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-        </template>
-      </v-list-item-group>
-    </v-list>
-  </v-container>
+  <v-card
+    :elevation="0"
+    :style="showToolbar ? 'max-height: 650px;' : 'max-height: 500px;'"
+    class="scrollbar mb-2 pb-2 'mt-0 pt-0 mr-0 pr-0' : !showToolbar"
+  >
+    <div v-for="request in requests" v-bind:key="request.id">
+      <v-subheader class="font-weight-medium mt-3 mb-3">
+        {{ request.creationDate }}
+      </v-subheader>
+      <v-divider :inset="true" class="mb-4"></v-divider>
+      <v-hover v-slot:default="{ hover }" open-delay="200">
+        <v-card shaped class="ml-2 mb-2 mr-12" :elevation="hover ? 12 : 3">
+          <v-card-title class="-italic">
+            {{ request.user.username }}
+          </v-card-title>
+          <v-card-text align="left" class="font-weight-bold">
+            {{ request.content }}
+          </v-card-text>
+        </v-card>
+      </v-hover>
+      <span v-if="request.clarificationComment != null">
+        <v-subheader class="font-weight-medium justify-end">
+          {{ request.clarificationComment.creationDate }}
+        </v-subheader>
+        <v-divider :inset="true" class="mb-4 mr-0 ml-12"></v-divider>
+        <v-hover v-slot:default="{ hover }" open-delay="200">
+          <v-card shaped class="ml-12 mr-2 mb-2" :elevation="hover ? 12 : 3">
+            <v-card-title class="justify-end -italic">
+              {{ request.clarificationComment.user.username }}
+            </v-card-title>
+            <v-card-text align="left" class="font-weight-bold">
+              {{ request.clarificationComment.content }}
+            </v-card-text>
+          </v-card>
+        </v-hover>
+      </span>
+    </div>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -181,8 +45,11 @@ import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 
 @Component
 export default class ChatComponent extends Vue {
-  @Prop(ClarificationRequest) readonly request!: ClarificationRequest;
-  @Prop() readonly hasComment!: boolean;
+  @Prop({ type: Array, required: true })
+  readonly requests!: ClarificationRequest[];
   @Prop() readonly showToolbar!: boolean;
+  created() {
+    console.log(this.requests);
+  }
 }
 </script>
