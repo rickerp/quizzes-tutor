@@ -35,13 +35,13 @@
       </template>
 
       <template v-slot:item.playersId="{ item }">
-        <span>{{ item.playersId.length }}</span>
+        <span data-cy="enrollmentsTdP">{{ item.playersId.length }}</span>
       </template>
 
       <template v-slot:item.topicsName="{ item }">
-        <v-menu transition="slide-x-transition">
+        <v-menu transition="slide-y-transition">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" class="mr-2" v-on="on">
+            <v-btn color="primary" class="mr-2" v-on="on" data-cy="topicsTdP">
               {{ item.topicsName.length }}
               <v-icon color="white" class="mr-2" v-on="on">category</v-icon>
               <v-icon color="white" class="mr-2" v-on="on" small
@@ -72,6 +72,7 @@
               class="mr-2"
               v-on="on"
               @click="playerEnroll(item.id)"
+              data-cy="enrollTdP"
               >fas fa-user-plus</v-icon
             >
           </template>

@@ -71,3 +71,29 @@ Cypress.Commands.add(
     cy.get('[data-cy="saveButton"]').click();
   }
 );
+
+Cypress.Commands.add('demoStudentLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="studentButton"]').click();
+});
+
+Cypress.Commands.add('clickButton', (elem, button) => {
+  cy.contains(elem)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 8)
+    .find('[data-cy="' + button + '"]')
+    .click();
+});
+
+Cypress.Commands.add('assertValue', (elem, field, value) => {
+  cy.contains(elem)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 8)
+    .find('[data-cy="' + field + '"]')
+    .first()
+    .should('have.text', value);
+});
