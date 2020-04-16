@@ -1,5 +1,5 @@
-const QUIZ_TITLE = 'Allocation viewtype';
-const CLARIFICATION_CONTENT = 'THIS IS A TEST';
+const QUIZ_TITLE = 'My Quiz Test';
+const CLARIFICATION_CONTENT = 'THIS IS A CLARIFICATION REQUEST TEST';
 const QUESTION = 'A utility tree';
 
 describe('Clarification Request walkthrough', () => {

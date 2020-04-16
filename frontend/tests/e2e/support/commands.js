@@ -98,6 +98,7 @@ Cypress.Commands.add('createQuiz', (title, question) => {
     .children()
     .first()
     .click();
+  cy.wait(500);
   cy.get('.v-date-picker-table')
     .children()
     .contains('28')
