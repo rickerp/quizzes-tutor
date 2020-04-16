@@ -33,6 +33,7 @@
                 class="mr-2"
                 v-on="on"
                 @click="showFullClarification(item, 2)"
+                data-cy="showQuestion"
                 >visibility</v-icon
               >
             </template>
@@ -44,11 +45,12 @@
                 small
                 class="mr-2"
                 v-on="on"
+                data-cy="showClrf"
                 @click="showFullClarification(item, 3)"
                 >fas fa-comments</v-icon
               >
             </template>
-            <span>Show Clarifications</span>
+            <span>Show Clarification</span>
           </v-tooltip>
         </template>
       </v-data-table>
@@ -68,11 +70,11 @@
           <v-icon style="padding-right: 20px">
             {{ viewAction === 3 ? 'fas fa-comments' : 'fas fa-file-alt' }}
           </v-icon>
-          <v-toolbar-title>
+          <v-toolbar-title >
             {{ viewAction === 3 ? 'Clarifications' : 'Question' }}
           </v-toolbar-title>
           <v-spacer />
-          <v-btn color="primary" dark @click="closeAction">
+          <v-btn color="primary" dark @click="closeAction" data-cy="bttnClose">
             Close
           </v-btn>
         </v-toolbar>

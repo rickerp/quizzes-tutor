@@ -9,7 +9,7 @@
     <v-card>
       <v-card-title>
         <span class="headline">
-          New
+          Clarification Request
         </span>
       </v-card-title>
       <v-card-text class="text-left">
@@ -20,7 +20,8 @@
                 outline
                 rows="10"
                 v-model="editClarification.content"
-                label="Clarification Request"
+                label="Content"
+                data-cy="ClrfReq"
               ></v-textarea>
             </v-flex>
           </v-layout>
@@ -29,10 +30,20 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" dark @click="$emit('dialog', false)"
+        <v-btn
+          color="primary"
+          dark
+          @click="$emit('dialog', false)"
+          data-cy="bttnClrfCancel"
           >Cancel</v-btn
         >
-        <v-btn color="primary" dark @click="saveClarification">Save</v-btn>
+        <v-btn
+          color="primary"
+          dark
+          @click="saveClarification"
+          data-cy="bttnClrfSave"
+          >Save</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
