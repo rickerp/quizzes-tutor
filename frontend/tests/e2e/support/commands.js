@@ -145,7 +145,7 @@ Cypress.Commands.add('showQuestionClarification', content => {
     .parent()
     .should('have.length', 1)
     .children()
-    .should('have.length', 4)
+    .should('have.length', 6)
     .find('[data-cy="showQuestion"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();
@@ -155,7 +155,7 @@ Cypress.Commands.add('showClarification', content => {
   cy.contains(content)
     .parent()
     .children()
-    .should('have.length', 4)
+    .should('have.length', 6)
     .find('[data-cy="showClrf"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();

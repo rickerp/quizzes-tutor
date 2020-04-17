@@ -3,6 +3,7 @@
     <v-card v-if="viewAction === 1" class="table">
       <v-data-table
         :headers="headers"
+        :custom-filter="customFilter"
         :items="clarifications"
         :search="search"
         multi-sort
@@ -70,7 +71,7 @@
           <v-icon style="padding-right: 20px">
             {{ viewAction === 3 ? 'fas fa-comments' : 'fas fa-file-alt' }}
           </v-icon>
-          <v-toolbar-title >
+          <v-toolbar-title>
             {{ viewAction === 3 ? 'Clarifications' : 'Question' }}
           </v-toolbar-title>
           <v-spacer />
@@ -107,6 +108,7 @@ import ClarificationQuestionComponent from '@/views/common/clarification/Clarifi
 import Option from '@/models/management/Option';
 import ChatComponent from '@/views/common/clarification/ChatComponent.vue';
 import RemoteServices from '@/services/RemoteServices';
+import Question from '@/models/management/Question';
 @Component({
   components: {
     'req-component': ClarificationQuestionComponent,
@@ -136,25 +138,38 @@ export default class ClarificationList extends Vue {
       text: 'Clarification Request',
       value: 'content',
       align: 'left',
-      width: '50%'
+      width: '25%'
+    },
+    {
+      text: 'Question Title',
+      value: 'questionAnswer.question.title',
+      align: 'left',
+      width: '15%'
+    },
+    {
+      text: 'Question',
+      value: 'questionAnswer.question.content',
+      align: 'left',
+      width: '25%'
     },
     {
       text: 'Creation Date',
       value: 'creationDate',
       align: 'center',
-      width: '25%'
+      width: '15%'
     },
     {
       text: 'State',
       value: 'state',
       align: 'center',
-      width: '20%'
+      width: '10%'
     },
     {
       text: 'Action',
       value: 'action',
       align: 'center',
-      width: '5%'
+      width: '10%',
+      sortable: false
     }
   ];
 
@@ -176,6 +191,19 @@ export default class ClarificationList extends Vue {
   }
   async closeAction() {
     this.viewAction = 1;
+  }
+
+  customFilter(
+    value: string,
+    search: string,
+    clarification: ClarificationRequest
+  ) {
+    return (
+      search != null &&
+      JSON.stringify(clarification)
+        .toLowerCase()
+        .indexOf(search.toLowerCase()) !== -1
+    );
   }
 }
 </script>
