@@ -11,6 +11,9 @@
         :items-per-page="15"
         :footer-props="{ itemsPerPageOptions: [15, 30, 50, 100] }"
       >
+        <template v-slot:item.question.content="{ item }">
+          <span v-html="convertMarkDownNoFigure(item.content)"
+        /></template>
         <template v-slot:item.state="{ item }">
           <v-chip filter :color="getStatusColor(item.state)" small>
             <span>{{ item.state }}</span>
@@ -102,6 +105,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { QuestionAnswer } from '@/models/management/QuestionAnswer';
 import ClarificationQuestionComponent from '@/views/common/clarification/ClarificationQuestionComponent.vue';
@@ -193,6 +197,9 @@ export default class ClarificationList extends Vue {
     this.viewAction = 1;
   }
 
+  convertMarkDownNoFigure(text: string): string {
+    return convertMarkDownNoFigure(text, null);
+  }
   customFilter(
     value: string,
     search: string,
