@@ -73,6 +73,15 @@ let router = new Router({
           }
         },
         {
+          path: 'clarifications',
+          name: 'clarifications-management',
+          component: ClarificationList,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Clarifications',
+            requiredAuth: 'Teacher'
+          }
+        },
+        {
           path: 'topics',
           name: 'topics-management',
           component: TopicsView,
