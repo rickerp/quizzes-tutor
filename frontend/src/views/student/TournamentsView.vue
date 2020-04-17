@@ -18,9 +18,7 @@
             class="mx-2"
           />
           <v-spacer />
-          <v-btn color="primary" dark data-cy="createButton"
-            >New Tournament</v-btn
-          >
+          <v-btn color="primary">New Tournament</v-btn>
         </v-card-title>
       </template>
 
@@ -35,7 +33,7 @@
       </template>
 
       <template v-slot:item.playersId="{ item }">
-        <span data-cy="enrollmentsTdP">{{ item.playersId.length }}</span>
+        <span v-text="item.playersId.length" data-cy="enrollmentsTdP"></span>
       </template>
 
       <template v-slot:item.topicsName="{ item }">
@@ -65,7 +63,7 @@
             >
           </template>
         </v-tooltip>
-        <v-tooltip v-else bottom>
+        <v-tooltip v-else>
           <template v-slot:activator="{ on }">
             <v-icon
               color="primary"
@@ -149,15 +147,10 @@ export default class TournamentsView extends Vue {
     try {
       this.tournaments = (await RemoteServices.getTournaments()).sort(
         (ta, tb) => {
-          let ea = ta.playersId.includes(this.userId);
-          let eb = tb.playersId.includes(this.userId);
-          let ca = ta.creatorId == this.userId;
-          let cb = tb.creatorId == this.userId;
-
-          if (ea) return -1;
-          if (eb) return 1;
-          if (ca) return -1;
-          if (cb) return 1;
+          if (ta.playersId.includes(this.userId)) return -1;
+          if (tb.playersId.includes(this.userId)) return 1;
+          if (ta.creatorId == this.userId) return -1;
+          if (tb.creatorId == this.userId) return 1;
           return -1;
         }
       );

@@ -132,7 +132,6 @@ class CreateTournamentTest extends Specification {
         null                    | Topic.Status.AVAILABLE    | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || USER_NOT_STUDENT
         User.Role.STUDENT       | Topic.Status.DISABLED     | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
         User.Role.STUDENT       | Topic.Status.REMOVED      | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
-        User.Role.STUDENT       | null                      | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | 0             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | -1            | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | null          | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID

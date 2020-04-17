@@ -92,12 +92,11 @@ public class Tournament {
     public void setTopics(Set<Topic> topics) {
         if (topics == null || topics.isEmpty()) throw new TutorException(TOPIC_NOT_FOUND, -1);
         for (Topic topic : topics) {
-            if (topic.getStatus() != Topic.Status.AVAILABLE)
-                throw new TutorException(TOPIC_NOT_AVAILABLE, topic.getId());
+            if (topic == null || topic.getStatus() != Topic.Status.AVAILABLE && topic.getStatus() != null)
+                throw new TutorException(TOPIC_NOT_AVAILABLE, topic == null ? -1 : topic.getId());
         }
         this.topics = topics;
     }
-
 
     public CourseExecution getCourseExecution() { return this.courseExecution; }
 
