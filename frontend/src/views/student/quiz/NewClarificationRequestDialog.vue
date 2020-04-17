@@ -73,7 +73,7 @@ export default class NewClarificationRequestDialog extends Vue {
       return;
     }
     try {
-      const result = await RemoteServices.createtClarification(
+      const result = await RemoteServices.createClarification(
         this.questionAnswerId,
         this.editClarification
       );

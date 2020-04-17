@@ -537,8 +537,10 @@ export default class RemoteServices {
 
   static async getClarifications(): Promise<ClarificationRequest[]> {
     return httpClient
-      .get(`/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications`)
-      .then( response => {
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications`
+      )
+      .then(response => {
         return response.data.map((request: any) => {
           return new ClarificationRequest(request);
         });
@@ -548,10 +550,13 @@ export default class RemoteServices {
       });
   }
 
-  static async createtClarification(questionAnswerId: number, request: ClarificationRequest): Promise<ClarificationRequest> {
+  static async createClarification(
+    questionAnswerId: number,
+    request: ClarificationRequest
+  ): Promise<ClarificationRequest> {
     return httpClient
       .post(`/questionAnswers/${questionAnswerId}/clarifications`, request)
-      .then( response => {
+      .then(response => {
         return new ClarificationRequest(response.data);
       })
       .catch(async error => {

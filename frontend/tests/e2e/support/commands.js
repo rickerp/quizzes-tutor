@@ -107,6 +107,7 @@ Cypress.Commands.add('createQuiz', (title, question) => {
   cy.get('[data-cy="type"]').click();
   cy.contains('PROPOSED').click();
   cy.contains('Save').click();
+  cy.wait(100);
 });
 
 Cypress.Commands.add('respondQuiz', quiz_title => {
