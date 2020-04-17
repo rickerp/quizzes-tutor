@@ -56,6 +56,17 @@
             </template>
             <span>Show Clarification</span>
           </v-tooltip>
+          <v-tooltip bottom>
+            <template
+              v-if="$store.getters.isTeacher && item.state === 'UNRESOLVED'"
+              v-slot:activator="{ on }"
+            >
+              <v-icon small color="primary" class="mr-2" v-on="on"
+                >fas fa-plus</v-icon
+              >
+            </template>
+            <span>Add Comment </span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -78,9 +89,26 @@
             {{ viewAction === 3 ? 'Clarifications' : 'Question' }}
           </v-toolbar-title>
           <v-spacer />
-          <v-btn color="primary" dark @click="closeAction" data-cy="bttnClose">
-            Close
-          </v-btn>
+          <v-card-actions>
+            <v-btn
+              v-if="
+                $store.getters.isTeacher && clarification.state === 'UNRESOLVED'
+              "
+              color="primary"
+              dark
+              data-cy="bttnAddComment"
+            >
+              Add Comment
+            </v-btn>
+            <v-btn
+              color="primary"
+              dark
+              @click="closeAction"
+              data-cy="bttnClose"
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
         </v-toolbar>
       </v-row>
       <v-row>
