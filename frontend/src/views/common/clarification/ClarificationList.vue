@@ -103,9 +103,9 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { QuestionAnswer } from '@/models/management/QuestionAnswer';
-import ClarificationQuestionComponent from '@/views/student/clarification/ClarificationQuestionComponent.vue';
+import ClarificationQuestionComponent from '@/views/common/clarification/ClarificationQuestionComponent.vue';
 import Option from '@/models/management/Option';
-import ChatComponent from '@/views/student/clarification/ChatComponent.vue';
+import ChatComponent from '@/views/common/clarification/ChatComponent.vue';
 import RemoteServices from '@/services/RemoteServices';
 @Component({
   components: {

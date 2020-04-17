@@ -106,8 +106,8 @@ import StatementQuestion from '@/models/statement/StatementQuestion';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import StatementCorrectAnswer from '@/models/statement/StatementCorrectAnswer';
 import Image from '@/models/management/Image';
-import ChatComponent from '@/views/student/clarification/ChatComponent.vue';
-import NewClarificationRequestDialog from '@/views/student/clarification/NewClarificationRequestDialog.vue';
+import ChatComponent from '@/views/common/clarification/ChatComponent.vue';
+import NewClarificationRequestDialog from '@/views/student/quiz/NewClarificationRequestDialog.vue';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 
 @Component({

@@ -16,7 +16,7 @@ import AvailableQuizzesView from '@/views/student/AvailableQuizzesView.vue';
 import SolvedQuizzesView from '@/views/student/SolvedQuizzesView.vue';
 import QuizView from '@/views/student/quiz/QuizView.vue';
 import ResultsView from '@/views/student/quiz/ResultsView.vue';
-import ClarificationList from '@/views/student/clarification/ClarificationList.vue';
+import ClarificationList from '@/views/common/clarification/ClarificationList.vue';
 
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';

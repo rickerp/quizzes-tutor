@@ -15,7 +15,10 @@
       <span class="square">
         <span> 1 </span>
       </span>
-      <div class="question-content" v-html="convertMarkDown(question.content, question.image)"></div>
+      <div
+        class="question-content"
+        v-html="convertMarkDown(question.content, question.image)"
+      ></div>
     </div>
     <ul class="option-list">
       <li
