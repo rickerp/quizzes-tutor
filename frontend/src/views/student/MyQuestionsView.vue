@@ -15,7 +15,12 @@
             class="mx-2"
           /> -->
           <v-spacer />
-          <v-btn v-if="!teacherView" color="primary" dark @click="newQuestion"
+          <v-btn
+            data-cy="newQuestionBtn"
+            v-if="!teacherView"
+            color="primary"
+            dark
+            @click="newQuestion"
             >Submit new Question</v-btn
           >
         </v-card-title>
@@ -78,7 +83,6 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import EvaluationDialog from '@/views/student/EvaluationDialog.vue';
 import SubmitQuestionDialog from '@/views/student/SubmitQuestionDialog.vue';
 import SubmitEvaluationDialog from '@/views/teacher/studentquestions/SubmitEvaluationDialog.vue';
-import { Student } from '@/models/management/Student';
 
 @Component({
   components: {
@@ -88,7 +92,7 @@ import { Student } from '@/models/management/Student';
     'submit-evaluation-dialog': SubmitEvaluationDialog
   }
 })
-export default class StatsView extends Vue {
+export default class MyQuestionsView extends Vue {
   @Prop({ type: Boolean, required: false, default: false })
   readonly teacherView!: boolean;
 
