@@ -69,7 +69,7 @@
               color="primary"
               class="mr-2"
               v-on="on"
-              @click="playerEnroll(item.id)"
+              @click="playerEnroll(item)"
               data-cy="enrollTdP"
               >fas fa-user-plus</v-icon
             >
@@ -160,15 +160,22 @@ export default class TournamentsView extends Vue {
     await this.$store.dispatch('clearLoading');
   }
 
-  async playerEnroll(id: number) {
-    await this.$store.dispatch('loading');
-    try {
-      let idx = this.tournaments.findIndex(e => e.id === id);
-      this.tournaments.splice(idx, 1, await RemoteServices.playerEnroll(id));
-    } catch (error) {
-      await this.$store.dispatch('error', error);
+  async playerEnroll(item: Tournament) {
+    console.log(item.name);
+    if (confirm('Are you sure you want to enroll in "' + item.name + '"?')) {
+      await this.$store.dispatch('loading');
+      try {
+        let idx = this.tournaments.findIndex(e => e.id === item.id);
+        this.tournaments.splice(
+          idx,
+          1,
+          await RemoteServices.playerEnroll(item.id)
+        );
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+      await this.$store.dispatch('clearLoading');
     }
-    await this.$store.dispatch('clearLoading');
   }
 }
 </script>
