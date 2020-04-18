@@ -18,7 +18,7 @@
           <v-layout column wrap>
             <v-flex xs24 sm12 md8>
               <v-text-field
-                data-cy="questionTitle"
+                class="questionTitle"
                 v-model="question.title"
                 label="Title"
               />

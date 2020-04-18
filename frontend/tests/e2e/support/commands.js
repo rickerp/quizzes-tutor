@@ -52,6 +52,22 @@ Cypress.Commands.add('closeErrorMessage', (name, acronym, academicTerm) => {
     .click();
 });
 
+Cypress.Commands.add(
+  'createStudentSuggestion',
+  ({ questionTitle, questionContent, options }) => {
+    cy.contains('Suggested').click();
+    cy.get('[data-cy="newQuestionBtn"]').click();
+    questionTitle && cy.get('.questionTitle').type(questionTitle);
+    cy.get('[data-cy="questionContent"]').type(questionContent);
+    cy.get('[data-cy="correct1"]').click({ force: true });
+    cy.get('[data-cy="option1"]').type(options[0]);
+    cy.get('[data-cy="option2"]').type(options[1]);
+    cy.get('[data-cy="option3"]').type(options[2]);
+    cy.get('[data-cy="option4"]').type(options[3]);
+    cy.get('[data-cy="saveQuestionBtn"]').click();
+  }
+);
+
 Cypress.Commands.add('deleteCourseExecution', acronym => {
   cy.contains(acronym)
     .parent()
