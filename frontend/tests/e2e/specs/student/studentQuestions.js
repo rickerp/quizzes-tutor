@@ -8,7 +8,7 @@ function generateData() {
   return { questionContent, options, questionTitle };
 }
 
-describe('Student suggested question workflo', () => {
+describe('Student suggested question workflow', () => {
   before(() => {
     cy.demoStudentLogin();
   });
@@ -28,6 +28,7 @@ describe('Student suggested question workflo', () => {
     cy.createStudentSuggestion(data);
     cy.contains('Question must have title and content')
       .parent()
+      .children()
       .find('button')
       .click();
   });

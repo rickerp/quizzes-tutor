@@ -17,12 +17,14 @@
         <v-container grid-list-md fluid>
           <v-layout column wrap>
             <v-switch
+              data-cy="accepted"
               v-model="evaluation.accepted"
               class="ma-4"
               label="Accepted"
             />
             <v-flex xs24 sm12 md8>
               <v-text-field
+                data-cy="justification"
                 v-model="evaluation.justification"
                 label="Justification"
               />

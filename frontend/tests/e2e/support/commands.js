@@ -30,6 +30,11 @@ Cypress.Commands.add('demoStudentLogin', () => {
   cy.get('[data-cy="studentButton"]').click();
 });
 
+Cypress.Commands.add('demoTeacherLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="teacherButton"]').click();
+});
+
 Cypress.Commands.add('demoAdminLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="adminButton"]').click();
@@ -65,6 +70,27 @@ Cypress.Commands.add(
     cy.get('[data-cy="option3"]').type(options[2]);
     cy.get('[data-cy="option4"]').type(options[3]);
     cy.get('[data-cy="saveQuestionBtn"]').click();
+  }
+);
+
+Cypress.Commands.add(
+  'createEvaluation',
+  ({ questionTitle, questionContent, options }, justification) => {
+    cy.contains(questionContent)
+      .parent()
+      .parent()
+      .children()
+      .find('[data-cy="evaluationBtn"]')
+      .click();
+    cy.get('[data-cy="accepted"]').click({ force: true });
+    cy.get('[data-cy="justification"]').type(justification);
+    cy.contains('Save').click();
+    cy.contains(questionContent)
+      .parent()
+      .parent()
+      .children()
+      .find('[data-cy="evaluationBtn"]')
+      .click();
   }
 );
 

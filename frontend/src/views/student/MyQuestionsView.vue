@@ -33,6 +33,7 @@
 
       <template v-slot:item.evaluation="{ item }">
         <v-chip
+          data-cy="evaluationBtn"
           @click="showEvaluationDialog(item.studentQuestion)"
           :color="getEvaluationColor(item.evaluation)"
           dark
