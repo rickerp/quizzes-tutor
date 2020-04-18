@@ -18,7 +18,7 @@
             class="mx-2"
           />
           <v-spacer />
-          <v-btn color="primary">New Tournament</v-btn>
+          <v-btn color="primary" @click="newTournament">New Tournament</v-btn>
         </v-card-title>
       </template>
 
@@ -78,6 +78,11 @@
         </v-tooltip>
       </template>
     </v-data-table>
+    <edit-tournament-dialog
+      v-if="currentTournament"
+      v-model="editDialog"
+      :tournament="currentTournament"
+    />
   </v-card>
 </template>
 
@@ -85,12 +90,19 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Tournament from '@/models/management/Tournament';
 import RemoteServices from '@/services/RemoteServices';
+import EditTournamentDialog from '@/views/student/tournaments/EditTournamentDialog.vue';
 
-@Component
+@Component({
+  components: {
+    'edit-tournament-dialog': EditTournamentDialog
+  }
+})
 export default class TournamentsView extends Vue {
   userId: number = this.$store.getters.getUser.id;
   tournaments: Tournament[] = [];
   search: string = '';
+  editDialog: boolean = false;
+  currentTournament: Tournament | null = null;
   headers: object = [
     {
       text: 'Name',
@@ -141,6 +153,11 @@ export default class TournamentsView extends Vue {
       width: '10%'
     }
   ];
+
+  newTournament() {
+    this.currentTournament = new Tournament();
+    this.editDialog = true;
+  }
 
   async created() {
     await this.$store.dispatch('loading');
