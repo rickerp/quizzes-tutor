@@ -235,53 +235,52 @@ export default class EditTournamentDialog extends Vue {
   }
 
   get startDate() {
-    return this.editTournament.startTime.split('T')[0];
+    return this.editTournament.startTime.split(' ')[0];
   }
+
   set startDate(val) {
     if (val > this.endDate) this.endDate = val;
     this.editTournament.startTime =
-      val + 'T' + this.editTournament.startTime.split('T')[1];
+      val + ' ' + this.editTournament.startTime.split(' ')[1];
   }
+
   get startTime() {
-    return new Date(this.editTournament.startTime)
-      .toLocaleTimeString('pt')
-      .slice(0, -3);
+    return this.editTournament.startTime.split(' ')[1];
   }
+
   set startTime(val) {
-    this.editTournament.startTime = new Date(
-      this.startDate + 'T' + val
-    ).toISOString();
-    if (this.startDate === this.endDate && val >= this.endTime)
-      this.endTime = new Date(
-        new Date(this.editTournament.startTime).getTime() + 15 * 60000
+    this.editTournament.startTime = this.startDate + ' ' + val;
+    if (this.startDate === this.endDate && val >= this.endTime) {
+      let aux = this.editTournament.startTime;
+      aux.replace(' ', 'T');
+      this.editTournament.endTime = new Date(
+        new Date(aux).getTime() + 15 * 60000
       )
-        .toLocaleTimeString('pt')
+        .toLocaleString('se-SE')
         .slice(0, -3);
+    }
   }
+
   get endDate() {
-    return this.editTournament.endTime.split('T')[0];
+    return this.editTournament.endTime.split(' ')[0];
   }
+
   set endDate(val) {
     this.editTournament.endTime =
-      val + 'T' + this.editTournament.endTime.split('T')[1];
+      val + ' ' + this.editTournament.endTime.split(' ')[1];
   }
+
   get endTime() {
-    return new Date(this.editTournament.endTime)
-      .toLocaleTimeString('pt')
-      .slice(0, -3);
+    return this.editTournament.endTime.split(' ')[1];
   }
+
   set endTime(val) {
-    this.editTournament.endTime = new Date(
-      this.endDate + 'T' + val
-    ).toISOString();
+    this.editTournament.endTime = this.endDate + ' ' + val;
   }
 
   startDateAllowed(val: string) {
-    return (
-      new Date(val) >= new Date(new Date().setDate(new Date().getDate() - 1))
-    );
+    return val >= new Date().toLocaleString('se-SE').split(' ')[0];
   }
-
   endDateAllowed(val: string) {
     return val >= this.startDate;
   }
@@ -319,9 +318,6 @@ export default class EditTournamentDialog extends Vue {
       return;
     }
 
-    this.editTournament.startTime = this.startDate + ' ' + this.startTime;
-    this.editTournament.endTime = this.endDate + ' ' + this.endTime;
-
     if (this.editTournament && this.editTournament.id) {
       /* FOR FUTURE EDIT TOURNAMENT (update)
       try {
@@ -329,7 +325,7 @@ export default class EditTournamentDialog extends Vue {
           this.editTournament
         );
         this.$emit('save-Tournament', result);
-        
+
       } catch (error) {
         await this.$store.dispatch('error', error);
       }
@@ -341,7 +337,6 @@ export default class EditTournamentDialog extends Vue {
         );
         this.$emit('save-tournament', result);
       } catch (error) {
-        console.log('Erro na criação');
         await this.$store.dispatch('error', error);
       }
     }

@@ -157,12 +157,17 @@ export default class TournamentsView extends Vue {
 
   newTournament() {
     this.currentTournament = new Tournament();
+
     this.currentTournament.startTime = new Date(
       new Date().getTime() + 15 * 60000
-    ).toISOString();
-    this.currentTournament.endTime = new Date(
-      new Date().getTime() + 30 * 60000
-    ).toISOString();
+    )
+      .toLocaleString('se-SE')
+      .slice(0, -3);
+
+    this.currentTournament.endTime = new Date(new Date().getTime() + 30 * 60000)
+      .toLocaleString('se-SE')
+      .slice(0, -3);
+
     this.editDialog = true;
   }
 
@@ -174,7 +179,7 @@ export default class TournamentsView extends Vue {
   }
 
   async onSaveTournament(tournament: Tournament) {
-    this.tournaments = this.tournaments.filter(q => q.id !== tournament.id);
+    // FOR EDIT TOURNAMENT (update): this.tournaments = this.tournaments.filter(q => q.id !== tournament.id);
     this.tournaments.unshift(tournament);
     this.editDialog = false;
     this.currentTournament = null;
