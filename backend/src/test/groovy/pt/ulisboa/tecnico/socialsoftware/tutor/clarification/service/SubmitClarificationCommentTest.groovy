@@ -2,6 +2,10 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
 import spock.lang.Shared
 import spock.lang.Unroll
 import spock.lang.Specification
@@ -67,6 +71,12 @@ class SubmitClarificationCommentTest extends Specification {
     QuizAnswerRepository quizAnswerRepository
 
     @Autowired
+    QuestionRepository questionRepository
+
+    @Autowired
+    QuizQuestionRepository quizQuestionRepository
+
+    @Autowired
     QuestionAnswerRepository questionAnswerRepository
 
     @Autowired
@@ -98,8 +108,16 @@ class SubmitClarificationCommentTest extends Specification {
 
         def quiz = new Quiz()
         quiz.setKey(1)
+        quiz.setType(Quiz.QuizType.GENERATED)
         quiz.setCourseExecution(courseExecution)
         quizRepository.save(quiz)
+
+        def question = new Question()
+        question.setKey(1)
+        questionRepository.save(question)
+
+        def quizQuestion = new QuizQuestion(quiz, question, 0)
+        quizQuestionRepository.save(quizQuestion)
 
         def quizAnswer = new QuizAnswer()
         quizAnswer.setQuiz(quiz)
@@ -107,11 +125,18 @@ class SubmitClarificationCommentTest extends Specification {
 
         def questionAnswer = new QuestionAnswer()
         questionAnswer.setQuizAnswer(quizAnswer)
+        questionAnswer.setQuizQuestion(quizQuestion)
         questionAnswerRepository.save(questionAnswer)
+
+        def student = new User("Student", "Student", 2, User.Role.STUDENT)
+        student.addCourse(courseExecution)
+        courseExecution.addUser(student)
+        userRepository.save(student)
 
         clarificationRequest = new ClarificationRequest()
         clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
         clarificationRequest.setContent(CLARIFICATION_CONTENT)
+        clarificationRequest.setUser(student)
         clarificationRequest.setQuestionAnswer(questionAnswer)
         clarificationRequestRepository.save(clarificationRequest)
 
@@ -209,7 +234,7 @@ class SubmitClarificationCommentTest extends Specification {
 
     def "student tries to submit comment to clarification request"() {
         given: "another user"
-        def newUser = new User("Name2", "Username2", 2, User.Role.STUDENT)
+        def newUser = new User("Name2", "Username2", 3, User.Role.STUDENT)
         userRepository.save(newUser)
         and: "update clarification request"
         clarificationRequest.setUser(newUser)

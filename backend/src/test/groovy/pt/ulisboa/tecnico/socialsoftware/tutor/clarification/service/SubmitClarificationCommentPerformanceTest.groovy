@@ -2,6 +2,10 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import spock.lang.Specification
 import java.time.LocalDateTime
@@ -56,6 +60,12 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
     QuizRepository quizRepository
 
     @Autowired
+    QuestionRepository questionRepository
+
+    @Autowired
+    QuizQuestionRepository quizQuestionRepository
+
+    @Autowired
     QuizAnswerRepository quizAnswerRepository
 
     @Autowired
@@ -91,8 +101,16 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
 
         def quiz = new Quiz()
         quiz.setKey(1)
+        quiz.setType(Quiz.QuizType.GENERATED)
         quiz.setCourseExecution(courseExecution)
         quizRepository.save(quiz)
+
+        def question = new Question()
+        question.setKey(1)
+        questionRepository.save(question)
+
+        def quizQuestion = new QuizQuestion(quiz, question, 0)
+        quizQuestionRepository.save(quizQuestion)
 
         def quizAnswer = new QuizAnswer()
         quizAnswer.setQuiz(quiz)
@@ -100,12 +118,21 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
 
         questionAnswer = new QuestionAnswer()
         questionAnswer.setQuizAnswer(quizAnswer)
+        questionAnswer.setQuizQuestion(quizQuestion)
         questionAnswerRepository.save(questionAnswer)
 
+        def student = new User("Student", "Student", 2, User.Role.STUDENT)
+        student.addCourse(courseExecution)
+        courseExecution.addUser(student)
+        userRepository.save(student)
+
+
+        /* Creating 10000 Clarification Requests */
         1.upto(1, {
             clarificationRequest = new ClarificationRequest()
             clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
             clarificationRequest.setContent(CLARIFICATION_CONTENT)
+            clarificationRequest.setUser(student)
             clarificationRequest.setQuestionAnswer(questionAnswer)
             clarificationRequestRepository.save(clarificationRequest)
         })

@@ -154,7 +154,6 @@ export default class ResultComponent extends Vue {
   }
 
   onSaveClarification(request: ClarificationRequest) {
-    console.log('On the other side');
     this.newClarificationDialog = false;
     this.create = false;
     this.answer.clarificationRequests.unshift(request);

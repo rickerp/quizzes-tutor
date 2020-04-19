@@ -9,9 +9,13 @@
     <v-card>
       <v-card-title>
         <span class="headline">
-          Clarification Request
+          Comment
         </span>
       </v-card-title>
+      <v-card-text class="text-left">
+        <span class="font-weight-bold">Clarification: </span>
+        <span>{{ clarification.content }}</span>
+      </v-card-text>
       <v-card-text class="text-left">
         <v-container grid-list-md fluid>
           <v-layout column wrap>
@@ -19,7 +23,7 @@
               <v-textarea
                 outline
                 rows="10"
-                v-model="editClarification.content"
+                v-model="comment.content"
                 label="Content"
                 data-cy="ClrfReq"
               ></v-textarea>
@@ -27,7 +31,6 @@
           </v-layout>
         </v-container>
       </v-card-text>
-
       <v-card-actions>
         <v-spacer />
         <v-btn
@@ -35,14 +38,11 @@
           dark
           @click="$emit('dialog', false)"
           data-cy="bttnClrfCancel"
-          >Cancel</v-btn
         >
-        <v-btn
-          color="primary"
-          dark
-          @click="saveClarification"
-          data-cy="bttnClrfSave"
-          >Save</v-btn
+          Cancel</v-btn
+        >
+        <v-btn color="primary" dark @click="saveComment" data-cy="bttnClrfSave">
+          Save</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -53,31 +53,27 @@
 import { Component, Model, Prop, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
+import { ClarificationComment } from '@/models/management/ClarificationComment';
 
 @Component
-export default class NewClarificationRequestDialog extends Vue {
+export default class NewClarificationCommentDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: ClarificationRequest, required: true })
-  readonly request!: ClarificationRequest;
-  @Prop({ required: true }) questionAnswerId!: number;
+  @Prop({ required: true }) clarification!: ClarificationRequest;
+  @Prop({ required: true }) comment!: ClarificationComment;
 
-  editClarification!: ClarificationRequest;
+  created() {}
 
-  created() {
-    this.editClarification = this.request;
-  }
-
-  async saveClarification() {
-    if (!this.editClarification.content) {
-      await this.$store.dispatch('error', 'Clarification must have Content');
+  async saveComment() {
+    if (!this.comment.content) {
+      await this.$store.dispatch('error', 'Comment must have Content');
       return;
     }
     try {
-      const result = await RemoteServices.createClarification(
-        this.questionAnswerId,
-        this.editClarification
+      const result = await RemoteServices.createClarificationComment(
+        this.clarification.id,
+        this.comment
       );
-      this.$emit('save-clarification', result);
+      this.$emit('save-comment', result);
     } catch (error) {
       await this.$store.dispatch('error', error);
     }

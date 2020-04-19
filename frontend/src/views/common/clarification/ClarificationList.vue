@@ -61,7 +61,12 @@
               v-if="$store.getters.isTeacher && item.state === 'UNRESOLVED'"
               v-slot:activator="{ on }"
             >
-              <v-icon small color="primary" class="mr-2" v-on="on"
+              <v-icon
+                small
+                color="primary"
+                class="mr-2"
+                v-on="on"
+                @click="createComment(item)"
                 >fas fa-plus</v-icon
               >
             </template>
@@ -92,11 +97,14 @@
           <v-card-actions>
             <v-btn
               v-if="
-                $store.getters.isTeacher && clarification.state === 'UNRESOLVED'
+                $store.getters.isTeacher &&
+                  clarification.state === 'UNRESOLVED' &&
+                  viewAction === 3
               "
               color="primary"
               dark
               data-cy="bttnAddComment"
+              @click="createComment(clarification)"
             >
               Add Comment
             </v-btn>
@@ -128,6 +136,13 @@
         />
       </v-row>
     </v-container>
+    <new-comment-dialog
+      v-if="newCommentDialog"
+      v-model="addComment"
+      :clarification="clarification"
+      :comment="comment"
+      v-on:save-comment="onSaveComment"
+    />
   </div>
 </template>
 
@@ -141,17 +156,23 @@ import Option from '@/models/management/Option';
 import ChatComponent from '@/views/common/clarification/ChatComponent.vue';
 import RemoteServices from '@/services/RemoteServices';
 import Question from '@/models/management/Question';
+import NewClarificationCommentDialog from '@/views/teacher/quizzes/NewClarificationCommentDialog.vue';
+import { ClarificationComment } from '@/models/management/ClarificationComment';
 @Component({
   components: {
     'req-component': ClarificationQuestionComponent,
-    'chat-component': ChatComponent
+    'chat-component': ChatComponent,
+    'new-comment-dialog': NewClarificationCommentDialog
   }
 })
 export default class ClarificationList extends Vue {
   clarifications: ClarificationRequest[] = [];
   clarification: ClarificationRequest | undefined;
   questionAnswer: QuestionAnswer | undefined;
+  comment: ClarificationComment | undefined;
   correctOption: Option | undefined;
+  newCommentDialog: boolean = false;
+  addComment: boolean = false;
   viewAction: number = 1;
   search: string = '';
 
@@ -239,6 +260,26 @@ export default class ClarificationList extends Vue {
         .toLowerCase()
         .indexOf(search.toLowerCase()) !== -1
     );
+  }
+
+  createComment(clarification: ClarificationRequest) {
+    this.addComment = true;
+    this.newCommentDialog = true;
+    this.clarification = clarification;
+    this.comment = new ClarificationComment();
+  }
+
+  onSaveComment(newComment: ClarificationComment) {
+    this.addComment = false;
+    this.newCommentDialog = false;
+
+    if (this.clarification && this.comment) {
+      const index = this.clarifications.indexOf(this.clarification);
+      this.clarification = newComment.clarificationRequest;
+      this.clarification.clarificationComment = newComment;
+      this.comment.clarificationRequest = newComment.clarificationRequest;
+      this.clarifications.splice(index, 1, this.clarification);
+    }
   }
 }
 </script>
