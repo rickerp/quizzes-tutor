@@ -130,6 +130,12 @@ Cypress.Commands.add('goToClarification', quiz_title => {
   cy.contains('Show Clarifications').click();
 });
 
+Cypress.Commands.add('createInvalidClarificationRequest', content => {
+  cy.contains('Create').click();
+  cy.get('[data-cy="bttnClrfSave"').click();
+  cy.contains('Clarification must have Content')
+});
+
 Cypress.Commands.add('createClarificationRequest', content => {
   cy.contains('Create').click();
   cy.get('[data-cy="ClrfReq"]').type(content);
