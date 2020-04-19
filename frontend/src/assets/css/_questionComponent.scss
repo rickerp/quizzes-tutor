@@ -1,0 +1,72 @@
+.unanswered {
+  .question {
+    background-color: #761515 !important;
+    color: #fff !important;
+  }
+  .correct {
+    .option-content {
+      background-color: #333333;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-letter {
+      background-color: #333333 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+  }
+}
+
+.correct-question {
+  .question .question-content {
+    background-color: #285f23 !important;
+    color: white !important;
+  }
+  .question .square {
+    background-color: #285f23 !important;
+    color: white !important;
+  }
+  .correct {
+    .option-content {
+      background-color: #299455;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-letter {
+      background-color: #299455 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+  }
+}
+
+.incorrect-question {
+  .question .question-content {
+    background-color: #761515 !important;
+    color: white !important;
+  }
+  .question .square {
+    background-color: #761515 !important;
+    color: white !important;
+  }
+  .wrong {
+    .option-content {
+      background-color: #cf2323;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-letter {
+      background-color: #cf2323 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+  }
+  .correct {
+    .option-content {
+      background-color: #333333;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-letter {
+      background-color: #333333 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+  }
+}
