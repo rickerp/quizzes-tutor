@@ -82,12 +82,13 @@
       v-if="currentTournament"
       v-model="editDialog"
       :tournament="currentTournament"
+      v-on:save-tournament="onSaveTournament"
     />
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import Tournament from '@/models/management/Tournament';
 import RemoteServices from '@/services/RemoteServices';
 import EditTournamentDialog from '@/views/student/tournaments/EditTournamentDialog.vue';
@@ -156,7 +157,27 @@ export default class TournamentsView extends Vue {
 
   newTournament() {
     this.currentTournament = new Tournament();
+    this.currentTournament.startTime = new Date(
+      new Date().getTime() + 15 * 60000
+    ).toISOString();
+    this.currentTournament.endTime = new Date(
+      new Date().getTime() + 30 * 60000
+    ).toISOString();
     this.editDialog = true;
+  }
+
+  @Watch('editDialog')
+  closeError() {
+    if (!this.editDialog) {
+      this.currentTournament = null;
+    }
+  }
+
+  async onSaveTournament(tournament: Tournament) {
+    this.tournaments = this.tournaments.filter(q => q.id !== tournament.id);
+    this.tournaments.unshift(tournament);
+    this.editDialog = false;
+    this.currentTournament = null;
   }
 
   async created() {
@@ -178,7 +199,6 @@ export default class TournamentsView extends Vue {
   }
 
   async playerEnroll(item: Tournament) {
-    console.log(item.name);
     if (confirm('Are you sure you want to enroll in "' + item.name + '"?')) {
       await this.$store.dispatch('loading');
       try {

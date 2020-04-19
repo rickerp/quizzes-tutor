@@ -7,6 +7,7 @@ export default class Tournament {
   startTime!: string;
   endTime!: string;
   nrQuestions!: number;
+  topicsId!: number[];
   topicsName!: string[];
 
   constructor(jsonObj?: Tournament) {
@@ -19,6 +20,7 @@ export default class Tournament {
       this.startTime = jsonObj.startTime;
       this.endTime = jsonObj.endTime;
       this.nrQuestions = jsonObj.nrQuestions;
+      this.topicsId = jsonObj.topicsId;
       this.topicsName = jsonObj.topicsName;
     }
   }

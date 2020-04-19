@@ -106,7 +106,7 @@
 
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn v-on="on" text dark to="/student/calendar">
               Tournaments
               <v-icon>fas fa-trophy</v-icon>
             </v-btn>
