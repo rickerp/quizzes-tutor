@@ -66,6 +66,7 @@
                 color="primary"
                 class="mr-2"
                 v-on="on"
+                data-cy="addCmt"
                 @click="createComment(item)"
                 >fas fa-plus</v-icon
               >

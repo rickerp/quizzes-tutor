@@ -25,7 +25,7 @@
                 rows="10"
                 v-model="comment.content"
                 label="Content"
-                data-cy="ClrfReq"
+                data-cy="cmtContent"
               ></v-textarea>
             </v-flex>
           </v-layout>
@@ -36,12 +36,12 @@
         <v-btn
           color="primary"
           dark
-          @click="$emit('dialog', false)"
           data-cy="bttnClrfCancel"
+          @click="$emit('dialog', false)"
         >
           Cancel</v-btn
         >
-        <v-btn color="primary" dark @click="saveComment" data-cy="bttnClrfSave">
+        <v-btn color="primary" dark data-cy="bttnCmtSave" @click="saveComment">
           Save</v-btn
         >
       </v-card-actions>

@@ -20,7 +20,7 @@ describe('Clarification Request walkthrough', () => {
 
   it('Create a invalid clarification request', () => {
     cy.goToClarification(QUIZ_TITLE);
-    cy.createInvalidClarificationRequest('');
+    cy.createInvalidClarificationRequest();
   });
 
   it('Creates a clarification request', () => {

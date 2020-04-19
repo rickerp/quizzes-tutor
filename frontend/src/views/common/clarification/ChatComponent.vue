@@ -49,7 +49,6 @@ export default class ChatComponent extends Vue {
   readonly requests!: ClarificationRequest[];
   @Prop() readonly showToolbar!: boolean;
   created() {
-    console.log(this.requests);
   }
 }
 </script>

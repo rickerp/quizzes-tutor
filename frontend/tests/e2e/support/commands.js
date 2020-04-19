@@ -130,25 +130,71 @@ Cypress.Commands.add('goToClarification', quiz_title => {
   cy.contains('Show Clarifications').click();
 });
 
-Cypress.Commands.add('createInvalidClarificationRequest', content => {
+Cypress.Commands.add('createInvalidClarificationRequest', () => {
   cy.contains('Create').click();
-  cy.get('[data-cy="bttnClrfSave"').click();
-  cy.contains('Clarification must have Content')
+  cy.get('[data-cy="bttnClrfSave"]').click();
+  cy.contains('Clarification must have Content');
 });
 
-Cypress.Commands.add('createClarificationRequest', content => {
+Cypress.Commands.add('createClarificationRequest', clrfContent => {
   cy.contains('Create').click();
-  cy.get('[data-cy="ClrfReq"]').type(content);
-  cy.get('[data-cy="bttnClrfSave"').click();
+  cy.get('[data-cy="ClrfReq"]').type(clrfContent);
+  cy.get('[data-cy="bttnClrfSave"]').click();
   cy.contains(content).click();
+});
+
+Cypress.Commands.add('createInvalidClarificationComment', crlfContent => {
+  cy.contains(crlfContent)
+    .parent()
+    .children()
+    .should('have.length', 6)
+    .find('[data-cy="showClrf"]')
+    .click();
+  cy.get('[data-cy="bttnAddComment"]').click();
+  cy.get('[data-cy="bttnCmtSave"]').click();
+  cy.contains('Comment must have Content');
+});
+
+Cypress.Commands.add(
+  'createClarificationCommentAct',
+  (clrfContent, cmtContent) => {
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 6)
+      .find('[data-cy="addCmt"]')
+      .click();
+    cy.get('[data-cy="cmtContent"]').type(cmtContent);
+    cy.get('[data-cy="bttnCmtSave"]').click();
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 6)
+      .contains('RESOLVED')
+      .click();
+});
+
+Cypress.Commands.add(
+  'createClarificationCommentChat',
+  (clrfContent, cmtContent) => {
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 6)
+      .find('[data-cy="showClrf"]')
+      .click();
+    cy.get('[data-cy="bttnAddComment"]').click();
+    cy.get('[data-cy="cmtContent"]').type(cmtContent);
+    cy.get('[data-cy="bttnCmtSave"]').click();
+    cy.contains(cmtContent);
 });
 
 Cypress.Commands.add('showClarifications', () => {
   cy.contains('Clarifications').click();
 });
 
-Cypress.Commands.add('showQuestionClarification', content => {
-  cy.contains(content)
+Cypress.Commands.add('showQuestionClarification', clrfContent => {
+  cy.contains(clrfContent)
     .parent()
     .should('have.length', 1)
     .children()
@@ -158,8 +204,8 @@ Cypress.Commands.add('showQuestionClarification', content => {
   cy.get('[data-cy="bttnClose"]').click();
 });
 
-Cypress.Commands.add('showClarification', content => {
-  cy.contains(content)
+Cypress.Commands.add('showClarification', clrfContent => {
+  cy.contains(clrfContent)
     .parent()
     .children()
     .should('have.length', 6)
