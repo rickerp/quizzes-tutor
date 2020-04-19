@@ -18,6 +18,11 @@ describe('Clarification Request walkthrough', () => {
     cy.contains('Logout').click();
   });
 
+  it('Create a invalid clarification request', () => {
+    cy.goToClarification(QUIZ_TITLE);
+    cy.createInvalidClarificationRequest('');
+  });
+
   it('Creates a clarification request', () => {
     cy.goToClarification(QUIZ_TITLE);
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
