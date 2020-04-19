@@ -63,11 +63,11 @@
             </v-list-item>
             <v-list-item to="/management/clarifications">
               <v-list-item-action>
-                <v-icon>fas fa-comments </v-icon>
+                <v-icon>fas fa-comments</v-icon>
               </v-list-item-action>
-              <v-list-item-action>
+              <v-list-item-content>
                 <v-list-item-title>Clarifications</v-list-item-title>
-              </v-list-item-action>
+              </v-list-item-content>
             </v-list-item>
             <v-list-item to="/management/topics">
               <v-list-item-action>

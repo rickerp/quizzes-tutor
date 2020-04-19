@@ -61,8 +61,6 @@ export default class NewClarificationCommentDialog extends Vue {
   @Prop({ required: true }) clarification!: ClarificationRequest;
   @Prop({ required: true }) comment!: ClarificationComment;
 
-  created() {}
-
   async saveComment() {
     if (!this.comment.content) {
       await this.$store.dispatch('error', 'Comment must have Content');

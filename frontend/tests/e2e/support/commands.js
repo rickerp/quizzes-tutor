@@ -140,7 +140,7 @@ Cypress.Commands.add('createClarificationRequest', clrfContent => {
   cy.contains('Create').click();
   cy.get('[data-cy="ClrfReq"]').type(clrfContent);
   cy.get('[data-cy="bttnClrfSave"]').click();
-  cy.contains(content).click();
+  cy.contains(clrfContent).click();
 });
 
 Cypress.Commands.add('createInvalidClarificationComment', crlfContent => {
