@@ -76,6 +76,8 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'createEvaluation',
   ({ questionTitle, questionContent, options }, justification) => {
+    cy.contains('Management').click();
+    cy.contains('Student Questions').click();
     cy.contains(questionContent)
       .parent()
       .parent()
@@ -91,6 +93,7 @@ Cypress.Commands.add(
       .children()
       .find('[data-cy="evaluationBtn"]')
       .click();
+    cy.contains('close').click();
   }
 );
 

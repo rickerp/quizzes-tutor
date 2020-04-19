@@ -17,10 +17,8 @@ describe('List student question walktrough', () => {
     cy.createStudentSuggestion(data);
     cy.contains('Logout').click();
     cy.demoTeacherLogin();
-    cy.contains('Management').click();
-    cy.contains('Student Questions').click();
     cy.createEvaluation(data, 'Good Question');
-    cy.contains('close').click();
+    cy.contains('Logout').click();
     cy.demoStudentLogin();
   });
 

@@ -20,10 +20,7 @@ describe('Teacher creating evaluation walktrough', () => {
   });
 
   it('Create Evaluation', () => {
-    cy.contains('Management').click();
-    cy.contains('Student Questions').click();
     cy.createEvaluation(data, 'Good Question');
-    cy.contains('close').click();
   });
 
   it('Create invalid Evaluation', () => {
