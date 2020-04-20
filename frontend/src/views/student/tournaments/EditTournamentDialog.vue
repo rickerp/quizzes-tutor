@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600px">
+  <v-dialog :value="dialog" max-width="600px">
     <v-card>
       <v-card-title>
         <span class="headline">{{
@@ -244,6 +244,7 @@ import RemoteServices from '../../../services/RemoteServices';
 export default class EditTournamentDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
   @Prop({ type: Tournament, required: true }) readonly tournament!: Tournament;
+  @Prop({ type: Function, required: true }) readonly formatDate!: Function;
 
   topics: Topic[] = [];
 
@@ -280,13 +281,11 @@ export default class EditTournamentDialog extends Vue {
   set startTime(val) {
     this.editTournament.startTime = this.startDate + ' ' + val;
     if (this.startDate === this.endDate && val >= this.endTime) {
-      let aux = this.editTournament.startTime;
-      aux.replace(' ', 'T');
-      this.editTournament.endTime = new Date(
-        new Date(aux).getTime() + 15 * 60000
-      )
-        .toLocaleString('se-SE')
-        .slice(0, -3);
+      let time = this.editTournament.startTime;
+      time.replace(' ', 'T');
+      this.editTournament.endTime = this.formatDate(
+        new Date(new Date(time).getTime() + 15 * 60000)
+      );
     }
   }
 
@@ -308,8 +307,9 @@ export default class EditTournamentDialog extends Vue {
   }
 
   startDateAllowed(val: string) {
-    return val >= new Date().toLocaleString('se-SE').split(' ')[0];
+    return val >= this.formatDate(new Date()).split(' ')[0];
   }
+
   endDateAllowed(val: string) {
     return val >= this.startDate;
   }

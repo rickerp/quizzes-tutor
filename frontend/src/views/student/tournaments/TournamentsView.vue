@@ -84,6 +84,7 @@
       v-if="currentTournament"
       v-model="editDialog"
       :tournament="currentTournament"
+      :formatDate="formatDate"
       v-on:save-tournament="onSaveTournament"
     />
   </v-card>
@@ -160,17 +161,28 @@ export default class TournamentsView extends Vue {
   newTournament() {
     this.currentTournament = new Tournament();
 
-    this.currentTournament.startTime = new Date(
-      new Date().getTime() + 15 * 60000
-    )
-      .toLocaleString('se-SE')
-      .slice(0, -3);
-
-    this.currentTournament.endTime = new Date(new Date().getTime() + 30 * 60000)
-      .toLocaleString('se-SE')
-      .slice(0, -3);
-
+    this.currentTournament.startTime = this.formatDate(
+      new Date(new Date().getTime() + 15 * 60000)
+    );
+    this.currentTournament.endTime = this.formatDate(
+      new Date(new Date().getTime() + 30 * 60000)
+    );
     this.editDialog = true;
+  }
+
+  formatDate(date: Date) {
+    return (
+      [
+        date.getFullYear(),
+        ('0' + (date.getMonth() + 1)).slice(-2),
+        ('0' + date.getDate()).slice(-2)
+      ].join('-') +
+      ' ' +
+      [
+        ('0' + date.getHours()).slice(-2),
+        ('0' + date.getMinutes()).slice(-2)
+      ].join(':')
+    );
   }
 
   @Watch('editDialog')

@@ -102,6 +102,7 @@ Cypress.Commands.add('createTournament', (name, day, nrQuestions) => {
   cy.get('[data-cy="newTdPButton"]').click();
   cy.get('[data-cy="newTdPName"]').type(name);
   cy.get('[data-cy="newTdPStartDateMenu"]').click();
+  cy.wait(500);
   cy.get('.v-date-picker-header')
     .children()
     .last()
@@ -116,6 +117,7 @@ Cypress.Commands.add('createTournament', (name, day, nrQuestions) => {
     .clear()
     .type(nrQuestions.toString());
   cy.get('[data-cy="newTdPTopicsMenu"]').click();
+  cy.wait(500);
   cy.get('[data-cy="newTdPTopic"]')
     .first()
     .click();
