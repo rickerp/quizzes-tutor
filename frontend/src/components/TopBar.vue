@@ -162,7 +162,7 @@
           dark
         >
           Suggested Questions
-          <v-icon>fas fa-user</v-icon>
+          <v-icon>fas fa-question</v-icon>
         </v-btn>
 
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
