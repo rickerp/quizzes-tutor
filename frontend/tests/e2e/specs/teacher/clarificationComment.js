@@ -18,6 +18,7 @@ describe('Clarification Comment Walkthrough', () => {
 
   beforeEach(() => {
     cy.demoTeacherLogin();
+    cy.get('.bttnManagement').click();
   });
 
   afterEach(() => {
