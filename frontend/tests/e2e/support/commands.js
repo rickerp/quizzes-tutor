@@ -77,7 +77,7 @@ Cypress.Commands.add('demoStudentLogin', () => {
   cy.get('[data-cy="studentButton"]').click();
 });
 
-Cypress.Commands.add('clickButton', (elem, button) => {
+Cypress.Commands.add('clickRowButton', (elem, button) => {
   cy.contains(elem)
     .parent()
     .should('have.length', 1)
@@ -87,7 +87,7 @@ Cypress.Commands.add('clickButton', (elem, button) => {
     .click();
 });
 
-Cypress.Commands.add('assertValue', (elem, field, value) => {
+Cypress.Commands.add('assertRowField', (elem, field, value) => {
   cy.contains(elem)
     .parent()
     .should('have.length', 1)
@@ -96,4 +96,32 @@ Cypress.Commands.add('assertValue', (elem, field, value) => {
     .find('[data-cy="' + field + '"]')
     .first()
     .should('have.text', value);
+});
+
+Cypress.Commands.add('createTournament', (name, day, nrQuestions) => {
+  cy.get('[data-cy="newTdPButton"]').click();
+  cy.get('[data-cy="newTdPName"]').type(name);
+  cy.get('[data-cy="newTdPStartDateMenu"]').click();
+  cy.get('.v-date-picker-header')
+    .children()
+    .last()
+    .click();
+  cy.wait(500);
+  cy.get('.v-date-picker-table')
+    .children()
+    .contains(day.toString())
+    .click();
+  cy.wait(500);
+  cy.get('[data-cy="newTdPNrQuestions"]')
+    .clear()
+    .type(nrQuestions.toString());
+  cy.get('[data-cy="newTdPTopicsMenu"]').click();
+  cy.get('[data-cy="newTdPTopic"]')
+    .first()
+    .click();
+  cy.get('[data-cy="newTdPTopic"]')
+    .last()
+    .click();
+  cy.get('[data-cy="newTdPSave"]').click();
+  cy.wait(500);
 });

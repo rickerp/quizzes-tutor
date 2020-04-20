@@ -13,6 +13,7 @@
               ><v-text-field
                 v-model="editTournament.name"
                 label="Name *"
+                data-cy="newTdPName"
               ></v-text-field></v-col
           ></v-row>
           <v-row>
@@ -34,6 +35,7 @@
                     prepend-icon="event"
                     readonly
                     v-on="on"
+                    data-cy="newTdPStartDateMenu"
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -43,6 +45,7 @@
                   :allowed-dates="startDateAllowed"
                   color="primary"
                   @input="startDateMenu = false"
+                  data-cy="newTdPStartDate"
                 >
                 </v-date-picker>
               </v-menu>
@@ -66,6 +69,7 @@
                     prepend-icon="access_time"
                     readonly
                     v-on="on"
+                    data-cy="newTdPStartTimeMenu"
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -74,6 +78,7 @@
                   full-width
                   format="24hr"
                   @click:minute="$refs.startTimeMenu.save(startTime)"
+                  data-cy="newTdPStartTime"
                 ></v-time-picker>
               </v-menu>
             </v-col>
@@ -97,6 +102,7 @@
                     prepend-icon="event"
                     readonly
                     v-on="on"
+                    data-cy="newTdPEndDateMenu"
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -106,6 +112,7 @@
                   color="primary"
                   :allowed-dates="endDateAllowed"
                   @input="endDateMenu = false"
+                  data-cy="newTdPEndDate"
                 >
                 </v-date-picker>
               </v-menu>
@@ -129,6 +136,7 @@
                     prepend-icon="access_time"
                     readonly
                     v-on="on"
+                    data-cy="newTdPEndTimeMenu"
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -137,19 +145,35 @@
                   full-width
                   format="24hr"
                   @click:minute="$refs.endTimeMenu.save(endTime)"
+                  data-cy="newTdPEndTime"
                 ></v-time-picker>
               </v-menu>
             </v-col>
           </v-row>
           <v-row>
+            <v-col cols="3"
+              ><v-subheader>Number of questions *</v-subheader></v-col
+            >
             <v-col>
               <v-slider
                 v-model="editTournament.nrQuestions"
-                label="Number of questions *"
                 hint="Don't keep the tournament too long"
                 min="1"
                 max="100"
                 thumb-label
+              >
+                <template v-slot:append>
+                  <v-text-field
+                    v-model="editTournament.nrQuestions"
+                    class="mt-0 pt-0 ml-1"
+                    hide-details
+                    single-line
+                    min="1"
+                    max="100"
+                    type="number"
+                    style="width: 40px"
+                    data-cy="newTdPNrQuestions"
+                  ></v-text-field></template
               ></v-slider>
             </v-col>
           </v-row>
@@ -163,6 +187,7 @@
                 :items="topics"
                 multiple
                 item-value="id"
+                data-cy="newTdPTopicsMenu"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -177,7 +202,10 @@
                 </template>
                 <template v-slot:item="data">
                   <v-list-item-content>
-                    <v-list-item-title v-html="data.item.name" />
+                    <v-list-item-title
+                      v-html="data.item.name"
+                      data-cy="newTdPTopic"
+                    />
                   </v-list-item-content>
                 </template>
               </v-autocomplete>
@@ -198,6 +226,7 @@
           color="blue darken-1"
           class="white--text"
           @click="saveTournament()"
+          data-cy="newTdPSave"
           >Save</v-btn
         >
       </v-card-actions>

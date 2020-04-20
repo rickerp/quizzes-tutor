@@ -9,20 +9,28 @@ describe('Tournaments Calendar Tests', () => {
     cy.contains('Logout').click();
   });
 
-  it('login and displays the topics', () => {
-    cy.clickButton('Demo-Tournament-JS', 'topicsTdP');
+  it('creates a tournament', () => {
+    cy.createTournament('Demo-Tournament', 10, 5);
   });
 
-  it('login, displays the topics and enrolls in a tournament', () => {
-    cy.clickButton('Demo-Tournament-Python', 'topicsTdP');
-    cy.clickButton('Demo-Tournament-Python', 'enrollTdP');
-    cy.assertValue('Demo-Tournament-Python', 'enrollmentsTdP', '1');
+  it('creates a tournament and displays its topics', () => {
+    cy.createTournament('Demo-Tournament-JS', 13, 20);
+    cy.clickRowButton('Demo-Tournament-JS', 'topicsTdP');
   });
 
-  it('login and enrolls in 2 tournaments', () => {
-    cy.clickButton('Demo-Tournament-PEPE', 'enrollTdP');
-    cy.assertValue('Demo-Tournament-PEPE', 'enrollmentsTdP', '1');
-    cy.clickButton('Demo-Tournament-C++', 'enrollTdP');
-    cy.assertValue('Demo-Tournament-C++', 'enrollmentsTdP', '1');
+  it('creates a tournament, displays its topics and enrolls in it', () => {
+    cy.createTournament('Demo-Tournament-Python', 15, 15);
+    cy.clickRowButton('Demo-Tournament-Python', 'topicsTdP');
+    cy.clickRowButton('Demo-Tournament-Python', 'enrollTdP');
+    cy.assertRowField('Demo-Tournament-Python', 'enrollmentsTdP', '1');
+  });
+
+  it('creates 2 tournaments and enrolls in them', () => {
+    cy.createTournament('Demo-Tournament-PEPE', 13, 3);
+    cy.clickRowButton('Demo-Tournament-PEPE', 'enrollTdP');
+    cy.assertRowField('Demo-Tournament-PEPE', 'enrollmentsTdP', '1');
+    cy.createTournament('Demo-Tournament-C++', 20, 7);
+    cy.clickRowButton('Demo-Tournament-C++', 'enrollTdP');
+    cy.assertRowField('Demo-Tournament-C++', 'enrollmentsTdP', '1');
   });
 });
