@@ -21,6 +21,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 
 @DataJpaTest
 class ListTournamentServiceTest extends Specification {
+    public static final String T_NAME = "Demo-Tournament"
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
@@ -67,6 +68,7 @@ class ListTournamentServiceTest extends Specification {
         })
         "Create Opened Tournaments"
         opened_t = new Tournament()
+        opened_t.setName(T_NAME)
         opened_t.setCreator(creator)
         opened_t.setNrQuestions(10)
         opened_t.setTopics(topics)
@@ -76,6 +78,7 @@ class ListTournamentServiceTest extends Specification {
         tournamentRepository.save(opened_t)
         "Create In Progress Tournaments"
         in_progress_t = new Tournament()
+        in_progress_t.setName(T_NAME)
         in_progress_t.setCreator(creator)
         in_progress_t.setNrQuestions(10)
         in_progress_t.setTopics(topics)
@@ -85,6 +88,7 @@ class ListTournamentServiceTest extends Specification {
         tournamentRepository.save(in_progress_t)
         "Create Closed Tournaments"
         closed_t = new Tournament()
+        closed_t.setName(T_NAME)
         closed_t.setCreator(creator)
         closed_t.setNrQuestions(10)
         closed_t.setTopics(topics)
@@ -108,6 +112,7 @@ class ListTournamentServiceTest extends Specification {
 
         given: "an Opened Tournament"
         def opened_t_2 = new Tournament()
+        opened_t_2.setName(T_NAME)
         opened_t_2.setCreator(creator)
         opened_t_2.setNrQuestions(10)
         opened_t_2.setTopics(topics)
@@ -147,6 +152,7 @@ class ListTournamentServiceTest extends Specification {
         courseExecutionRepository.save(courseExecution_2)
         and: "an Opened Tournament"
         def opened_t_2 = new Tournament()
+        opened_t_2.setName(T_NAME)
         opened_t_2.setCreator(creator)
         opened_t_2.setNrQuestions(10)
         opened_t_2.setTopics(topics)

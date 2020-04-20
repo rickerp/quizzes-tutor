@@ -15,6 +15,9 @@ import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
 import StudentQuestion from '@/models/studentquestion/StudentQuestion';
 import Evaluation from '@/models/studentquestion/Evaluation';
+import Tournament from '@/models/management/Tournament';
+import { ClarificationRequest } from '@/models/management/ClarificationRequest';
+import { ClarificationComment } from '@/models/management/ClarificationComment';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -74,6 +77,48 @@ export default class RemoteServices {
       .get('/auth/demo/admin')
       .then(response => {
         return new AuthDto(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getTournaments(): Promise<Tournament[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments`
+      )
+      .then(response => {
+        return response.data.map((tournament: any) => {
+          return new Tournament(tournament);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async playerEnroll(id: number): Promise<Tournament> {
+    return httpClient
+      .put(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}`
+      )
+      .then(response => {
+        return new Tournament(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async createTournament(tournament: Tournament): Promise<Tournament> {
+    return httpClient
+      .post(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments`,
+        tournament
+      )
+      .then(response => {
+        return new Tournament(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));
@@ -530,6 +575,52 @@ export default class RemoteServices {
         return response.data.map((course: any) => {
           return new Course(course);
         });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getClarifications(): Promise<ClarificationRequest[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications`
+      )
+      .then(response => {
+        return response.data.map((request: any) => {
+          return new ClarificationRequest(request);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async createClarification(
+    questionAnswerId: number,
+    request: ClarificationRequest
+  ): Promise<ClarificationRequest> {
+    return httpClient
+      .post(`/questionAnswers/${questionAnswerId}/clarifications`, request)
+      .then(response => {
+        return new ClarificationRequest(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async createClarificationComment(
+    clarificationRequestId: number,
+    clarificationComment: ClarificationComment
+  ): Promise<ClarificationComment> {
+    return httpClient
+      .post(
+        `/clarifications/${clarificationRequestId}/comment`,
+        clarificationComment
+      )
+      .then(response => {
+        return new ClarificationComment(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

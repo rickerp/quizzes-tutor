@@ -15,12 +15,8 @@
           tile
           to="/"
           v-if="currentCourse"
-        >
-          {{ currentCourse.name }}
-        </v-btn>
-        <v-btn dark active-class="no-active" text tile to="/" v-else>
-          {{ appName }}
-        </v-btn>
+        >{{ currentCourse.name }}</v-btn>
+        <v-btn dark active-class="no-active" text tile to="/" v-else>{{ appName }}</v-btn>
       </v-toolbar-title>
 
       <v-spacer />
@@ -47,7 +43,7 @@
 
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn v-on="on" text dark class="bttnManagement">
               Management
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
@@ -67,6 +63,14 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Student Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/clarifications">
+              <v-list-item-action>
+                <v-icon>fas fa-comments</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Clarifications</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/management/topics">
@@ -111,10 +115,27 @@
             </v-list-item>
           </v-list>
         </v-menu>
-
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn v-on="on" text dark to="/student/calendar">
+              Tournaments
+              <v-icon>fas fa-trophy</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/calendar">
+              <v-list-item-action>
+                <v-icon>fas fa-calendar-alt</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Calendar</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn class="quizzesButton" v-on="on" text dark>
               Quizzes
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
@@ -127,6 +148,14 @@
               <v-list-item-content>
                 <v-list-item-title>Available</v-list-item-title>
               </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/clarifications">
+              <v-list-item-action>
+                <v-icon>fas fa-comments</v-icon>
+              </v-list-item-action>
+              <v-list-item-action>
+                <v-list-item-title>Clarifications</v-list-item-title>
+              </v-list-item-action>
             </v-list-item>
             <v-list-item to="/student/create">
               <v-list-item-action>
@@ -155,12 +184,7 @@
           </v-list>
         </v-menu>
 
-        <v-btn
-          to="/student/question"
-          v-if="isStudent && currentCourse"
-          text
-          dark
-        >
+        <v-btn to="/student/question" v-if="isStudent && currentCourse" text dark>
           Suggested Questions
           <v-icon>fas fa-question</v-icon>
         </v-btn>
@@ -187,7 +211,8 @@
         </v-btn>
 
         <v-btn v-else :href="fenixUrl" text dark>
-          Login <v-icon>fas fa-sign-in-alt</v-icon>
+          Login
+          <v-icon>fas fa-sign-in-alt</v-icon>
         </v-btn>
       </v-toolbar-items>
     </v-app-bar>
@@ -204,15 +229,9 @@
 
       <v-list class="pt-0" dense>
         <!-- Administration Group-->
-        <v-list-group
-          prepend-icon="fas fa-file-alt"
-          :value="false"
-          v-if="isAdmin"
-        >
+        <v-list-group prepend-icon="fas fa-file-alt" :value="false" v-if="isAdmin">
           <template v-slot:activator>
-            <v-list-item-title data-cy="Administration"
-              >Administration</v-list-item-title
-            >
+            <v-list-item-title data-cy="Administration">Administration</v-list-item-title>
           </template>
           <v-list-item to="/admin/courses">
             <v-list-item-action>
@@ -301,10 +320,7 @@
             <v-list-item-title>Student</v-list-item-title>
           </template>
 
-          <v-list-item
-            to="/student/available"
-            v-if="isStudent && currentCourse"
-          >
+          <v-list-item to="/student/available" v-if="isStudent && currentCourse">
             <v-list-item-action>
               <v-icon>assignment</v-icon>
             </v-list-item-action>
@@ -366,40 +382,32 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-
 @Component
 export default class TopBar extends Vue {
   fenixUrl: string = process.env.VUE_APP_FENIX_URL;
   appName: string = process.env.VUE_APP_NAME;
   drawer: boolean = false;
-
   get currentCourse() {
     return this.$store.getters.getCurrentCourse;
   }
-
   get moreThanOneCourse() {
     return (
       this.$store.getters.getUser.coursesNumber > 1 &&
       this.$store.getters.getCurrentCourse
     );
   }
-
   get isLoggedIn() {
     return this.$store.getters.isLoggedIn;
   }
-
   get isTeacher() {
     return this.$store.getters.isTeacher;
   }
-
   get isAdmin() {
     return this.$store.getters.isAdmin;
   }
-
   get isStudent() {
     return this.$store.getters.isStudent;
   }
-
   async logout() {
     await this.$store.dispatch('logout');
     await this.$router.push({ name: 'home' }).catch(() => {});
@@ -411,7 +419,6 @@ export default class TopBar extends Vue {
 .no-active::before {
   opacity: 0 !important;
 }
-
 nav {
   z-index: 300;
 }

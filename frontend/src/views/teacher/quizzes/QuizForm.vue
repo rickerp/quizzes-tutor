@@ -14,9 +14,9 @@
       >
     </v-card-title>
     <v-card-text>
-      <v-text-field v-model="quiz.title" label="*Title" />
+      <v-text-field v-model="quiz.title" label="*Title" data-cy="QuizTitle" />
       <v-row>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" data-cy="availableDate">
           <v-datetime-picker
             label="*Available Date"
             format="yyyy-MM-dd HH:mm"
@@ -49,7 +49,7 @@
         <v-col style="display: flex; justify-content: center">
           <v-switch v-model="quiz.oneWay" label="One Way Quiz" />
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" data-cy="type">
           <v-select
             v-model="quiz.type"
             :items="['PROPOSED', 'IN_CLASS']"
@@ -74,7 +74,7 @@
       >
         <template v-slot:top>
           <v-row>
-            <v-col cols="12" sm="6">
+            <v-col cols="12" sm="6" data-cy="bttnSearch">
               <v-text-field v-model="search" label="Search" class="mx-4" />
             </v-col>
             <v-col cols="12" sm="6">
@@ -118,7 +118,13 @@
           </v-tooltip>
           <v-tooltip bottom v-if="!item.sequence">
             <template v-slot:activator="{ on }">
-              <v-icon small class="mr-2" v-on="on" @click="addToQuiz(item)">
+              <v-icon
+                small
+                class="mr-2"
+                v-on="on"
+                @click="addToQuiz(item)"
+                data-cy="ActAddQuestion"
+              >
                 add</v-icon
               >
             </template>

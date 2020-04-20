@@ -1,49 +1,26 @@
 <template>
   <div class="container">
-    <h1 id="home-title" class="display-2 font-weight-thin mb-3">
-      {{ appName }}
-    </h1>
+    <h1 id="home-title" class="display-2 font-weight-thin mb-3">{{ appName }}</h1>
 
     <v-btn v-if="!isLoggedIn" :href="fenixUrl" depressed color="primary">
-      Log in with Fenix <v-icon>fas fa-sign-in-alt</v-icon>
+      Log in with Fenix
+      <v-icon>fas fa-sign-in-alt</v-icon>
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
-      <v-btn
-        data-cy="studentButton"
-        depressed
-        small
-        color="primary"
-        @click="demoStudent"
-      >
+      <v-btn depressed small color="primary" @click="demoStudent" data-cy="BttnStudentLogin">
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
-      <v-btn
-        depressed
-        small
-        color="primary"
-        data-cy="teacherButton"
-        @click="demoTeacher"
-      >
+      <v-btn depressed small color="primary" @click="demoTeacher" data-cy="BttnTeacherLogin">
         <i class="fa fa-graduation-cap" />Demo as teacher
       </v-btn>
-      <v-btn
-        depressed
-        small
-        color="primary"
-        @click="demoAdmin"
-        data-cy="adminButton"
-      >
+      <v-btn depressed small color="primary" @click="demoAdmin" data-cy="adminButton">
         <i class="fa fa-user-cog" />Demo as administrator
       </v-btn>
     </div>
 
     <v-footer class="footer">
-      <img
-        :src="require('../assets/img/ist_optimized.png')"
-        class="logo"
-        alt="Técnico Logo"
-      />
+      <img :src="require('../assets/img/ist_optimized.png')" class="logo" alt="Técnico Logo" />
       <div>
         <v-btn
           depressed
@@ -66,11 +43,7 @@
           <i class="fab fa-github" /> Bug report
         </v-btn>
       </div>
-      <img
-        :src="require('../assets/img/impress_optimized.png')"
-        class="logo"
-        alt="IMPRESS Logo"
-      />
+      <img :src="require('../assets/img/impress_optimized.png')" class="logo" alt="IMPRESS Logo" />
     </v-footer>
   </div>
 </template>

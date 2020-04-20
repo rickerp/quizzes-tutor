@@ -17,8 +17,11 @@ import AvailableQuizzesView from '@/views/student/AvailableQuizzesView.vue';
 import SolvedQuizzesView from '@/views/student/SolvedQuizzesView.vue';
 import QuizView from '@/views/student/quiz/QuizView.vue';
 import ResultsView from '@/views/student/quiz/ResultsView.vue';
+import ClarificationList from '@/views/common/clarification/ClarificationList.vue';
+
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
+import TournamentsView from '@/views/student/tournaments/TournamentsView.vue';
 
 import AdminManagementView from '@/views/admin/AdminManagementView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
@@ -69,6 +72,15 @@ let router = new Router({
           component: QuestionsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Questions',
+            requiredAuth: 'Teacher'
+          }
+        },
+        {
+          path: 'clarifications',
+          name: 'clarifications-management',
+          component: ClarificationList,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Clarifications',
             requiredAuth: 'Teacher'
           }
         },
@@ -143,11 +155,29 @@ let router = new Router({
           }
         },
         {
+          path: 'calendar',
+          name: 'tournaments-calendar',
+          component: TournamentsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournaments Calendar',
+            requiredAuth: 'Student'
+          }
+        },
+        {
           path: 'available',
           name: 'available-quizzes',
           component: AvailableQuizzesView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Available Quizzes',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'clarifications',
+          name: 'clarifications-quizzes',
+          component: ClarificationList,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Clarifications',
             requiredAuth: 'Student'
           }
         },

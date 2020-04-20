@@ -103,8 +103,8 @@
             <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create tournament with id : ${tournamentId}" enabled="true">
               <stringProp name="dataSource">sampleReq</stringProp>
               <stringProp name="queryType">Update Statement</stringProp>
-              <stringProp name="query">INSERT INTO tournaments(id, course_execution_id, creator_id, nr_questions, start_time, end_time) VALUES 
-	(${tournamentId}, 11, 676, 6, &apos;3000-1-1 12:00:00&apos;, &apos;3000-1-1 12:30:00&apos;);
+              <stringProp name="query">INSERT INTO tournaments(id, name, course_execution_id, creator_id, nr_questions, start_time, end_time) VALUES 
+	(${tournamentId}, &apos;Demo-Tournament&apos;, 11, 676, 6, &apos;3000-1-1 12:00:00&apos;, &apos;3000-1-1 12:30:00&apos;);
 
 INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
 	(${tournamentId}, 82),

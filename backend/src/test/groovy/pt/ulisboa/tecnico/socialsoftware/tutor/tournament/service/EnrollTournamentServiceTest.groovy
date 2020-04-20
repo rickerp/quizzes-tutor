@@ -24,6 +24,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.*
 
 @DataJpaTest
 class EnrollTournamentServiceTest extends Specification {
+    public static final String T_NAME = "Demo-Tournament"
     public static final String NAME = "Name"
     public static final String USERNAME_1 = "Username_1"
     public static final String USERNAME_2 = "Username_2"
@@ -58,6 +59,7 @@ class EnrollTournamentServiceTest extends Specification {
         userRepository.save(player)
         "Create a Tournament"
         tournament = new Tournament()
+        tournament.setName(T_NAME)
         tournament.setCreator(player)
         tournament.setNrQuestions(10)
         tournament.setCourseExecution(courseExecution)
@@ -109,6 +111,7 @@ class EnrollTournamentServiceTest extends Specification {
 
         given: "Create Second Tournament"
         def tournament_2 = new Tournament()
+        tournament_2.setName(T_NAME)
         tournament_2.setCreator(player)
         tournament_2.setNrQuestions(10)
         tournament_2.setCourseExecution(courseExecution)
