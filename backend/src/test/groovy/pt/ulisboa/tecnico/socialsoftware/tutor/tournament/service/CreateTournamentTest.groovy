@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
@@ -26,11 +27,13 @@ import java.time.LocalDateTime
 
 @DataJpaTest
 class CreateTournamentTest extends Specification {
+    public static final String T_NAME = "Demo-Tournament"
     public static final String NAME_1 = "Name_1"
     public static final String NAME_2 = "Name_2"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
     public static final LocalDateTime NOW = LocalDateTime.now()
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     @Autowired
     UserRepository userRepository
@@ -73,11 +76,12 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1))
-        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setStartTime(NOW.plusHours(1).format(formatter))
+        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"
@@ -88,8 +92,8 @@ class CreateTournamentTest extends Specification {
         tournament != null
         tournament.getCreator().getId() == dto.getCreatorId()
         tournament.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament.getStartTime() == dto.getStartTime()
-        tournament.getEndTime() == dto.getEndTime()
+        tournament.getStartTime().format(formatter) == dto.getStartTime()
+        tournament.getEndTime().format(formatter) == dto.getEndTime()
         tournament.getNrQuestions() == dto.getNrQuestions()
         tournament.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -105,11 +109,12 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(StartTime)
-        dto.setEndTime(EndTime)
+        dto.setStartTime(StartTime.format(formatter))
+        dto.setEndTime(EndTime.format(formatter))
         dto.setNrQuestions(nQuestions)
 
         when: "given a tournament dto to the service"
@@ -127,16 +132,13 @@ class CreateTournamentTest extends Specification {
         null                    | Topic.Status.AVAILABLE    | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || USER_NOT_STUDENT
         User.Role.STUDENT       | Topic.Status.DISABLED     | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
         User.Role.STUDENT       | Topic.Status.REMOVED      | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
-        User.Role.STUDENT       | null                      | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOPIC_NOT_AVAILABLE
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | 0             | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | -1            | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | null          | NOW.plusMinutes(10)   | NOW.plusMinutes(20)   || TOURNAMENT_NR_QUESTIONS_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | NOW.plusMinutes(-10)  | NOW.plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | NOW                   | NOW.plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | null                  | NOW.plusMinutes(20)   || TOURNAMENT_START_TIME_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(5)    || TOURNAMENT_END_TIME_INVALID
         User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | NOW.plusMinutes(10)   | NOW.plusMinutes(10)   || TOURNAMENT_END_TIME_INVALID
-        User.Role.STUDENT       | Topic.Status.AVAILABLE    | 5             | NOW.plusMinutes(10)   | null                  || TOURNAMENT_END_TIME_INVALID
     }
 
     def "Create an empty tournament" () {
@@ -155,11 +157,12 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1))
-        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setStartTime(NOW.plusHours(1).format(formatter))
+        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"
@@ -171,8 +174,8 @@ class CreateTournamentTest extends Specification {
         tournament_1 != null
         tournament_1.getCreator().getId() == dto.getCreatorId()
         tournament_1.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament_1.getStartTime() == dto.getStartTime()
-        tournament_1.getEndTime() == dto.getEndTime()
+        tournament_1.getStartTime().format(formatter) == dto.getStartTime()
+        tournament_1.getEndTime().format(formatter) == dto.getEndTime()
         tournament_1.getNrQuestions() == dto.getNrQuestions()
         tournament_1.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -180,8 +183,8 @@ class CreateTournamentTest extends Specification {
         tournament_2 != null
         tournament_2.getCreator().getId() == dto.getCreatorId()
         tournament_2.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament_2.getStartTime() == dto.getStartTime()
-        tournament_2.getEndTime() == dto.getEndTime()
+        tournament_2.getStartTime().format(formatter) == dto.getStartTime()
+        tournament_2.getEndTime().format(formatter) == dto.getEndTime()
         tournament_2.getNrQuestions() == dto.getNrQuestions()
         tournament_2.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -192,11 +195,12 @@ class CreateTournamentTest extends Specification {
         given: "a tournament dto"
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1))
-        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setStartTime(NOW.plusHours(1).format(formatter))
+        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
         dto.setNrQuestions(5)
 
         when: "given a dto with no topic to tournament service"
@@ -218,11 +222,12 @@ class CreateTournamentTest extends Specification {
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
         topicsId.add(topic_2.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1))
-        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setStartTime(NOW.plusHours(1).format(formatter))
+        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"
@@ -233,8 +238,8 @@ class CreateTournamentTest extends Specification {
         tournament != null
         tournament.getCreator().getId() == dto.getCreatorId()
         tournament.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament.getStartTime() == dto.getStartTime()
-        tournament.getEndTime() == dto.getEndTime()
+        tournament.getStartTime().format(formatter) == dto.getStartTime()
+        tournament.getEndTime().format(formatter) == dto.getEndTime()
         tournament.getNrQuestions() == dto.getNrQuestions()
         tournament.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -248,11 +253,12 @@ class CreateTournamentTest extends Specification {
         def dto = new TournamentDto()
         Set<Integer> topicsId = new HashSet<>()
         topicsId.add(topic.getId())
+        dto.setName(T_NAME)
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1))
-        dto.setEndTime(dto.getStartTime().plusMinutes(5))
+        dto.setStartTime(NOW.plusHours(1).format(formatter))
+        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"

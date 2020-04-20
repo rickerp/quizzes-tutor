@@ -9,6 +9,7 @@ describe('Clarification Comment Walkthrough', () => {
     cy.demoTeacherLogin();
     cy.createQuiz(QUIZ_TITLE, QUESTION);
     cy.demoStudentLogin();
+    cy.get('.quizzesButton').click();
     cy.respondQuiz(QUIZ_TITLE);
     cy.goToClarification(QUIZ_TITLE);
     cy.createClarificationRequest(CLARIFICATION_CONTENT);

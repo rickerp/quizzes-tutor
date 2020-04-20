@@ -7,11 +7,13 @@ describe('Clarification Request walkthrough', () => {
     cy.demoTeacherLogin();
     cy.createQuiz(QUIZ_TITLE, QUESTION);
     cy.demoStudentLogin();
+    cy.get('.quizzesButton').click();
     cy.respondQuiz(QUIZ_TITLE);
   });
 
   beforeEach(() => {
     cy.demoStudentLogin();
+    cy.get('.quizzesButton').click();
   });
 
   afterEach(() => {

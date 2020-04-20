@@ -31,6 +31,17 @@ Cypress.Commands.add('demoAdminLogin', () => {
   cy.contains('Manage Courses').click();
 });
 
+Cypress.Commands.add('demoStudentLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="BttnStudentLogin"]').click();
+});
+
+Cypress.Commands.add('demoTeacherLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="BttnTeacherLogin"]').click();
+  cy.get('.bttnManagement').click();
+});
+
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="createButton"]').click();
   cy.get('[data-cy="Name"]').type(name);
@@ -72,12 +83,6 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('demoTeacherLogin', () => {
-  cy.visit('/');
-  cy.get('[data-cy="BttnTeacherLogin"]').click();
-  cy.get('.bttnManagement').click();
-});
-
 Cypress.Commands.add('createQuiz', (title, question) => {
   cy.get('.bttnManagement').click();
   cy.get('[href="/management/quizzes"]').click();
@@ -115,12 +120,6 @@ Cypress.Commands.add('respondQuiz', quiz_title => {
   cy.contains(quiz_title).click();
   cy.get('.end-quiz').click();
   cy.get('[data-cy="imSure"]').click();
-  cy.get('.quizzesButton').click();
-});
-
-Cypress.Commands.add('demoStudentLogin', () => {
-  cy.visit('/');
-  cy.get('[data-cy="BttnStudentLogin"]').click();
   cy.get('.quizzesButton').click();
 });
 
@@ -172,7 +171,8 @@ Cypress.Commands.add(
       .should('have.length', 6)
       .contains('RESOLVED')
       .click();
-});
+  }
+);
 
 Cypress.Commands.add(
   'createClarificationCommentChat',
@@ -187,7 +187,8 @@ Cypress.Commands.add(
     cy.get('[data-cy="cmtContent"]').type(cmtContent);
     cy.get('[data-cy="bttnCmtSave"]').click();
     cy.contains(cmtContent);
-});
+  }
+);
 
 Cypress.Commands.add('showClarifications', () => {
   cy.contains('Clarifications').click();
@@ -212,4 +213,55 @@ Cypress.Commands.add('showClarification', clrfContent => {
     .find('[data-cy="showClrf"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();
+});
+
+Cypress.Commands.add('clickRowButton', (elem, button) => {
+  cy.contains(elem)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 8)
+    .find('[data-cy="' + button + '"]')
+    .click();
+});
+
+Cypress.Commands.add('assertRowField', (elem, field, value) => {
+  cy.contains(elem)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 8)
+    .find('[data-cy="' + field + '"]')
+    .first()
+    .should('have.text', value);
+});
+
+Cypress.Commands.add('createTournament', (name, day, nrQuestions) => {
+  cy.get('[data-cy="newTdPButton"]').click();
+  cy.get('[data-cy="newTdPName"]').type(name);
+  cy.get('[data-cy="newTdPStartDateMenu"]').click();
+  cy.wait(500);
+  cy.get('.v-date-picker-header')
+    .children()
+    .last()
+    .click();
+  cy.wait(500);
+  cy.get('.v-date-picker-table')
+    .children()
+    .contains(day.toString())
+    .click();
+  cy.wait(500);
+  cy.get('[data-cy="newTdPNrQuestions"]')
+    .clear()
+    .type(nrQuestions.toString());
+  cy.get('[data-cy="newTdPTopicsMenu"]').click();
+  cy.wait(500);
+  cy.get('[data-cy="newTdPTopic"]')
+    .first()
+    .click();
+  cy.get('[data-cy="newTdPTopic"]')
+    .last()
+    .click();
+  cy.get('[data-cy="newTdPSave"]').click();
+  cy.wait(500);
 });
