@@ -25,16 +25,6 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 /// <reference types="Cypress" />
 
-Cypress.Commands.add('demoStudentLogin', () => {
-  cy.visit('/');
-  cy.get('[data-cy="studentButton"]').click();
-});
-
-Cypress.Commands.add('demoTeacherLogin', () => {
-  cy.visit('/');
-  cy.get('[data-cy="teacherButton"]').click();
-});
-
 Cypress.Commands.add('demoAdminLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="adminButton"]').click();
@@ -50,7 +40,6 @@ Cypress.Commands.add('demoStudentLogin', () => {
 Cypress.Commands.add('demoTeacherLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="BttnTeacherLogin"]').click();
-  cy.get('.bttnManagement').click();
 });
 
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
