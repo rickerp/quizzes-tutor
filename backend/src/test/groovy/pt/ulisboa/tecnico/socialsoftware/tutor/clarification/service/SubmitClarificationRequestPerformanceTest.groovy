@@ -94,7 +94,6 @@ class SubmitClarificationRequestPerformanceTest extends Specification {
         given: "a clarification dto"
         def clarificationRequestDto = new ClarificationRequestDto()
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
-        clarificationRequestDto.setCreationDate(LocalDateTime.now())
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
         clarificationRequestDto.setUser(new UserDto(user))
 

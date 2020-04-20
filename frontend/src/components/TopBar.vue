@@ -47,7 +47,7 @@
 
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn v-on="on" text dark class="bttnManagement">
               Management
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
@@ -59,6 +59,14 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/clarifications">
+              <v-list-item-action>
+                <v-icon>fas fa-comments</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Clarifications</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/management/topics">
@@ -103,7 +111,6 @@
             </v-list-item>
           </v-list>
         </v-menu>
-
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" text dark to="/student/calendar">
@@ -122,10 +129,9 @@
             </v-list-item>
           </v-list>
         </v-menu>
-
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn class="quizzesButton" v-on="on" text dark>
               Quizzes
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
@@ -138,6 +144,14 @@
               <v-list-item-content>
                 <v-list-item-title>Available</v-list-item-title>
               </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/clarifications">
+              <v-list-item-action>
+                <v-icon>fas fa-comments </v-icon>
+              </v-list-item-action>
+              <v-list-item-action>
+                <v-list-item-title>Clarifications</v-list-item-title>
+              </v-list-item-action>
             </v-list-item>
             <v-list-item to="/student/create">
               <v-list-item-action>
@@ -359,40 +373,32 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-
 @Component
 export default class TopBar extends Vue {
   fenixUrl: string = process.env.VUE_APP_FENIX_URL;
   appName: string = process.env.VUE_APP_NAME;
   drawer: boolean = false;
-
   get currentCourse() {
     return this.$store.getters.getCurrentCourse;
   }
-
   get moreThanOneCourse() {
     return (
       this.$store.getters.getUser.coursesNumber > 1 &&
       this.$store.getters.getCurrentCourse
     );
   }
-
   get isLoggedIn() {
     return this.$store.getters.isLoggedIn;
   }
-
   get isTeacher() {
     return this.$store.getters.isTeacher;
   }
-
   get isAdmin() {
     return this.$store.getters.isAdmin;
   }
-
   get isStudent() {
     return this.$store.getters.isStudent;
   }
-
   async logout() {
     await this.$store.dispatch('logout');
     await this.$router.push({ name: 'home' }).catch(() => {});
@@ -404,7 +410,6 @@ export default class TopBar extends Vue {
 .no-active::before {
   opacity: 0 !important;
 }
-
 nav {
   z-index: 300;
 }

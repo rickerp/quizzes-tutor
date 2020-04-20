@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -106,6 +107,7 @@ public class ClarificationRequestService {
         return clarificationRequests.filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz()
                 .getCourseExecution().getId() == executionId)
                 .map(ClarificationRequestDto::new)
+                .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate).reversed())
                 .collect(Collectors.toList());
     }
 
