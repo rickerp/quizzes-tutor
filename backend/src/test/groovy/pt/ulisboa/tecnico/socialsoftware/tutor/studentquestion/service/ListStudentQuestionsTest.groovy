@@ -72,6 +72,14 @@ class ListStudentQuestionsTest extends Specification {
         list.size() == 1
     }
 
+    def "list course student questions"() {
+        when:
+        def list = studentQuestionService.listCourseStudentQuestions(course.getId())
+        then:
+        list != null
+        list.size() == 1
+    }
+
     @Unroll("With courseId: #courseId and userId: #userId")
     def "list student questions empty"() {
         when:

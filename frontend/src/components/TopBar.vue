@@ -15,12 +15,11 @@
           tile
           to="/"
           v-if="currentCourse"
+          >{{ currentCourse.name }}</v-btn
         >
-          {{ currentCourse.name }}
-        </v-btn>
-        <v-btn dark active-class="no-active" text tile to="/" v-else>
-          {{ appName }}
-        </v-btn>
+        <v-btn dark active-class="no-active" text tile to="/" v-else>{{
+          appName
+        }}</v-btn>
       </v-toolbar-title>
 
       <v-spacer />
@@ -59,6 +58,14 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/studentquestions">
+              <v-list-item-action>
+                <v-icon>fas fa-question</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Student Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/management/clarifications">
@@ -147,7 +154,7 @@
             </v-list-item>
             <v-list-item to="/student/clarifications">
               <v-list-item-action>
-                <v-icon>fas fa-comments </v-icon>
+                <v-icon>fas fa-comments</v-icon>
               </v-list-item-action>
               <v-list-item-action>
                 <v-list-item-title>Clarifications</v-list-item-title>
@@ -180,6 +187,16 @@
           </v-list>
         </v-menu>
 
+        <v-btn
+          to="/student/question"
+          v-if="isStudent && currentCourse"
+          text
+          dark
+        >
+          Suggested Questions
+          <v-icon>fas fa-question</v-icon>
+        </v-btn>
+
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats
           <v-icon>fas fa-user</v-icon>
@@ -202,7 +219,8 @@
         </v-btn>
 
         <v-btn v-else :href="fenixUrl" text dark>
-          Login <v-icon>fas fa-sign-in-alt</v-icon>
+          Login
+          <v-icon>fas fa-sign-in-alt</v-icon>
         </v-btn>
       </v-toolbar-items>
     </v-app-bar>
@@ -254,6 +272,14 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>Questions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/studentquestions">
+            <v-list-item-action>
+              <v-icon>fas fa-question</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Student Questions</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/topics">

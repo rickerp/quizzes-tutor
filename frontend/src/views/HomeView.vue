@@ -5,7 +5,8 @@
     </h1>
 
     <v-btn v-if="!isLoggedIn" :href="fenixUrl" depressed color="primary">
-      Log in with Fenix <v-icon>fas fa-sign-in-alt</v-icon>
+      Log in with Fenix
+      <v-icon>fas fa-sign-in-alt</v-icon>
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">

@@ -5,6 +5,7 @@ import Store from '@/store';
 import LoginView from '@/views/LoginView.vue';
 import CourseSelectionView from '@/views/CourseSelectionView.vue';
 
+import MyQuestionsView from '@/views/student/MyQuestionsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import ManagementView from '@/views/teacher/ManagementView.vue';
 import QuestionsView from '@/views/teacher/questions/QuestionsView.vue';
@@ -28,6 +29,7 @@ import ImpExpView from '@/views/teacher/impexp/ImpExpView.vue';
 import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
+import StudentQuestionsEvaluationView from '@/views/teacher/studentquestions/StudentQuestionsEvaluationView.vue';
 
 Vue.use(Router);
 
@@ -126,6 +128,15 @@ let router = new Router({
             title: process.env.VUE_APP_NAME + ' - ImpExp',
             requiredAuth: 'Teacher'
           }
+        },
+        {
+          path: 'studentquestions',
+          name: 'studentquestions-management',
+          component: StudentQuestionsEvaluationView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student Questions Evaluation',
+            requiredAuth: 'Teacher'
+          }
         }
       ]
     },
@@ -134,6 +145,15 @@ let router = new Router({
       name: 'student',
       component: StudentView,
       children: [
+        {
+          path: 'question',
+          name: 'student-question',
+          component: MyQuestionsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - My Questions',
+            requiredAuth: 'Student'
+          }
+        },
         {
           path: 'calendar',
           name: 'tournaments-calendar',

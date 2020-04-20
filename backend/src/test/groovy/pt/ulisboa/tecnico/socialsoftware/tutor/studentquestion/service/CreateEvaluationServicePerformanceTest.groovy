@@ -79,12 +79,11 @@ class CreateEvaluationServicePerformanceTest extends Specification {
         studentQuestionRepository.save(studentQuestion)
         and: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
-        evaluationDto.setStudentQuestionDto(new StudentQuestionDto(studentQuestion))
         evaluationDto.setAccepted(ACCEPTED)
         evaluationDto.setJustification(null)
 
         when:
-        1.upto(1, {evaluationService.createEvaluation(evaluationDto)})
+        1.upto(1, {evaluationService.createEvaluation(evaluationDto, studentQuestion.getId())})
 
         then:
         true

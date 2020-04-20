@@ -38,4 +38,10 @@ public class StudentQuestionController {
         User user = (User) ((Authentication) principal).getPrincipal();
         return studentQuestionService.list(courseId, user.getId());
     }
+
+    @GetMapping("/courses/{courseId}/coursestudentquestions")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public List<StudentQuestionDto> getCourseStudentQuestions(Principal principal, @PathVariable int courseId){
+        return studentQuestionService.listCourseStudentQuestions(courseId);
+    }
 }

@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 /// <reference types="Cypress" />
+
 Cypress.Commands.add('demoAdminLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="adminButton"]').click();
@@ -39,7 +40,6 @@ Cypress.Commands.add('demoStudentLogin', () => {
 Cypress.Commands.add('demoTeacherLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="BttnTeacherLogin"]').click();
-  cy.get('.bttnManagement').click();
 });
 
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
@@ -56,6 +56,48 @@ Cypress.Commands.add('closeErrorMessage', (name, acronym, academicTerm) => {
     .find('button')
     .click();
 });
+
+Cypress.Commands.add(
+  'createStudentSuggestion',
+  ({ questionTitle, questionContent, options }) => {
+    cy.contains('Suggested').click();
+    cy.get('[data-cy="newQuestionBtn"]').click();
+    questionTitle && cy.get('.questionTitle').type(questionTitle);
+    cy.get('[data-cy="questionContent"]').type(questionContent);
+    cy.get('[data-cy="correct1"]').click({ force: true });
+    cy.get('[data-cy="option1"]').type(options[0]);
+    cy.get('[data-cy="option2"]').type(options[1]);
+    cy.get('[data-cy="option3"]').type(options[2]);
+    cy.get('[data-cy="option4"]').type(options[3]);
+    cy.get('[data-cy="saveQuestionBtn"]').click();
+    cy.wait(100);
+  }
+);
+
+Cypress.Commands.add(
+  'createEvaluation',
+  ({ questionTitle, questionContent, options }, justification) => {
+    cy.contains('Management').click();
+    cy.contains('Student Questions').click();
+    cy.contains('Title').click();
+    cy.contains(questionContent)
+      .parent()
+      .parent()
+      .children()
+      .find('[data-cy="evaluationBtn"]')
+      .click();
+    cy.get('[data-cy="accepted"]').click({ force: true });
+    cy.get('[data-cy="justification"]').type(justification);
+    cy.contains('Save').click();
+    cy.contains(questionContent)
+      .parent()
+      .parent()
+      .children()
+      .find('[data-cy="evaluationBtn"]')
+      .click();
+    cy.contains('close').click();
+  }
+);
 
 Cypress.Commands.add('deleteCourseExecution', acronym => {
   cy.contains(acronym)
@@ -86,6 +128,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('createQuiz', (title, question) => {
   cy.get('.bttnManagement').click();
   cy.get('[href="/management/quizzes"]').click();
+  cy.contains('Title').click();
   cy.get('[data-cy="bttnCreateQuiz"]').click();
   cy.get('[data-cy="QuizTitle"]').type(title);
   cy.get('[data-cy="bttnSearch"]').type(question);

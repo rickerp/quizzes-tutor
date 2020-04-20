@@ -61,6 +61,17 @@ public class StudentQuestionService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<StudentQuestionDto> listCourseStudentQuestions(int courseId) {
+        return studentQuestionRepository.findAll().stream()
+                .filter(s -> s.getQuestion().getCourse().getId() == courseId)
+                .map(StudentQuestionDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public StudentQuestionDto createStudentQuestion(int courseId, StudentQuestionDto studentQuestionDto) {
 
         if (studentQuestionDto == null)

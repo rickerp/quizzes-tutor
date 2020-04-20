@@ -9,6 +9,7 @@ public class StudentQuestionDto implements Serializable {
 
     private Integer id;
     private QuestionDto question;
+    private EvaluationDto evaluation;
     private int student;
 
     public StudentQuestionDto() {
@@ -16,6 +17,10 @@ public class StudentQuestionDto implements Serializable {
     }
     public StudentQuestionDto(StudentQuestion studentQuestion) {
         this.id = studentQuestion.getId();
+
+        if (studentQuestion.getEvaluation() != null)
+            this.evaluation = new EvaluationDto(studentQuestion.getEvaluation());
+
         this.question = new QuestionDto(studentQuestion.getQuestion());
         this.student = studentQuestion.getStudent().getId();
     }
@@ -53,4 +58,11 @@ public class StudentQuestionDto implements Serializable {
                 '}';
     }
 
+    public EvaluationDto getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(EvaluationDto evaluation) {
+        this.evaluation = evaluation;
+    }
 }
