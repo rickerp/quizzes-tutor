@@ -28,7 +28,6 @@ describe('Student suggested question workflow', () => {
     cy.createStudentSuggestion(data);
     cy.contains('Question must have title and content')
       .parent()
-      .children()
       .find('button')
       .click();
   });

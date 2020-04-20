@@ -15,8 +15,11 @@
           tile
           to="/"
           v-if="currentCourse"
-        >{{ currentCourse.name }}</v-btn>
-        <v-btn dark active-class="no-active" text tile to="/" v-else>{{ appName }}</v-btn>
+          >{{ currentCourse.name }}</v-btn
+        >
+        <v-btn dark active-class="no-active" text tile to="/" v-else>{{
+          appName
+        }}</v-btn>
       </v-toolbar-title>
 
       <v-spacer />
@@ -184,7 +187,12 @@
           </v-list>
         </v-menu>
 
-        <v-btn to="/student/question" v-if="isStudent && currentCourse" text dark>
+        <v-btn
+          to="/student/question"
+          v-if="isStudent && currentCourse"
+          text
+          dark
+        >
           Suggested Questions
           <v-icon>fas fa-question</v-icon>
         </v-btn>
@@ -229,9 +237,15 @@
 
       <v-list class="pt-0" dense>
         <!-- Administration Group-->
-        <v-list-group prepend-icon="fas fa-file-alt" :value="false" v-if="isAdmin">
+        <v-list-group
+          prepend-icon="fas fa-file-alt"
+          :value="false"
+          v-if="isAdmin"
+        >
           <template v-slot:activator>
-            <v-list-item-title data-cy="Administration">Administration</v-list-item-title>
+            <v-list-item-title data-cy="Administration"
+              >Administration</v-list-item-title
+            >
           </template>
           <v-list-item to="/admin/courses">
             <v-list-item-action>
@@ -320,7 +334,10 @@
             <v-list-item-title>Student</v-list-item-title>
           </template>
 
-          <v-list-item to="/student/available" v-if="isStudent && currentCourse">
+          <v-list-item
+            to="/student/available"
+            v-if="isStudent && currentCourse"
+          >
             <v-list-item-action>
               <v-icon>assignment</v-icon>
             </v-list-item-action>

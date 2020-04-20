@@ -41,7 +41,9 @@
           @click="$emit('dialog', false)"
           >Cancel</v-btn
         >
-        <v-btn class="white--text" color="blue darken-1" @click="saveEvaluation">Save</v-btn>
+        <v-btn class="white--text" color="blue darken-1" @click="saveEvaluation"
+          >Save</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

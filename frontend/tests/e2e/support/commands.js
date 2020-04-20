@@ -81,6 +81,7 @@ Cypress.Commands.add(
     cy.get('[data-cy="option3"]').type(options[2]);
     cy.get('[data-cy="option4"]').type(options[3]);
     cy.get('[data-cy="saveQuestionBtn"]').click();
+    cy.wait(100);
   }
 );
 
@@ -89,6 +90,7 @@ Cypress.Commands.add(
   ({ questionTitle, questionContent, options }, justification) => {
     cy.contains('Management').click();
     cy.contains('Student Questions').click();
+    cy.contains('Title').click();
     cy.contains(questionContent)
       .parent()
       .parent()
@@ -137,6 +139,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('createQuiz', (title, question) => {
   cy.get('.bttnManagement').click();
   cy.get('[href="/management/quizzes"]').click();
+  cy.contains('Title').click();
   cy.get('[data-cy="bttnCreateQuiz"]').click();
   cy.get('[data-cy="QuizTitle"]').type(title);
   cy.get('[data-cy="bttnSearch"]').type(question);

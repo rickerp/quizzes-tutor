@@ -26,6 +26,7 @@ describe('Teacher creating evaluation walktrough', () => {
   it('Create invalid Evaluation', () => {
     cy.contains('Management').click();
     cy.contains('Student Questions').click();
+    cy.contains('Title').click();
     cy.contains(data.questionContent)
       .parent()
       .parent()

@@ -78,10 +78,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Model, Prop, Vue } from 'vue-property-decorator';
+import { Component, Model, Vue } from 'vue-property-decorator';
 import Question from '@/models/management/Question';
 import RemoteServices from '@/services/RemoteServices';
-import Topic from '../../models/management/Topic';
 import StudentQuestion from '../../models/studentquestion/StudentQuestion';
 
 @Component({
