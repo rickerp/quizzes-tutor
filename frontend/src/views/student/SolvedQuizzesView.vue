@@ -36,6 +36,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import SolvedQuiz from '@/models/statement/SolvedQuiz';
 import StatementManager from '@/models/statement/StatementManager';
+import { ClarificationRequest } from '@/models/management/ClarificationRequest';
+import StatementAnswer from '@/models/statement/StatementAnswer';
 
 @Component
 export default class AvailableQuizzesView extends Vue {

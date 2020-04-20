@@ -10,56 +10,92 @@
         : 'incorrect-question'
     ]"
   >
-    <div class="question">
-      <span
-        @click="decreaseOrder"
-        @mouseover="hover = true"
-        @mouseleave="hover = false"
-        class="square"
+    <v-toolbar class="pb-3 mb-3" color="#333333" dark>
+      <v-icon style="padding-right: 20px">
+        {{ showClarifications ? 'fas fa-comments' : 'fas fa-file-alt' }}
+      </v-icon>
+      <v-toolbar-title>
+        {{ showClarifications ? 'Clarifications' : 'Question' }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-btn
+        color="primary"
+        class="mr-3"
+        v-if="showClarifications"
+        dark
+        @click="showClarificationDialog"
       >
-        <i v-if="hover && questionOrder !== 0" class="fas fa-chevron-left" />
-        <span v-else>{{ questionOrder + 1 }}</span>
-      </span>
-      <div
-        class="question-content"
-        v-html="convertMarkDown(question.content, question.image)"
-      ></div>
-      <div @click="increaseOrder" class="square">
-        <i
-          v-if="questionOrder !== questionNumber - 1"
-          class="fas fa-chevron-right"
-        />
-      </div>
-    </div>
-    <ul class="option-list">
-      <li
-        v-for="(n, index) in question.options.length"
-        :key="index"
-        v-bind:class="[
-          answer.optionId === question.options[index].optionId ? 'wrong' : '',
-          correctAnswer.correctOptionId === question.options[index].optionId
-            ? 'correct'
-            : '',
-          'option'
-        ]"
-      >
-        <i
-          v-if="
-            correctAnswer.correctOptionId === question.options[index].optionId
-          "
-          class="fas fa-check option-letter"
-        />
-        <i
-          v-else-if="answer.optionId === question.options[index].optionId"
-          class="fas fa-times option-letter"
-        />
-        <span v-else class="option-letter">{{ optionLetters[index] }}</span>
+        Create
+      </v-btn>
+      <v-btn color="primary" dark @click="changeMode">
+        {{ showClarifications ? 'Show Questions' : 'Show Clarifications' }}
+      </v-btn>
+    </v-toolbar>
+    <div v-if="!showClarifications">
+      <div class="question">
         <span
-          class="option-content"
-          v-html="convertMarkDown(question.options[index].content)"
-        />
-      </li>
-    </ul>
+          @click="decreaseOrder"
+          @mouseover="hover = true"
+          @mouseleave="hover = false"
+          class="square"
+        >
+          <i v-if="hover && questionOrder !== 0" class="fas fa-chevron-left" />
+          <span v-else>{{ questionOrder + 1 }}</span>
+        </span>
+        <div
+          class="question-content"
+          v-html="convertMarkDown(question.content, question.image)"
+        ></div>
+        <div @click="increaseOrder" class="square">
+          <i
+            v-if="questionOrder !== questionNumber - 1"
+            class="fas fa-chevron-right"
+          />
+        </div>
+      </div>
+      <ul class="option-list">
+        <li
+          v-for="(n, index) in question.options.length"
+          :key="index"
+          v-bind:class="[
+            answer.optionId === question.options[index].optionId ? 'wrong' : '',
+            correctAnswer.correctOptionId === question.options[index].optionId
+              ? 'correct'
+              : '',
+            'option'
+          ]"
+        >
+          <i
+            v-if="
+              correctAnswer.correctOptionId === question.options[index].optionId
+            "
+            class="fas fa-check option-letter"
+          />
+          <i
+            v-else-if="answer.optionId === question.options[index].optionId"
+            class="fas fa-times option-letter"
+          />
+          <span v-else class="option-letter">{{ optionLetters[index] }}</span>
+          <span
+            class="option-content"
+            v-html="convertMarkDown(question.options[index].content)"
+          />
+        </li>
+      </ul>
+    </div>
+    <chat-component
+      v-if="showClarifications"
+      :requests="answer.clarificationRequests"
+      :show-toolbar="false"
+    >
+    </chat-component>
+    <new-clarification-dialog
+      v-if="create"
+      v-model="newClarificationDialog"
+      :request="newClarification"
+      :question-answer-id="answer.questionAnswerId"
+      v-on:save-clarification="onSaveClarification"
+    />
   </div>
 </template>
 
@@ -70,8 +106,16 @@ import StatementQuestion from '@/models/statement/StatementQuestion';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import StatementCorrectAnswer from '@/models/statement/StatementCorrectAnswer';
 import Image from '@/models/management/Image';
+import ChatComponent from '@/views/common/clarification/ChatComponent.vue';
+import NewClarificationRequestDialog from '@/views/student/quiz/NewClarificationRequestDialog.vue';
+import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 
-@Component
+@Component({
+  components: {
+    'chat-component': ChatComponent,
+    'new-clarification-dialog': NewClarificationRequestDialog
+  }
+})
 export default class ResultComponent extends Vue {
   @Model('questionOrder', Number) questionOrder: number | undefined;
   @Prop(StatementQuestion) readonly question!: StatementQuestion;
@@ -79,6 +123,10 @@ export default class ResultComponent extends Vue {
   @Prop(StatementAnswer) readonly answer!: StatementAnswer;
   @Prop() readonly questionNumber!: number;
   hover: boolean = false;
+  showClarifications: boolean = false;
+  create: boolean = false;
+  newClarificationDialog: boolean = false;
+  newClarification: ClarificationRequest | undefined;
   optionLetters: string[] = ['A', 'B', 'C', 'D'];
 
   @Emit()
@@ -91,83 +139,24 @@ export default class ResultComponent extends Vue {
     return 1;
   }
 
+  async changeMode() {
+    this.showClarifications = !this.showClarifications;
+  }
   convertMarkDown(text: string, image: Image | null = null): string {
     return convertMarkDown(text, image);
   }
+
+  showClarificationDialog() {
+    this.newClarification = new ClarificationRequest();
+    this.newClarification.state = 'UNRESOLVED';
+    this.create = true;
+    this.newClarificationDialog = true;
+  }
+
+  onSaveClarification(request: ClarificationRequest) {
+    this.newClarificationDialog = false;
+    this.create = false;
+    this.answer.clarificationRequests.unshift(request);
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-.unanswered {
-  .question {
-    background-color: #761515 !important;
-    color: #fff !important;
-  }
-  .correct {
-    .option-content {
-      background-color: #333333;
-      color: rgb(255, 255, 255) !important;
-    }
-
-    .option-letter {
-      background-color: #333333 !important;
-      color: rgb(255, 255, 255) !important;
-    }
-  }
-}
-
-.correct-question {
-  .question .question-content {
-    background-color: #285f23 !important;
-    color: white !important;
-  }
-  .question .square {
-    background-color: #285f23 !important;
-    color: white !important;
-  }
-  .correct {
-    .option-content {
-      background-color: #299455;
-      color: rgb(255, 255, 255) !important;
-    }
-
-    .option-letter {
-      background-color: #299455 !important;
-      color: rgb(255, 255, 255) !important;
-    }
-  }
-}
-
-.incorrect-question {
-  .question .question-content {
-    background-color: #761515 !important;
-    color: white !important;
-  }
-  .question .square {
-    background-color: #761515 !important;
-    color: white !important;
-  }
-  .wrong {
-    .option-content {
-      background-color: #cf2323;
-      color: rgb(255, 255, 255) !important;
-    }
-
-    .option-letter {
-      background-color: #cf2323 !important;
-      color: rgb(255, 255, 255) !important;
-    }
-  }
-  .correct {
-    .option-content {
-      background-color: #333333;
-      color: rgb(255, 255, 255) !important;
-    }
-
-    .option-letter {
-      background-color: #333333 !important;
-      color: rgb(255, 255, 255) !important;
-    }
-  }
-}
-</style>
