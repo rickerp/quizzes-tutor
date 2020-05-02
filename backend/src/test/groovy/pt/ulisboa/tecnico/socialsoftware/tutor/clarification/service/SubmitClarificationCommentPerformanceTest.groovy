@@ -100,12 +100,14 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         userDto = new UserDto(user)
 
         def quiz = new Quiz()
+        quiz.setTitle("titleQuiz")
         quiz.setKey(1)
-        quiz.setType(Quiz.QuizType.GENERATED)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
         quiz.setCourseExecution(courseExecution)
         quizRepository.save(quiz)
 
         def question = new Question()
+        question.setTitle("titleQuestion")
         question.setKey(1)
         questionRepository.save(question)
 

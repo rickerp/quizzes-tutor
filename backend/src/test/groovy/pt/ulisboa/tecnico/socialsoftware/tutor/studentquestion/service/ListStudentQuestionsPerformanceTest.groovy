@@ -63,6 +63,7 @@ class ListStudentQuestionsPerformanceTest extends Specification{
         1.upto(1, {
             "Create 1000 questions"
             def question = new Question()
+            question.setTitle("QuestionTitle")
             question.setKey(it as Integer)
             question.setContent('Question')
             question.setStatus(Question.Status.AVAILABLE)
@@ -77,12 +78,14 @@ class ListStudentQuestionsPerformanceTest extends Specification{
             question.setImage(image)
             and: "two options"
             def optionOK = new Option()
+            optionOK.setSequence(1)
             optionOK.setContent('Option1')
             optionOK.setCorrect(true)
             optionOK.setQuestion(question)
             optionRepository.save(optionOK)
             question.addOption(optionOK)
             def optionKO = new Option()
+            optionKO.setSequence(2)
             optionKO.setContent('Option2')
             optionKO.setCorrect(false)
             optionKO.setQuestion(question)

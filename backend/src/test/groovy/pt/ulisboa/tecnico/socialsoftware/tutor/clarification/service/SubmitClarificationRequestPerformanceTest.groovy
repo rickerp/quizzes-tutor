@@ -71,10 +71,12 @@ class SubmitClarificationRequestPerformanceTest extends Specification {
         user = new User("Name", "Username", 1, User.Role.STUDENT)
 
         def quiz = new Quiz()
+        quiz.setTitle("QuizTitle")
         quiz.setKey(1)
-        quiz.setType(Quiz.QuizType.GENERATED)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
 
         def question = new Question()
+        question.setTitle("QuestionTitle")
         question.setKey(1)
 
         def quizQuestion = new QuizQuestion(quiz, question, 0)

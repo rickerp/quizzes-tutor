@@ -107,12 +107,14 @@ class SubmitClarificationCommentTest extends Specification {
         userRepository.save(user)
 
         def quiz = new Quiz()
+        quiz.setTitle("titleQuiz")
         quiz.setKey(1)
-        quiz.setType(Quiz.QuizType.GENERATED)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
         quiz.setCourseExecution(courseExecution)
         quizRepository.save(quiz)
 
         def question = new Question()
+        question.setTitle("titleQuestion")
         question.setKey(1)
         questionRepository.save(question)
 
@@ -170,21 +172,6 @@ class SubmitClarificationCommentTest extends Specification {
         then:
         def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
         comment.getCreationDate() != null
-    }
-
-    @Unroll("Test: #userId")
-    def "submit a clarification comment with a user that doesn't exist"() {
-        given:"update clarification comment dto"
-        clarificationCommentDto.getUser().setId(userId)
-        when:
-        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
-
-        then:
-        def error = thrown(TutorException)
-        error.getErrorMessage() == ErrorMessage.COMMENT_INVALID_USER
-
-        where:
-        userId << [500, 0]
     }
 
     @Unroll("Test: #clarificationId")

@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuizAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.Demo;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -16,12 +18,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlImport;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_EXECUTION_NOT_FOUND;
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DUPLICATE_USER;
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Service
 public class UserService {
@@ -56,15 +56,15 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public String getEnrolledCoursesAcronyms(String username) {
-        User user =  this.userRepository.findByUsername(username);
+    public String getEnrolledCoursesAcronyms(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
         return user.getEnrolledCoursesAcronyms();
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<CourseDto> getCourseExecutions(String username) {
-        User user =  this.userRepository.findByUsername(username);
+    public List<CourseDto> getCourseExecutions(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
         return user.getCourseExecutions().stream().map(CourseDto::new).collect(Collectors.toList());
     }
@@ -83,12 +83,8 @@ public class UserService {
         return user.getClarificationRequests().stream().map(ClarificationRequestDto::new).collect(Collectors.toList());
     }
 
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void addCourseExecution(String username, int executionId) {
-
-        User user =  this.userRepository.findByUsername(username);
-
+    public void addCourseExecution(int userId, int executionId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
         CourseExecution courseExecution = courseExecutionRepository.findById(executionId).orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, executionId));
 
         user.addCourse(courseExecution);
@@ -115,34 +111,34 @@ public class UserService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoTeacher() {
-        User user = this.userRepository.findByUsername("Demo-Teacher");
+        User user = this.userRepository.findByUsername(Demo.TEACHER_USERNAME);
         if (user == null)
-            return createUser("Demo Teacher", "Demo-Teacher", User.Role.TEACHER);
+            return createUser("Demo Teacher", Demo.TEACHER_USERNAME, User.Role.TEACHER);
         return user;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoStudent() {
-        User user = this.userRepository.findByUsername("Demo-Student");
+        User user = this.userRepository.findByUsername(Demo.STUDENT_USERNAME);
         if (user == null)
-            return createUser("Demo Student", "Demo-Student", User.Role.STUDENT);
+            return createUser("Demo Student", Demo.STUDENT_USERNAME, User.Role.STUDENT);
         return user;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoAdmin() {
-        User user =  this.userRepository.findByUsername("Demo-Admin");
+        User user =  this.userRepository.findByUsername(Demo.ADMIN_USERNAME);
         if (user == null)
-            return createUser("Demo Admin", "Demo-Admin", User.Role.DEMO_ADMIN);
+            return createUser("Demo Admin", Demo.ADMIN_USERNAME, User.Role.DEMO_ADMIN);
         return user;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User createDemoStudent() {
-        String birthDate = LocalDateTime.now().toString();
+        String birthDate = DateHandler.now().toString();
         User newDemoUser = createUser("Demo-Student-" + birthDate, "Demo-Student-" + birthDate, User.Role.STUDENT);
 
-        User demoUser = this.userRepository.findByUsername("Demo-Student");
+        User demoUser = this.userRepository.findByUsername(Demo.STUDENT_USERNAME);
 
         CourseExecution courseExecution = demoUser.getCourseExecutions().stream().findAny().orElse(null);
 
