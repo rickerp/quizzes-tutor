@@ -5,7 +5,7 @@
     @keydown.esc="$emit('close-dialog')"
     max-width="50%"
   >
-    <v-card class="scroll-y" min-height="750px">
+    <v-card>
       <v-card-title>
         <span class="headline">{{
           editTournament.id ? editTournament.name : 'New Tournament'
@@ -31,8 +31,7 @@
                 data-cy="newTdPStartTime"
               ></VueCtkDateTimePicker>
             </v-col>
-          </v-row>
-          <v-row>
+
             <v-col>
               <VueCtkDateTimePicker
                 label="End Date-Time *"
@@ -43,9 +42,11 @@
               ></VueCtkDateTimePicker>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="2"
-              ><v-subheader>Number Of Questions *</v-subheader></v-col
+          <v-row class="mt-7">
+            <v-col cols="3"
+              ><v-subheader class="text-left"
+                >Number Of Questions *</v-subheader
+              ></v-col
             >
             <v-col>
               <v-slider
@@ -71,8 +72,8 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="2">
-              <v-subheader>Topics *</v-subheader>
+            <v-col cols="3">
+              <v-subheader class="text-left">Topics *</v-subheader>
             </v-col>
             <v-col>
               <v-autocomplete
@@ -217,3 +218,9 @@ export default class EditTournamentDialog extends Vue {
   }
 }
 </script>
+
+<style>
+.v-dialog {
+  overflow: visible !important;
+}
+</style>

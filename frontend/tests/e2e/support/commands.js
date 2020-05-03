@@ -280,16 +280,6 @@ Cypress.Commands.add(
     cy.get('[data-cy="newTdPTopic"]')
       .last()
       .click();
-    cy.get(
-      ':nth-child(2)' +
-        '> .v-input' +
-        '> .v-input__control' +
-        '> .v-input__slot' +
-        '> .v-select__slot' +
-        '> .v-input__append-inner' +
-        '> .v-input__icon' +
-        '> .v-icon'
-    ).click();
     cy.get('[data-cy="newTdPSave"]').click();
     cy.wait(500);
   }
@@ -328,6 +318,6 @@ Cypress.Commands.add('setDay', (button, id, day) => {
       '> .datepicker' +
       '> .datepicker-buttons-container' +
       '> .validate'
-  ).click();
+  ).click({ force: true });
   cy.wait(500);
 });
