@@ -121,22 +121,11 @@ Cypress.Commands.add('createQuiz', (title, question) => {
     .parent()
     .should('have.length', 1)
     .children()
-    .should('have.length', 7)
+    .should('have.length', 5)
     .find('[data-cy="ActAddQuestion"]')
     .click();
   cy.get('[data-cy="availableDate"]').click();
-  cy.get('.v-date-picker-header')
-    .children()
-    .first()
-    .click();
-  cy.wait(500);
-  cy.get('.v-date-picker-table')
-    .children()
-    .contains('28')
-    .click();
-  cy.get('.green--text').click();
-  cy.get('[data-cy="type"]').click();
-  cy.contains('PROPOSED').click();
+  cy.contains('Now').click();
   cy.contains('Save').click();
   cy.wait(100);
 });

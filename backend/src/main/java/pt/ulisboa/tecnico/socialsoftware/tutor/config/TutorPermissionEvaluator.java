@@ -109,7 +109,7 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean userRespondedToThisQuestionAnswer(int userId, int questionAnswerId) {
-        return answerService.findQuizAnswer(questionAnswerId).getId().equals(userId);
+        return answerService.findQuizAnswer(questionAnswerId).getUser().getId().equals(userId);
     }
 
     private boolean executionHasTopics(int executionId, Set<Integer> topicsId) {

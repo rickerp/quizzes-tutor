@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 import java.time.format.DateTimeFormatter;
@@ -16,27 +17,24 @@ public class ClarificationRequestDto {
     private QuestionAnswerDto questionAnswer;
     private ClarificationCommentDto clarificationComment;
     private ImageDto image;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public ClarificationRequestDto() {
     }
 
     public ClarificationRequestDto(ClarificationRequest clarificationRequest) {
+        this.setId(clarificationRequest.getId());
+        this.setState(clarificationRequest.getState());
+        this.setContent(clarificationRequest.getContent());
 
-        this.id = clarificationRequest.getId();
-        this.state = clarificationRequest.getState();
-        this.content = clarificationRequest.getContent();
         if (clarificationRequest.getCreationDate() != null) {
-            this.creationDate = clarificationRequest.getCreationDate().format(formatter);
+            this.setCreationDate(DateHandler.toISOString(clarificationRequest.getCreationDate()));
         }
-        this.user = new UserDto(clarificationRequest.getUser());
-        this.questionAnswer = new QuestionAnswerDto(clarificationRequest.getQuestionAnswer());
+        this.setUser(new UserDto(clarificationRequest.getUser()));
+        this.setQuestionAnswer(new QuestionAnswerDto(clarificationRequest.getQuestionAnswer()));
         if (clarificationRequest.getClarificationComment() != null) {
-            this.clarificationComment = new ClarificationCommentDto(clarificationRequest.getClarificationComment());
+            setClarificationComment(new ClarificationCommentDto(clarificationRequest.getClarificationComment()));
         }
 
-        if (clarificationRequest.getImage() != null) {
-            this.image = new ImageDto(clarificationRequest.getImage());
-        }
+        if (clarificationRequest.getImage() != null) { this.setImage(new ImageDto(clarificationRequest.getImage())); }
     }
 
     public int getId() {

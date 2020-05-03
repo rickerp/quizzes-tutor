@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
@@ -46,20 +47,19 @@ public class ClarificationRequest {
 
     public ClarificationRequest(ClarificationRequestDto clarificationRequestDto, User user, QuestionAnswer questionAnswer) {
 
-        if (clarificationRequestDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
-        this.content = clarificationRequestDto.getContent();
+        setContent(clarificationRequestDto.getContent());
 
         if (clarificationRequestDto.getState() != State.UNRESOLVED)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
 
-        this.state = State.UNRESOLVED;
-        this.user = user;
-        this.questionAnswer = questionAnswer;
+        setState(State.UNRESOLVED);
+        setUser(user);
+        setQuestionAnswer(questionAnswer);
 
-        if (clarificationRequestDto.getImage() != null) this.image = new Image(clarificationRequestDto.getImage());
+        if (clarificationRequestDto.getImage() != null) setImage(new Image(clarificationRequestDto.getImage()));
 
-        this.creationDate = clarificationRequestDto.getCreationDate() == null ? LocalDateTime.now() : LocalDateTime.parse(clarificationRequestDto.getCreationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
+        if (clarificationRequestDto.getCreationDate() == null) { setCreationDate(DateHandler.now()); }
+        else { setCreationDate(DateHandler.toLocalDateTime(clarificationRequestDto.getCreationDate())); }
     }
 
     public Integer getId() {
@@ -83,6 +83,7 @@ public class ClarificationRequest {
     }
 
     public void setContent(String content) {
+        if (content == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
         this.content = content;
     }
 

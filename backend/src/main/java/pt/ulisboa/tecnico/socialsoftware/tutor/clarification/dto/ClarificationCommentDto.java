@@ -4,6 +4,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
@@ -22,10 +23,13 @@ public class ClarificationCommentDto {
     public ClarificationCommentDto() {}
 
     public ClarificationCommentDto(ClarificationComment clarificationComment) {
-        this.id = clarificationComment.getId();
-        this.content = clarificationComment.getContent();
-        this.user = new UserDto(clarificationComment.getUser());
-        this.creationDate = clarificationComment.getCreationDate().format(formatter);
+        this.setId(clarificationComment.getId());
+        this.setContent(clarificationComment.getContent());
+        this.setUser(new UserDto(clarificationComment.getUser()));
+
+        if (clarificationComment.getCreationDate() != null) {
+            this.setCreationDate(DateHandler.toISOString(clarificationComment.getCreationDate()));
+        }
         this.clarificationRequest = new ClarificationRequestDto();
         setClarificationDto(clarificationComment.getClarificationRequest());
 
@@ -36,7 +40,7 @@ public class ClarificationCommentDto {
         clarificationRequest.setContent(clarification.getContent());
         clarificationRequest.setUser(new UserDto(clarification.getUser()));
         if (clarification.getCreationDate() != null) {
-            clarificationRequest.setCreationDate(clarification.getCreationDate().format(formatter));
+            clarificationRequest.setCreationDate(DateHandler.toISOString(clarification.getCreationDate()));
         }
         clarificationRequest.setQuestionAnswer(new QuestionAnswerDto(clarification.getQuestionAnswer()));
         if (clarification.getImage() != null) {

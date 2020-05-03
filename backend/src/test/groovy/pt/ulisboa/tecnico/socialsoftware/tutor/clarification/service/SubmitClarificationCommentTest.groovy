@@ -43,8 +43,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.Clarific
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 
 @DataJpaTest
 class SubmitClarificationCommentTest extends Specification {
@@ -88,7 +87,6 @@ class SubmitClarificationCommentTest extends Specification {
     @Shared
     def user
 
-    def DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     def clarificationRequest
     def clarificationCommentDto
 
@@ -142,12 +140,12 @@ class SubmitClarificationCommentTest extends Specification {
         clarificationRequest.setQuestionAnswer(questionAnswer)
         clarificationRequestRepository.save(clarificationRequest)
 
-        def creationDate = LocalDateTime.now().format(formatter)
+        def creationDate = DateHandler.now()
 
         clarificationCommentDto = new ClarificationCommentDto()
         clarificationCommentDto.setContent(COMMENT_CONTENT)
         clarificationCommentDto.setUser(new UserDto(user))
-        clarificationCommentDto.setCreationDate(creationDate)
+        clarificationCommentDto.setCreationDate(DateHandler.toISOString(creationDate))
     }
 
     def "submit a comment to a clarification request"() {
@@ -159,7 +157,7 @@ class SubmitClarificationCommentTest extends Specification {
         comment.getId() != null
         comment.getContent() == clarificationCommentDto.getContent()
         comment.getUser().getUsername() == user.getUsername()
-        comment.getCreationDate().format(formatter) == clarificationCommentDto.getCreationDate()
+        DateHandler.toISOString(comment.getCreationDate()) == clarificationCommentDto.getCreationDate()
     }
 
     def "submit a comment without a creationTime"() {

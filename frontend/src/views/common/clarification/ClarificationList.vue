@@ -33,7 +33,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon
-                small
+                large
                 class="mr-2"
                 v-on="on"
                 @click="showFullClarification(item, 2)"
@@ -46,7 +46,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon
-                small
+                large
                 class="mr-2"
                 v-on="on"
                 data-cy="showClrf"
@@ -62,7 +62,7 @@
               v-slot:activator="{ on }"
             >
               <v-icon
-                small
+                large
                 color="primary"
                 class="mr-2"
                 v-on="on"
@@ -189,6 +189,13 @@ export default class ClarificationList extends Vue {
 
   headers: object = [
     {
+      text: 'Action',
+      value: 'action',
+      align: 'left',
+      width: '10%',
+      sortable: false
+    },
+    {
       text: 'Clarification Request',
       value: 'content',
       align: 'left',
@@ -209,7 +216,7 @@ export default class ClarificationList extends Vue {
     {
       text: 'Creation Date',
       value: 'creationDate',
-      align: 'center',
+      align: 'left',
       width: '15%'
     },
     {
@@ -217,13 +224,6 @@ export default class ClarificationList extends Vue {
       value: 'state',
       align: 'center',
       width: '10%'
-    },
-    {
-      text: 'Action',
-      value: 'action',
-      align: 'center',
-      width: '10%',
-      sortable: false
     }
   ];
 

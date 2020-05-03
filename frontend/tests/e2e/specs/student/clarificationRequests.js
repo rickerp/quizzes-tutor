@@ -1,6 +1,6 @@
 const QUIZ_TITLE = 'My Quiz Test';
 const CLARIFICATION_CONTENT = 'THIS IS A CLARIFICATION REQUEST TEST';
-const QUESTION = 'A utility tree';
+const QUESTION = 'Utility tree';
 
 describe('Clarification Request walkthrough', () => {
   before(() => {

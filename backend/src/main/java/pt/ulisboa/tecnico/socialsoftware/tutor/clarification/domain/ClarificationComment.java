@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto;
 
@@ -35,15 +36,11 @@ public class ClarificationComment {
 
     public ClarificationComment(ClarificationCommentDto clarificationCommentDto, User user, ClarificationRequest clarificationRequest) {
 
-        if (clarificationCommentDto.getContent() == null) {
-            throw new TutorException(ErrorMessage.COMMENT_INVALID_CONTENT);
-        }
-
-        this.content = clarificationCommentDto.getContent();
-        this.user = user;
-        this.clarificationRequest = clarificationRequest;
-        this.creationDate = clarificationCommentDto.getCreationDate() == null ?
-                            LocalDateTime.now() : LocalDateTime.parse(clarificationCommentDto.getCreationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        this.setContent(clarificationCommentDto.getContent());
+        this.setUser(user);
+        this.setClarificationRequest(clarificationRequest);
+        if (clarificationCommentDto.getCreationDate() == null) { setCreationDate(DateHandler.now()); }
+        else { setCreationDate(DateHandler.toLocalDateTime(clarificationCommentDto.getCreationDate())); }
     }
 
     public Integer getId() {
@@ -59,6 +56,9 @@ public class ClarificationComment {
     }
 
     public void setContent(String content) {
+        if (content == null) {
+            throw new TutorException(ErrorMessage.COMMENT_INVALID_CONTENT);
+        }
         this.content = content;
     }
 
