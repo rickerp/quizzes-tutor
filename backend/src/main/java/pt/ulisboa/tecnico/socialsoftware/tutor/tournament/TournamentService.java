@@ -6,6 +6,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -23,11 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,19 +55,16 @@ public class TournamentService {
         User creator = userRepository.findById(dto.getCreatorId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND, dto.getCreatorId()));
 
-        Set<Topic> topics = new HashSet<>();
-        for (Integer topicId : dto.getTopicsId()) {
-            Topic topic = topicRepository.findById(topicId)
-                    .orElseThrow(() -> new TutorException(ErrorMessage.TOPIC_NOT_FOUND, topicId));
-            topics.add(topic);
-        }
+        Set<Topic> topics = dto.getTopicsId().stream()
+                .map(topicId -> topicRepository.findById(topicId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.TOPIC_NOT_FOUND, topicId)))
+                .collect(Collectors.toSet());
 
         CourseExecution courseExecution = courseExecutionRepository.findById(dto.getCourseExecutionId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, dto.getCourseExecutionId()));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime startTime = LocalDateTime.parse(dto.getStartTime(), formatter);
-        LocalDateTime endTime = LocalDateTime.parse(dto.getEndTime(), formatter);
+        LocalDateTime startTime = DateHandler.toLocalDateTime(dto.getStartTime());
+        LocalDateTime endTime = DateHandler.toLocalDateTime(dto.getEndTime());
 
         Tournament tournament = new Tournament(dto.getName(), creator, topics, courseExecution, dto.getNrQuestions(), startTime, endTime);
         entityManager.persist(tournament);
@@ -98,7 +92,7 @@ public class TournamentService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<TournamentDto> getExecutionOpenedTournaments(Integer executionId) {
 
-        return tournamentRepository.findOpenedTournaments(executionId)
+        return tournamentRepository.findOpenedTournaments(DateHandler.now(), executionId)
                 .stream()
                 .map(TournamentDto::new)
                 .sorted(Comparator.comparing(TournamentDto::getStartTime))

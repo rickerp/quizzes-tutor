@@ -1,12 +1,11 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
-import org.springframework.data.annotation.Transient;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,9 +24,6 @@ public class TournamentDto implements Serializable {
     private String startTime;
     private String endTime;
 
-    @Transient
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     public TournamentDto() {}
 
     public TournamentDto(Tournament tournament) {
@@ -41,10 +37,12 @@ public class TournamentDto implements Serializable {
         this.courseExecutionId = tournament.getCourseExecution().getId();
         this.nrQuestions = tournament.getNrQuestions();
 
-        if (tournament.getStartTime() != null)
-            this.startTime = tournament.getStartTime().format(formatter);
-        if (tournament.getEndTime() != null)
-            this.endTime = tournament.getEndTime().format(formatter);
+        if (tournament.getStartTime() != null) {
+            this.startTime = DateHandler.toISOString(tournament.getStartTime());
+        }
+        if (tournament.getEndTime() != null) {
+            this.endTime = DateHandler.toISOString(tournament.getEndTime());
+        }
     }
 
     public int getId() { return id; }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -13,7 +14,7 @@ import java.util.List;
 public interface TournamentRepository extends JpaRepository<Tournament, Integer> {
 
     @Query(value = "SELECT * FROM tournaments t " +
-            "WHERE t.start_time > now() AND t.course_execution_id = :executionId",
+            "WHERE t.start_time > :now AND t.course_execution_id = :executionId",
             nativeQuery = true)
-    List<Tournament> findOpenedTournaments(Integer executionId);
+    List<Tournament> findOpenedTournaments(LocalDateTime now, Integer executionId);
 }

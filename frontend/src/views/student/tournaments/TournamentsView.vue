@@ -58,16 +58,17 @@
       </template>
 
       <template v-slot:item.action="{ item }">
-        <v-tooltip v-if="item.playersId.includes(userId)">
+        <v-tooltip v-if="item.playersId.includes(userId)" bottom>
           <template v-slot:activator="{ on }">
-            <v-icon color="green darken-2" class="mr-2" v-on="on"
+            <v-icon large color="green darken-2" class="mr-2" v-on="on"
               >fas fa-user-check</v-icon
             >
           </template>
         </v-tooltip>
-        <v-tooltip v-else>
+        <v-tooltip v-else bottom>
           <template v-slot:activator="{ on }">
             <v-icon
+              large
               color="primary"
               class="mr-2"
               v-on="on"
@@ -84,14 +85,14 @@
       v-if="currentTournament"
       v-model="editDialog"
       :tournament="currentTournament"
-      :formatDate="formatDate"
       v-on:save-tournament="onSaveTournament"
+      v-on:close-dialog="onCloseDialog"
     />
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import Tournament from '@/models/management/Tournament';
 import RemoteServices from '@/services/RemoteServices';
 import EditTournamentDialog from '@/views/student/tournaments/EditTournamentDialog.vue';
@@ -108,6 +109,12 @@ export default class TournamentsView extends Vue {
   editDialog: boolean = false;
   currentTournament: Tournament | null = null;
   headers: object = [
+    {
+      text: 'Action',
+      value: 'action',
+      align: 'center',
+      width: '10%'
+    },
     {
       text: 'Name',
       value: 'name',
@@ -136,7 +143,7 @@ export default class TournamentsView extends Vue {
       text: 'Questions',
       value: 'nrQuestions',
       align: 'center',
-      width: '5%'
+      width: '10%'
     },
     {
       text: 'Topics',
@@ -148,56 +155,9 @@ export default class TournamentsView extends Vue {
       text: 'Enrollments',
       value: 'playersId',
       align: 'center',
-      width: '5%'
-    },
-    {
-      text: 'Action',
-      value: 'action',
-      align: 'center',
       width: '10%'
     }
   ];
-
-  newTournament() {
-    this.currentTournament = new Tournament();
-
-    this.currentTournament.startTime = this.formatDate(
-      new Date(new Date().getTime() + 15 * 60000)
-    );
-    this.currentTournament.endTime = this.formatDate(
-      new Date(new Date().getTime() + 30 * 60000)
-    );
-    this.editDialog = true;
-  }
-
-  formatDate(date: Date) {
-    return (
-      [
-        date.getFullYear(),
-        ('0' + (date.getMonth() + 1)).slice(-2),
-        ('0' + date.getDate()).slice(-2)
-      ].join('-') +
-      ' ' +
-      [
-        ('0' + date.getHours()).slice(-2),
-        ('0' + date.getMinutes()).slice(-2)
-      ].join(':')
-    );
-  }
-
-  @Watch('editDialog')
-  closeError() {
-    if (!this.editDialog) {
-      this.currentTournament = null;
-    }
-  }
-
-  async onSaveTournament(tournament: Tournament) {
-    // FOR EDIT TOURNAMENT (update): this.tournaments = this.tournaments.filter(q => q.id !== tournament.id);
-    this.tournaments.unshift(tournament);
-    this.editDialog = false;
-    this.currentTournament = null;
-  }
 
   async created() {
     await this.$store.dispatch('loading');
@@ -215,6 +175,25 @@ export default class TournamentsView extends Vue {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
+  }
+
+  newTournament() {
+    this.editDialog = true;
+    this.currentTournament = new Tournament();
+  }
+
+  async onSaveTournament(tournament: Tournament) {
+    /* FOR FUTURE EDIT TOURNAMENT (update)
+    this.tournaments = this.tournaments.filter(q => q.id !== tournament.id);
+    */
+    this.tournaments.unshift(tournament);
+    this.editDialog = false;
+    this.currentTournament = null;
+  }
+
+  onCloseDialog() {
+    this.editDialog = false;
+    this.currentTournament = null;
   }
 
   async playerEnroll(item: Tournament) {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
@@ -16,7 +17,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.time.LocalDateTime
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.TOURNAMENT_NOT_OPENED
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USER_NOT_STUDENT
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DUPLICATE_TOURNAMENT_ENROLL
@@ -30,7 +30,7 @@ class EnrollTournamentServiceTest extends Specification {
     public static final String USERNAME_2 = "Username_2"
     public static final Integer KEY_1 = 1
     public static final Integer KEY_2 = 2
-    public static final LocalDateTime NOW = LocalDateTime.now()
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository

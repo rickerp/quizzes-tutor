@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
@@ -16,7 +17,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 
 import java.time.LocalDateTime
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 
 @DataJpaTest
@@ -25,7 +25,7 @@ class ListTournamentServiceTest extends Specification {
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
-    public static final LocalDateTime NOW = LocalDateTime.now()
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository

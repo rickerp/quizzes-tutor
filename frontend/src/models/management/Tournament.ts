@@ -1,3 +1,5 @@
+import { ISOtoString } from '@/services/ConvertDateService';
+
 export default class Tournament {
   id!: number;
   name!: string;
@@ -17,11 +19,12 @@ export default class Tournament {
       this.creatorId = jsonObj.creatorId;
       this.creatorName = jsonObj.creatorName;
       this.playersId = jsonObj.playersId;
-      this.startTime = jsonObj.startTime;
-      this.endTime = jsonObj.endTime;
       this.nrQuestions = jsonObj.nrQuestions;
       this.topicsId = jsonObj.topicsId;
       this.topicsName = jsonObj.topicsName;
+
+      if (jsonObj.startTime) this.startTime = ISOtoString(jsonObj.startTime);
+      if (jsonObj.endTime) this.endTime = ISOtoString(jsonObj.endTime);
     }
   }
 }
