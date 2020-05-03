@@ -97,11 +97,13 @@ class GetClarificationRequestsTest extends Specification {
         teacher.addCourse(courseExecution)
 
         quiz = new Quiz()
+        quiz.setTitle("titleQuiz")
         quiz.setKey(1)
         quiz.setCourseExecution(courseExecution)
-        quiz.setType(Quiz.QuizType.GENERATED)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
 
         def question = new Question()
+        question.setTitle("titleQuestion")
         question.setKey(1)
 
         def quizQuestion = new QuizQuestion(quiz, question, 0)

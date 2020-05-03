@@ -87,10 +87,12 @@ class SubmitClarificationRequestTest extends Specification {
         user = new User("Name", "Username", 1, User.Role.STUDENT)
 
         quiz = new Quiz()
+        quiz.setTitle("QuizTitle")
         quiz.setKey(1)
-        quiz.setType(Quiz.QuizType.GENERATED)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
 
         question = new Question()
+        question.setTitle("QuestionTitle")
         question.setKey(1)
 
         def quizQuestion = new QuizQuestion(quiz, question, 0)
@@ -218,21 +220,6 @@ class SubmitClarificationRequestTest extends Specification {
         CLARIFICATION_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.CLARIFICATION_INVALID_STATE
         CLARIFICATION_CONTENT | null                                  || ErrorMessage.CLARIFICATION_INVALID_STATE
         null                  | ClarificationRequest.State.UNRESOLVED || ErrorMessage.CLARIFICATION_INVALID_CONTENT
-    }
-
-    @Unroll("Test: userId: #userId")
-    def "Submit a clarification request with a user that doesn't exist"() {
-        given:
-        clarificationRequestDto.getUser().setId(userId)
-        when:
-        clarificationRequestService.createClarificationRequest(questionAnswer.getId(), clarificationRequestDto)
-
-        then:
-        def error = thrown(TutorException)
-        error.getErrorMessage() == ErrorMessage.CLARIFICATION_INVALID_USER
-
-        where:
-        userId << [500, 0]
     }
 
     @Unroll("Test: questionAnswerId: #questionAnswerId")

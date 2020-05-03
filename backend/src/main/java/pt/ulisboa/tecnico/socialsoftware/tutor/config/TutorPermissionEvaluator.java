@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import pt.ulisboa.tecnico.socialsoftware.tutor.administration.AdministrationService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseService;
@@ -24,7 +23,7 @@ import java.util.Set;
 @Component
 public class TutorPermissionEvaluator implements PermissionEvaluator {
     @Autowired
-    private AdministrationService administrationService;
+    private CourseService courseService;
 
     @Autowired
     private UserService userService;
@@ -48,21 +47,18 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     private ClarificationRequestService clarificationRequestService;
 
     @Autowired
-    private CourseService courseService;
-
-    @Autowired
     private StudentQuestionService studentQuestionService;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        String username = ((User) authentication.getPrincipal()).getUsername();
+        int userId = ((User) authentication.getPrincipal()).getId();
 
         if (targetDomainObject instanceof CourseDto) {
             CourseDto courseDto = (CourseDto) targetDomainObject;
             String permissionValue = (String) permission;
             switch (permissionValue) {
                 case "EXECUTION.CREATE":
-                    return userService.getEnrolledCoursesAcronyms(username).contains(courseDto.getAcronym() + courseDto.getAcademicTerm());
+                    return userService.getEnrolledCoursesAcronyms(userId).contains(courseDto.getAcronym() + courseDto.getAcademicTerm());
                 case "DEMO.ACCESS":
                     return courseDto.getName().equals("Demo Course");
                 default:
@@ -75,46 +71,45 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
             String permissionValue = (String) permission;
             switch (permissionValue) {
                 case "DEMO.ACCESS":
-                    CourseDto courseDto = administrationService.getCourseExecutionById(id);
+                    CourseDto courseDto = courseService.getCourseExecutionById(id);
                     return courseDto.getName().equals("Demo Course");
                 case "COURSE.ACCESS":
-                    return userHasAnExecutionOfTheCourse(username, id);
+                    return userHasAnExecutionOfTheCourse(userId, id);
                 case "EXECUTION.ACCESS":
-                    return userHasThisExecution(username, id);
+                    return userHasThisExecution(userId, id);
                 case "QUESTION.ACCESS":
-                    return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(id).getCourseId());
+                    return userHasAnExecutionOfTheCourse(userId, questionService.findQuestionCourse(id).getCourseId());
                 case "STUDENTQUESTION.ACCESS":
                     int questionId = studentQuestionService.findById(id).getQuestion().getId();
-                    return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(questionId).getCourseId());
+                    return userHasAnExecutionOfTheCourse(userId, questionService.findQuestionCourse(questionId).getCourseId());
                 case "TOPIC.ACCESS":
-                    return userHasAnExecutionOfTheCourse(username, topicService.findTopicCourse(id).getCourseId());
+                    return userHasAnExecutionOfTheCourse(userId, topicService.findTopicCourse(id).getCourseId());
                 case "ASSESSMENT.ACCESS":
-                    return userHasThisExecution(username, assessmentService.findAssessmentCourseExecution(id).getCourseExecutionId());
+                    return userHasThisExecution(userId, assessmentService.findAssessmentCourseExecution(id).getCourseExecutionId());
                 case "QUIZ.ACCESS":
-                    return userHasThisExecution(username, quizService.findQuizCourseExecution(id).getCourseExecutionId());
+                    return userHasThisExecution(userId, quizService.findQuizCourseExecution(id).getCourseExecutionId());
                 case "QUESTION_ANSWER.ACCESS":
-                    return userRespondedToThisQuestionAnswer(username, id);
+                    return userRespondedToThisQuestionAnswer(userId, id);
                 case "CLARIFICATION.ACCESS":
-                    return userHasThisExecution(username, clarificationRequestService.findClarificationCourseExecution(id).getCourseExecutionId());
-
+                    return userHasThisExecution(userId, clarificationRequestService.findClarificationCourseExecution(id).getCourseExecutionId());
                 default: return false;
             }
         }
         return false;
     }
 
-    private boolean userHasAnExecutionOfTheCourse(String username, int id) {
-        return userService.getCourseExecutions(username).stream()
-                .anyMatch(course -> course.getCourseId() == id);
+    private boolean userHasAnExecutionOfTheCourse(int userId, int courseId) {
+        return userService.getCourseExecutions(userId).stream()
+                .anyMatch(course -> course.getCourseId() == courseId);
     }
 
-    private boolean userHasThisExecution(String username, int id) {
-        return userService.getCourseExecutions(username).stream()
-                .anyMatch(course -> course.getCourseExecutionId() == id);
+    private boolean userHasThisExecution(int userId, int courseExecutionId) {
+        return userService.getCourseExecutions(userId).stream()
+                .anyMatch(course -> course.getCourseExecutionId() == courseExecutionId);
     }
 
-    private boolean userRespondedToThisQuestionAnswer(String username, int id) {
-        return answerService.findQuizAnswer(id).getUsername().equals(username);
+    private boolean userRespondedToThisQuestionAnswer(int userId, int questionAnswerId) {
+        return answerService.findQuizAnswer(questionAnswerId).getId().equals(userId);
     }
 
     private boolean executionHasTopics(int executionId, Set<Integer> topicsId) {
@@ -125,14 +120,14 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {
-         String username = ((User) authentication.getPrincipal()).getUsername();
+         int userId = ((User) authentication.getPrincipal()).getId();
 
          if (serializable instanceof TournamentDto) {
              TournamentDto tournamentDto = (TournamentDto) serializable;
              Integer executionId = (Integer) o;
              switch (s) {
                  case "TOURNAMENT.CREATE":
-                     return  userHasThisExecution(username, executionId) &&
+                     return  userHasThisExecution(userId, executionId) &&
                              executionHasTopics(executionId, tournamentDto.getTopicsId());
                  default:
                      return false;

@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class StatementAnswerDto implements Serializable {
     private Integer questionAnswerId;
     private Integer timeTaken;
@@ -18,14 +17,14 @@ public class StatementAnswerDto implements Serializable {
     private Integer optionId;
     private List<ClarificationRequestDto> clarificationRequests = new ArrayList<>();
 
-    public StatementAnswerDto(){}
+    public StatementAnswerDto() {}
 
     public StatementAnswerDto(QuestionAnswer questionAnswer) {
         this.timeTaken = questionAnswer.getTimeTaken();
         this.sequence = questionAnswer.getSequence();
         this.questionAnswerId = questionAnswer.getId();
 
-        if(questionAnswer.getOption() != null) {
+        if (questionAnswer.getOption() != null) {
             this.optionId = questionAnswer.getOption().getId();
         }
         this.clarificationRequests = questionAnswer.getClarificationRequests().stream()

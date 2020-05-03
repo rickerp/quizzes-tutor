@@ -88,12 +88,14 @@ class GetClarificationRequestsPerformanceTest extends Specification {
         userRepository.save(user)
 
         def quiz = new Quiz()
+        quiz.setTitle("titleQuiz")
         quiz.setKey(1)
         quiz.setCourseExecution(courseExecution)
-        quiz.setType(Quiz.QuizType.GENERATED)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
         quizRepository.save(quiz)
 
         def question = new Question()
+        question.setTitle("titleQuestion")
         question.setKey(1)
         questionRepository.save(question)
 
