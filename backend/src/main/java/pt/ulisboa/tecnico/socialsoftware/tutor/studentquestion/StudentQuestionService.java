@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.Evaluation;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository;
@@ -95,6 +96,32 @@ public class StudentQuestionService {
         StudentQuestion studentQuestion = new StudentQuestion(user, question);
         this.entityManager.persist(studentQuestion);
         return new StudentQuestionDto(studentQuestion);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public StudentQuestionDto editStudentQuestion(StudentQuestionDto studentQuestionDto) {
+        if (studentQuestionDto == null)
+            throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
+
+        StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionDto.getId())
+                .orElseThrow(() -> new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND));
+
+        QuestionDto questionDto = studentQuestionDto.getQuestion();
+
+        if (questionDto == null)
+            throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
+
+        Evaluation evaluation = studentQuestion.getEvaluation();
+        if (evaluation == null || !evaluation.isAccepted())
+            throw new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_ACCEPTED);
+
+        QuestionDto updatedQuestion = questionService.updateQuestion(studentQuestion.getQuestion().getId(), questionDto);
+
+        studentQuestionDto.setQuestion(updatedQuestion);
+        return studentQuestionDto;
     }
 
     @Retryable(
