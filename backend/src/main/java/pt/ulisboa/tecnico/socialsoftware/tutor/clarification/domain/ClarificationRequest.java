@@ -47,7 +47,7 @@ public class ClarificationRequest {
     @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
     private ClarificationComment clarificationComment;
 
-    @OneToOne(cascade =CascadeType.ALL, mappedBy = "clarificationRequest")
+    @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
     private PublicClarification publicClarification;
 
     public ClarificationRequest() {}

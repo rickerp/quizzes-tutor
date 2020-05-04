@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
+  <hashTree>
+    <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
+      <stringProp name="dataSource">sampleReq</stringProp>
+      <stringProp name="query">UPDATE quiz_answers SET user_id = 676 WHERE user_id = 678;
+INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id) VALUES (1, &apos;Content&apos;, &apos;UNRESOLVED&apos;, 64073, 676);
+INSERT INTO clarification_comments (id, content, clarification_request_id, user_id) VALUES (1, &apos;Content&apos;, 1, 676);
+
+UPDATE users SET username = &apos;Username&apos; WHERE id = 679;
+INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id) VALUES (2, &apos;Content&apos;, &apos;UNRESOLVED&apos;, 64413, 679);</stringProp>
+      <stringProp name="queryArguments"></stringProp>
+      <stringProp name="queryArgumentsTypes"></stringProp>
+      <stringProp name="queryTimeout"></stringProp>
+      <stringProp name="queryType">Callable Statement</stringProp>
+      <stringProp name="resultSetHandler">Store as String</stringProp>
+      <stringProp name="resultSetMaxRows"></stringProp>
+      <stringProp name="resultVariable"></stringProp>
+      <stringProp name="variableNames"></stringProp>
+    </JDBCSampler>
+    <hashTree/>
+  </hashTree>
+</jmeterTestPlan>

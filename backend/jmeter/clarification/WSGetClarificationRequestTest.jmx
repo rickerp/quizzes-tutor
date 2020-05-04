@@ -52,13 +52,13 @@
         <stringProp name="driver">org.postgresql.Driver</stringProp>
         <stringProp name="initQuery"></stringProp>
         <boolProp name="keepAlive">true</boolProp>
-        <stringProp name="password"></stringProp>
+        <stringProp name="password">18181</stringProp>
         <stringProp name="poolMax">0</stringProp>
         <boolProp name="preinit">false</boolProp>
         <stringProp name="timeout">10000</stringProp>
         <stringProp name="transactionIsolation">DEFAULT</stringProp>
         <stringProp name="trimInterval">60000</stringProp>
-        <stringProp name="username"></stringProp>
+        <stringProp name="username">rafafigo</stringProp>
       </JDBCDataSource>
       <hashTree/>
       <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group" enabled="true">
@@ -78,11 +78,16 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="query">UPDATE quiz_answers SET user_id = 676 WHERE user_id = 678;
-INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id) VALUES (1, &apos;Content&apos;, &apos;UNRESOLVED&apos;, 64073, 676);
-INSERT INTO clarification_comments (id, content, clarification_request_id, user_id) VALUES (1, &apos;Content&apos;, 1, 676);
 
-UPDATE users SET username = &apos;Username&apos; WHERE id = 679;
-INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id) VALUES (2, &apos;Content&apos;, &apos;UNRESOLVED&apos;, 64413, 679);</stringProp>
+INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id, type) VALUES (1, &apos;Content&apos;, &apos;RESOLVED&apos;, 64073, 676, &apos;PUBLIC&apos;);
+INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id, type) VALUES (2, &apos;Content&apos;, &apos;RESOLVED&apos;, 64413, 676, &apos;PUBLIC&apos;);
+INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id, type) VALUES (3, &apos;Content&apos;, &apos;RESOLVED&apos;, 64413, 676, &apos;PUBLIC&apos;);
+
+INSERT INTO public_clarifications(id, clarification_request_id, question_id)VALUES(1, 1, 1784);
+INSERT INTO public_clarifications(id, clarification_request_id, question_id)VALUES(2, 2, 1784);
+INSERT INTO public_clarifications(id, clarification_request_id, question_id)VALUES(3, 3, 1784);
+
+INSERT INTO public_clarifications_course_executions(public_clarifications_id, course_executions_id) VALUES(1,11);</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="queryTimeout"></stringProp>
@@ -223,7 +228,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request to get clarifications" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request to get public clarifications" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -239,7 +244,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/executions/${executionId}/clarifications</stringProp>
+            <stringProp name="HTTPSampler.path">/executions/11/questions/1784/publicClarifications</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -249,26 +254,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
           </HTTPSamplerProxy>
-          <hashTree>
-            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert clarification Id" enabled="true">
-              <stringProp name="JSON_PATH">$..id</stringProp>
-              <stringProp name="EXPECTED_VALUE">1</stringProp>
-              <boolProp name="JSONVALIDATION">true</boolProp>
-              <boolProp name="EXPECT_NULL">false</boolProp>
-              <boolProp name="INVERT">false</boolProp>
-              <boolProp name="ISREGEX">false</boolProp>
-            </JSONPathAssertion>
-            <hashTree/>
-            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert comment Id" enabled="true">
-              <stringProp name="JSON_PATH">$..clarificationComment.id</stringProp>
-              <stringProp name="EXPECTED_VALUE">1</stringProp>
-              <boolProp name="JSONVALIDATION">true</boolProp>
-              <boolProp name="EXPECT_NULL">false</boolProp>
-              <boolProp name="INVERT">false</boolProp>
-              <boolProp name="ISREGEX">false</boolProp>
-            </JSONPathAssertion>
-            <hashTree/>
-          </hashTree>
+          <hashTree/>
         </hashTree>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -400,7 +386,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request to get clarifications" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request to get public clarifications" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -416,7 +402,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/executions/${executionId}/clarifications</stringProp>
+            <stringProp name="HTTPSampler.path">/executions/11/questions/1784/publicClarifications</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -426,17 +412,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
           </HTTPSamplerProxy>
-          <hashTree>
-            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert length of json" enabled="true">
-              <stringProp name="JSON_PATH">$.length()</stringProp>
-              <stringProp name="EXPECTED_VALUE">2</stringProp>
-              <boolProp name="JSONVALIDATION">true</boolProp>
-              <boolProp name="EXPECT_NULL">false</boolProp>
-              <boolProp name="INVERT">false</boolProp>
-              <boolProp name="ISREGEX">false</boolProp>
-            </JSONPathAssertion>
-            <hashTree/>
-          </hashTree>
+          <hashTree/>
         </hashTree>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -530,14 +506,9 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="query">UPDATE quiz_answers SET user_id = 678 WHERE user_id = 676;
-DELETE FROM clarification_comments WHERE id = 1;
-DELETE FROM clarification_requests WHERE id = 1;
-
-
-
-UPDATE users SET username = &apos;&apos; WHERE id = 679;
-DELETE FROM clarification_requests WHERE id = 2;
-</stringProp>
+DELETE FROM public_clarifications_course_executions;
+DELETE FROM public_clarifications;
+DELETE FROM clarification_requests;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="queryTimeout"></stringProp>

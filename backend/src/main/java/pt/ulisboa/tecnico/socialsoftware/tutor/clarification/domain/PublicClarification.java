@@ -17,7 +17,7 @@ public class PublicClarification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade= CascadeType.ALL)
+    @OneToOne
     private ClarificationRequest clarificationRequest;
 
     @ManyToMany()

@@ -52,7 +52,6 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         int userId = ((User) authentication.getPrincipal()).getId();
-
         if (targetDomainObject instanceof CourseDto) {
             CourseDto courseDto = (CourseDto) targetDomainObject;
             String permissionValue = (String) permission;
