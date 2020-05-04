@@ -86,7 +86,9 @@ class SubmitClarificationCommentTest extends Specification {
     ClarificationCommentRepository clarificationCommentRepository
 
     @Shared
-    def user
+    def teacher
+    @Shared
+    def student
 
     def clarificationRequest
     def clarificationCommentDto
@@ -100,10 +102,10 @@ class SubmitClarificationCommentTest extends Specification {
         courseExecution.setCourse(course)
         courseExecutionRepository.save(courseExecution)
 
-        user = new User("Name", "Username", 1, User.Role.TEACHER)
-        user.addCourse(courseExecution)
-        courseExecution.addUser(user)
-        userRepository.save(user)
+        teacher = new User("Name", "Username", 1, User.Role.TEACHER)
+        teacher.addCourse(courseExecution)
+        courseExecution.addUser(teacher)
+        userRepository.save(teacher)
 
         def quiz = new Quiz()
         quiz.setTitle("titleQuiz")
@@ -129,13 +131,14 @@ class SubmitClarificationCommentTest extends Specification {
         questionAnswer.setQuizQuestion(quizQuestion)
         questionAnswerRepository.save(questionAnswer)
 
-        def student = new User("Student", "Student", 2, User.Role.STUDENT)
+        student = new User("Student", "Student", 2, User.Role.STUDENT)
         student.addCourse(courseExecution)
         courseExecution.addUser(student)
         userRepository.save(student)
 
         clarificationRequest = new ClarificationRequest()
         clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
+        clarificationRequest.setType(ClarificationRequest.Type.PRIVATE)
         clarificationRequest.setContent(CLARIFICATION_CONTENT)
         clarificationRequest.setUser(student)
         clarificationRequest.setQuestionAnswer(questionAnswer)
@@ -145,19 +148,36 @@ class SubmitClarificationCommentTest extends Specification {
 
         clarificationCommentDto = new ClarificationCommentDto()
         clarificationCommentDto.setContent(COMMENT_CONTENT)
-        clarificationCommentDto.setUser(new UserDto(user))
+        clarificationCommentDto.setUser(new UserDto(teacher))
         clarificationCommentDto.setCreationDate(DateHandler.toISOString(creationDate))
     }
 
-    def "submit a comment to a clarification request"() {
+    def "teacher submits a comment to a clarification request"() {
         when:
         clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then: "the comment data is correct"
-        def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
+        def comment = clarificationCommentRepository.findComments(clarificationRequest.getId()).get(0)
         comment.getId() != null
         comment.getContent() == clarificationCommentDto.getContent()
-        comment.getUser().getUsername() == user.getUsername()
+        comment.getUser().getUsername() == teacher.getUsername()
+        DateHandler.toISOString(comment.getCreationDate()) == clarificationCommentDto.getCreationDate()
+    }
+
+    def "student submits comment to clarification request"() {
+        given: "Update clarification request"
+        clarificationRequest.setUser(student)
+        and: "update commentDto"
+        clarificationCommentDto.setUser(new UserDto(student))
+
+        when:
+        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
+
+        then:
+        def comment = clarificationCommentRepository.findComments(clarificationRequest.getId()).get(0)
+        comment.getId() != null
+        comment.getContent() == clarificationCommentDto.getContent()
+        comment.getUser().getUsername() == student.getUsername()
         DateHandler.toISOString(comment.getCreationDate()) == clarificationCommentDto.getCreationDate()
     }
 
@@ -169,7 +189,7 @@ class SubmitClarificationCommentTest extends Specification {
         clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
 
         then:
-        def comment = clarificationCommentRepository.findComment(clarificationRequest.getId())
+        def comment = clarificationCommentRepository.findComments(clarificationRequest.getId()).get(0)
         comment.getCreationDate() != null
     }
 
@@ -193,8 +213,10 @@ class SubmitClarificationCommentTest extends Specification {
         given: "Update commentDto"
         clarificationCommentDto.setContent(content)
         and: "ClarificationRequest update"
-        if (clarificationRequest.getState() != clarificationRequestState)
-            clarificationRequest.setState(clarificationRequestState)
+        if (clarificationRequest.getState() != ClarificationRequest.State.RESOLVED)
+            clarificationRequest.setState(ClarificationRequest.State.RESOLVED)
+        if (clarificationRequest.getType() != clarificationRequestType)
+            clarificationRequest.setType(clarificationRequestType)
 
         when:
         clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
@@ -204,10 +226,10 @@ class SubmitClarificationCommentTest extends Specification {
         error.getErrorMessage() == message
 
         where:
-            content     |       clarificationRequestState       ||         message
-        null            | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
-        COMMENT_CONTENT | null                                  || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
-        COMMENT_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
+            content     |       clarificationRequestType       ||         message
+        null            | ClarificationRequest.Type.PRIVATE     || ErrorMessage.COMMENT_INVALID_CONTENT
+        COMMENT_CONTENT | null                                  || ErrorMessage.COMMENT_INVALID_CLARIFICATION_TYPE
+        COMMENT_CONTENT | ClarificationRequest.Type.PUBLIC      || ErrorMessage.COMMENT_INVALID_CLARIFICATION_TYPE
     }
 
     def "submit an empty comment"() {
@@ -217,23 +239,6 @@ class SubmitClarificationCommentTest extends Specification {
         then:
         def error = thrown(TutorException)
         error.getErrorMessage() == ErrorMessage.COMMENT_IS_EMPTY
-    }
-
-    def "student tries to submit comment to clarification request"() {
-        given: "another user"
-        def newUser = new User("Name2", "Username2", 3, User.Role.STUDENT)
-        userRepository.save(newUser)
-        and: "update clarification request"
-        clarificationRequest.setUser(newUser)
-        and: "update commentDto"
-        clarificationCommentDto.setUser(new UserDto(newUser))
-
-        when:
-        clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
-
-        then:
-        def error = thrown(TutorException)
-        error.getErrorMessage() == ErrorMessage.COMMENT_INVALID_USER
     }
 
     def "teacher tries to submits comment to clarification request from different course"() {
@@ -248,7 +253,7 @@ class SubmitClarificationCommentTest extends Specification {
         and: "Update user with course"
         Set<CourseExecution> courseExecutions = new HashSet<>()
         courseExecutions.add(courseExecUser)
-        user.setCourseExecutions(courseExecutions)
+        teacher.setCourseExecutions(courseExecutions)
 
         when:
         clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)

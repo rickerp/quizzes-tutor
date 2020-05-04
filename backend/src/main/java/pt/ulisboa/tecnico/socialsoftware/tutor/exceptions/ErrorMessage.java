@@ -104,7 +104,7 @@ public enum ErrorMessage {
     COMMENT_INVALID_CONTENT("ClarificationComment content is invalid"),
     COMMENT_IS_EMPTY("ClarificationComment is empty"),
     COMMENT_INVALID_USER_COURSE("User is not associated with clarification course"),
-    COMMENT_INVALID_CLARIFICATION_STATE("ClarificationRequest state invalid for comment"),
+    COMMENT_INVALID_CLARIFICATION_TYPE("ClarificationRequest type invalid for comment"),
     COMMENT_INVALID_USER("User associated to comment is invalid"),
 
     QUESTION_IS_EMPTY("The question is empty"),

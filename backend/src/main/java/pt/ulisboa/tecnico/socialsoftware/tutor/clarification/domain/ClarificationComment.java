@@ -9,7 +9,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "Clarification_comments")
@@ -26,7 +25,7 @@ public class ClarificationComment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "clarification_request_id")
     private ClarificationRequest clarificationRequest;
 
