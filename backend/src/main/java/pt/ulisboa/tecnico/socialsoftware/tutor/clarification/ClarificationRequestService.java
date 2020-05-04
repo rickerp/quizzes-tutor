@@ -91,6 +91,18 @@ public class ClarificationRequestService {
         return user.getRole() == User.Role.STUDENT ? getClarificationsOfStudent(user, executionId) : getClarificationsOfTeacher(executionId);
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ClarificationRequestDto changeClarificationState(int clarificationId,String state) {
+        ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND));
+        clarificationRequest.setState(state);
+        clarificationRequestRepository.save(clarificationRequest);
+        return new ClarificationRequestDto(clarificationRequest);
+    }
+
     private List<ClarificationRequestDto> getClarificationsOfStudent(User user, int executionId) {
         return filterClarifications(user.getClarificationRequests().stream(), executionId);
     }

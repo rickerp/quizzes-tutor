@@ -204,7 +204,6 @@ class SubmitClarificationCommentTest extends Specification {
         where:
             content     |       clarificationRequestState       ||         message
         null            | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
-        COMMENT_CONTENT | null                                  || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
         COMMENT_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
     }
 

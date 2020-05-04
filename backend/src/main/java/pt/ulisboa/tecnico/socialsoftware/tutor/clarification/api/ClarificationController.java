@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 
@@ -61,5 +62,11 @@ public class ClarificationController {
 
         clarificationCommentDto.setUser(new UserDto(user));
         return clarificationCommentService.createClarificationComment(clarificationRequestId, clarificationCommentDto);
+    }
+
+    @PostMapping("/clarifications/{clarificationRequestId}/state/{state}")
+    @PreAuthorize("(hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT')) and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
+    public ClarificationRequestDto changeClarificationState(@PathVariable int clarificationRequestId, @PathVariable String state) {
+        return clarificationRequestService.changeClarificationState(clarificationRequestId, state);
     }
 }

@@ -89,6 +89,7 @@ public enum ErrorMessage {
     CLARIFICATION_INVALID_CONTENT("ClarificationRequest content invalid"),
     CLARIFICATION_INVALID_QUESTION_ANSWER("Question Answer associated to clarification is invalid"),
     CLARIFICATION_INVALID_STATE("ClarificationRequest state invalid"),
+    CLARIFICATION_ALREADY_IN_THIS_STATE("ClarificationRequest is already in this state: %s"),
     CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER("User has no question answer with id %d"),
     CLARIFICATION_QUIZ_NOT_COMPLETED("Quiz must be completed to write a clarification"),
     CLARIFICATION_IS_EMPTY("ClarificationRequest is empty"),

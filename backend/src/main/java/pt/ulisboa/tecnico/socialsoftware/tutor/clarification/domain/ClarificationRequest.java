@@ -78,6 +78,23 @@ public class ClarificationRequest {
         this.state = state;
     }
 
+    public void setState(String state) {
+        state = state.toUpperCase();
+
+        if (this.state.toString().equals(state)) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_ALREADY_IN_THIS_STATE, state);
+        }
+        switch (state) {
+            case "UNRESOLVED":
+                this.setState(State.UNRESOLVED);
+                break;
+            case "RESOLVED":
+                this.setState(State.RESOLVED);
+                break;
+            default: throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
+        }
+    }
+
     public String getContent() {
         return content;
     }
