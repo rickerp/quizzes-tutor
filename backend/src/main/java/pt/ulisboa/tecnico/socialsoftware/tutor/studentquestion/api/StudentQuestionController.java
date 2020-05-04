@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.EvaluationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
@@ -23,6 +24,12 @@ public class StudentQuestionController {
 
     @Autowired
     private QuestionService questionService;
+
+    @PostMapping("/studentquestions/{studentQuestionId}/publish")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#studentQuestionId, 'STUDENTQUESTION.ACCESS')")
+    public void publish(@PathVariable Integer studentQuestionId){
+        studentQuestionService.publishStudentQuestion(studentQuestionId);
+    }
 
     @PostMapping("/courses/{courseId}/studentquestion")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")

@@ -107,5 +107,24 @@ public class StudentQuestionService {
         return new StudentQuestionDto(studentQuestion);
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void publishStudentQuestion(Integer studentQuestionId) {
+        StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND));
+
+        if (studentQuestion.getEvaluation() == null ||
+            !studentQuestion.getEvaluation().isAccepted()) {
+           throw new TutorException(ErrorMessage.EVALUATION_NOT_ACCEPTED);
+        }
+
+        if (studentQuestion.getQuestion().getStatus() != Question.Status.PENDING) {
+            throw new TutorException(ErrorMessage.STUDENT_QUESTION_ALREADY_ADDED);
+        }
+
+        studentQuestion.getQuestion().setStatus(Question.Status.AVAILABLE);
+    }
 
 }
