@@ -64,6 +64,7 @@ public class StudentQuestionService {
     public List<StudentQuestionDto> listCourseStudentQuestions(int courseId) {
         return studentQuestionRepository.findAll().stream()
                 .filter(s -> s.getQuestion().getCourse().getId() == courseId)
+                .filter(s -> s.getQuestion().getStatus() == Question.Status.PENDING)
                 .map(StudentQuestionDto::new)
                 .collect(Collectors.toList());
     }
@@ -111,7 +112,7 @@ public class StudentQuestionService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void publishStudentQuestion(Integer studentQuestionId) {
+    public StudentQuestionDto publishStudentQuestion(Integer studentQuestionId) {
         StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND));
 
@@ -125,6 +126,7 @@ public class StudentQuestionService {
         }
 
         studentQuestion.getQuestion().setStatus(Question.Status.AVAILABLE);
+        return new StudentQuestionDto(studentQuestion);
     }
 
 }

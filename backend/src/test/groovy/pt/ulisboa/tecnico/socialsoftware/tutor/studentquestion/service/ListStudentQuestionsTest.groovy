@@ -58,6 +58,7 @@ class ListStudentQuestionsTest extends Specification {
         def question = new Question()
         question.setTitle("QuestionTitle")
         question.setKey(1)
+        question.setStatus(Question.Status.PENDING)
         question.setCourse(course)
         questionRepository.save(question)
 
