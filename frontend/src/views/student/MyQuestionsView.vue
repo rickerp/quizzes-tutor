@@ -40,6 +40,21 @@
           >{{ getEvaluationLabel(item.evaluation) }}</v-chip
         >
       </template>
+
+      <template v-slot:item.action="{ item }">
+        <v-tooltip bottom v-if="item.evaluation && item.evaluation.accepted">
+          <template v-slot:activator="{ on }">
+            <v-icon
+              large
+              class="mr-2"
+              v-on="on"
+              @click="publish(item.studentQuestion)"
+              >publish</v-icon
+            >
+          </template>
+          <span>Publish Question</span>
+        </v-tooltip>
+      </template>
     </v-data-table>
 
     <submit-question-dialog
@@ -104,7 +119,12 @@ export default class MyQuestionsView extends Vue {
   newQuestionDialog = false;
 
   headers = [
-    ...(this.teacherView ? [{ text: 'Student', value: 'student' }] : []),
+    ...(this.teacherView
+      ? [
+          { text: 'Actions', value: 'action' },
+          { text: 'Student', value: 'student' }
+        ]
+      : []),
     { text: 'Title', value: 'title' },
     { text: 'Question', value: 'content' },
     { text: 'Creation Date', value: 'creationDate' },
@@ -144,6 +164,11 @@ export default class MyQuestionsView extends Vue {
 
   convertMarkDownNoFigure(text: string): string {
     return convertMarkDownNoFigure(text, null);
+  }
+
+  publish(question: StudentQuestion) {
+    RemoteServices.publishStudentQuestion(question);
+    this.questions = this.questions.filter(q => q !== question);
   }
 
   showQuestionDialog(question: StudentQuestion) {
