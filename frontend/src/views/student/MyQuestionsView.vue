@@ -120,6 +120,11 @@ export default class MyQuestionsView extends Vue {
       else {
         this.questions = await RemoteServices.listStudentQuestions();
       }
+      this.questions.sort(
+        (a, b) =>
+          +new Date(b.question.creationDate as string) -
+          +new Date(a.question.creationDate as string)
+      );
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
