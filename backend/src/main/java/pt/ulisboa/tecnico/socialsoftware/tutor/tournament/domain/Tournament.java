@@ -10,6 +10,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,9 @@ public class Tournament {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private TournamentQuiz quiz;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tournament", fetch = FetchType.LAZY, orphanRemoval = true)
+    private final Set<TournamentAnswer> tournamentAnswers = new HashSet<>();
 
     public Tournament() {}
 
@@ -91,15 +95,15 @@ public class Tournament {
         this.nrQuestions = nrQuestions;
     }
 
-    public TournamentQuiz getQuiz() {
-        if (quiz == null) { setQuiz(); }
-        return quiz;
+    public TournamentQuiz getQuiz() { return quiz; }
+
+    public void createQuiz() {
+        quiz = new TournamentQuiz(this);
+        tournamentAnswers.forEach(TournamentAnswer::createQuestionAnswers);
     }
 
-    public void setQuiz() { quiz = new TournamentQuiz(this); }
-
     public Set<User> getPlayers() {
-        return getQuiz().getTournamentAnswers().stream()
+        return tournamentAnswers.stream()
                 .map(TournamentAnswer::getUser)
                 .collect(Collectors.toSet());
     }
@@ -143,13 +147,29 @@ public class Tournament {
 
     public boolean isInProgress() { return !(isOpened() || isClosed()); }
 
-    public boolean isAcceptingResponses() { return isInProgress() && getQuiz().isGenerated(); }
+    public boolean quizIsGenerated() { return quiz != null; }
+
+    public boolean isAcceptingResponses() { return isInProgress() && quizIsGenerated(); }
 
     public void enroll(User player) {
         if (player == null || player.getRole() != User.Role.STUDENT) {
             throw new TutorException(USER_NOT_STUDENT, player == null ? -1 : player.getId());
         }
         if (!isOpened()) { throw new TutorException(TOURNAMENT_NOT_OPENED); }
-        new TournamentAnswer(getQuiz(), player);
+        new TournamentAnswer(this, player);
+    }
+    public Set<TournamentAnswer> getTournamentAnswers() { return tournamentAnswers; }
+
+    public void addTournamentAnswer(TournamentAnswer tournamentAnswer) {
+        if (!this.tournamentAnswers.add(tournamentAnswer)) {
+            throw new TutorException(DUPLICATE_TOURNAMENT_ENROLL);
+        }
+    }
+
+    public TournamentAnswer getTournamentAnswer(int userId) {
+        return tournamentAnswers.stream()
+                .filter(tournamentAnswer -> tournamentAnswer.getUser().getId().equals(userId))
+                .findAny()
+                .orElse(null);
     }
 }

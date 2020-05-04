@@ -25,8 +25,8 @@ public class TournamentAnswer {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id")
-    private TournamentQuiz quiz;
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
 
     @Column(name = "begin_time")
     private LocalDateTime beginTime;
@@ -39,13 +39,19 @@ public class TournamentAnswer {
 
     public TournamentAnswer() {}
 
-    public TournamentAnswer(TournamentQuiz quiz, User user) {
-        setQuiz(quiz);
+    public TournamentAnswer(Tournament tournament, User user) {
+        setTournament(tournament);
         setUser(user);
-        quiz.addTournamentAnswer(this);
+        tournament.addTournamentAnswer(this);
         user.addTournamentAnswer(this);
+        createQuestionAnswers();
+    }
 
-        List<TournamentQuestion> tournamentQuestions = quiz.getTournamentQuestions();
+    public void createQuestionAnswers() {
+
+        if (!tournament.quizIsGenerated()) return;
+
+        List<TournamentQuestion> tournamentQuestions = tournament.getQuiz().getTournamentQuestions();
 
         for (int seq = 0; seq < tournamentQuestions.size(); seq++) {
             new QuestionAnswer(this, tournamentQuestions.get(seq), seq);
@@ -62,11 +68,9 @@ public class TournamentAnswer {
 
     public void setUser(User user) { this.user = user; }
 
-    public TournamentQuiz getQuiz() {
-        return quiz;
-    }
+    public Tournament getTournament() { return tournament; }
 
-    public void setQuiz(TournamentQuiz quiz) { this.quiz = quiz; }
+    public void setTournament(Tournament tournament) { this.tournament = tournament; }
 
     public Set<QuestionAnswer> getQuestionsAnswers() { return questionAnswers; }
 
@@ -106,6 +110,6 @@ public class TournamentAnswer {
     public boolean equals(Object obj) {
         return obj instanceof TournamentAnswer &&
                 user.getId().equals(((TournamentAnswer) obj).getUser().getId()) &&
-                quiz.getTournament().getId().equals(((TournamentAnswer) obj).getQuiz().getTournament().getId());
+                tournament.getId().equals(((TournamentAnswer) obj).getTournament().getId());
     }
 }

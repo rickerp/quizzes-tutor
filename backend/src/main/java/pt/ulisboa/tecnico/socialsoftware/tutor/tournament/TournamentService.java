@@ -92,6 +92,7 @@ public class TournamentService {
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
         tournament.enroll(player);
+        if (tournament.getTournamentAnswers().size() > 1) { tournament.createQuiz(); }
         return new TournamentDto(tournament);
     }
 
@@ -114,7 +115,10 @@ public class TournamentService {
     public List<TournamentDto> getExecutionInProgressNonStartedTournaments(int executionId, int userId) {
 
         return tournamentRepository.findInProgressTournaments(DateHandler.now(), executionId).stream()
-                .filter(tournament -> !tournament.getQuiz().getTournamentAnswer(userId).hasStarted())
+                .filter(tournament -> {
+                    TournamentAnswer tournamentAnswer = tournament.getTournamentAnswer(userId);
+                    return !(tournamentAnswer == null || tournamentAnswer.hasStarted());
+                })
                 .map(TournamentDto::new)
                 .sorted(Comparator.comparing(TournamentDto::getEndTime))
                 .collect(Collectors.toList());
@@ -131,7 +135,7 @@ public class TournamentService {
         if (tournamentAnswer.hasStarted()) { throw new TutorException(TOURNAMENT_ALREADY_STARTED); }
         tournamentAnswer.start();
 
-        return new TournamentQuizDto(tournamentAnswer.getQuiz());
+        return new TournamentQuizDto(tournamentAnswer.getTournament().getQuiz());
     }
 
     @Retryable(
@@ -143,6 +147,7 @@ public class TournamentService {
         if (answer.getSequence() == null) { throw new TutorException(QUESTION_ANSWER_NOT_FOUND, -1); }
 
         TournamentAnswer tournamentAnswer = findTournamentAnswer(tournamentId, userId);
+        if (!tournamentAnswer.hasStarted()) { throw new TutorException(TOURNAMENT_NOT_STARTED, tournamentId, userId); }
 
         QuestionAnswer questionAnswer = tournamentAnswer.getQuestionAnswer(answer.getSequence());
 
@@ -168,6 +173,7 @@ public class TournamentService {
     public List<CorrectAnswerDto> finishQuiz(int tournamentId, int userId) {
 
         TournamentAnswer tournamentAnswer = findTournamentAnswer(tournamentId, userId);
+        if (!tournamentAnswer.hasStarted()) { throw new TutorException(TOURNAMENT_NOT_STARTED, tournamentId, userId); }
         tournamentAnswer.finish();
 
         return tournamentAnswer.getQuestionsAnswers().stream()
@@ -185,7 +191,9 @@ public class TournamentService {
             throw new TutorException(TOURNAMENT_NOT_ACCEPTING_RESPONSES, tournament.getId());
         }
 
-        TournamentAnswer tournamentAnswer = tournament.getQuiz().getTournamentAnswer(userId);
+        TournamentAnswer tournamentAnswer = tournament.getTournamentAnswer(userId);
+
+        if (tournamentAnswer == null) { throw new TutorException(USER_NOT_FOUND, userId); }
 
         if (tournamentAnswer.isFinished()) {
             throw new TutorException(TOURNAMENT_ALREADY_FINISHED, tournament.getId(), userId);
@@ -202,7 +210,7 @@ public class TournamentService {
         Tournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
-        return tournament.getQuiz().getTournamentAnswers().stream()
+        return tournament.getTournamentAnswers().stream()
                 .anyMatch(tournamentAnswer -> tournamentAnswer.getUser().getId().equals(userId));
     }
 
