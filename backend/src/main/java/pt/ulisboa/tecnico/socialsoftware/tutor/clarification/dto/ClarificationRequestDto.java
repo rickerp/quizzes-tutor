@@ -11,6 +11,7 @@ public class ClarificationRequestDto {
 
     private int id;
     private ClarificationRequest.State state;
+    private ClarificationRequest.Type type;
     private String content;
     private String creationDate;
     private UserDto user;
@@ -23,6 +24,7 @@ public class ClarificationRequestDto {
     public ClarificationRequestDto(ClarificationRequest clarificationRequest) {
         this.setId(clarificationRequest.getId());
         this.setState(clarificationRequest.getState());
+        this.setType(clarificationRequest.getType());
         this.setContent(clarificationRequest.getContent());
 
         if (clarificationRequest.getCreationDate() != null) {
@@ -36,6 +38,7 @@ public class ClarificationRequestDto {
 
         if (clarificationRequest.getImage() != null) { this.setImage(new ImageDto(clarificationRequest.getImage())); }
     }
+
 
     public int getId() {
         return id;
@@ -51,6 +54,14 @@ public class ClarificationRequestDto {
 
     public void setState(ClarificationRequest.State state) {
         this.state = state;
+    }
+
+    public ClarificationRequest.Type getType() {
+        return type;
+    }
+
+    public void setType(ClarificationRequest.Type type) {
+        this.type = type;
     }
 
     public String getContent() {

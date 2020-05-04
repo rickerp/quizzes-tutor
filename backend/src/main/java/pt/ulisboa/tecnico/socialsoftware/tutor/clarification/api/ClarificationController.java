@@ -69,4 +69,10 @@ public class ClarificationController {
     public ClarificationRequestDto changeClarificationState(@PathVariable int clarificationRequestId, @PathVariable String state) {
         return clarificationRequestService.changeClarificationState(clarificationRequestId, state);
     }
+
+    @PostMapping("/clarifications/{clarificationRequestId}/type/{type}")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
+    public ClarificationRequestDto changeClarificationType(@PathVariable int clarificationRequestId, @PathVariable String type) {
+        return clarificationRequestService.changeClarificationType(clarificationRequestId, type);
+    }
 }

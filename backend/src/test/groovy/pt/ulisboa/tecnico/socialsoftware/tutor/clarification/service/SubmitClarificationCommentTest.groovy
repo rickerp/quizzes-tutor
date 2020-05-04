@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
@@ -192,7 +193,8 @@ class SubmitClarificationCommentTest extends Specification {
         given: "Update commentDto"
         clarificationCommentDto.setContent(content)
         and: "ClarificationRequest update"
-        clarificationRequest.setState(clarificationRequestState)
+        if (clarificationRequest.getState() != clarificationRequestState)
+            clarificationRequest.setState(clarificationRequestState)
 
         when:
         clarificationCommentService.createClarificationComment(clarificationRequest.getId(), clarificationCommentDto)
@@ -204,6 +206,7 @@ class SubmitClarificationCommentTest extends Specification {
         where:
             content     |       clarificationRequestState       ||         message
         null            | ClarificationRequest.State.UNRESOLVED || ErrorMessage.COMMENT_INVALID_CONTENT
+        COMMENT_CONTENT | null                                  || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
         COMMENT_CONTENT | ClarificationRequest.State.RESOLVED   || ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE
     }
 
@@ -261,6 +264,11 @@ class SubmitClarificationCommentTest extends Specification {
         @Bean
         ClarificationCommentService commentService() {
             return new ClarificationCommentService()
+        }
+
+        @Bean
+        PublicClarificationService PublicClarificationService() {
+            return new PublicClarificationService()
         }
     }
 }

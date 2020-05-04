@@ -15,12 +15,16 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.PublicClarificationRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
@@ -45,6 +49,12 @@ public class ClarificationRequestService {
 
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
+
+    @Autowired
+    private PublicClarificationRepository publicClarificationRepository;
+
+    @Autowired
+    private PublicClarificationService publicClarificationService;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -98,8 +108,55 @@ public class ClarificationRequestService {
     public ClarificationRequestDto changeClarificationState(int clarificationId,String state) {
         ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND));
-        clarificationRequest.setState(state);
-        clarificationRequestRepository.save(clarificationRequest);
+
+        if (clarificationRequest.getType() == ClarificationRequest.Type.PUBLIC) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_CANNOT_CHANGE_STATE);
+        }
+
+        state = state.toUpperCase();
+        switch (state) {
+            case "UNRESOLVED":
+                clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED);
+                break;
+            case "RESOLVED":
+                clarificationRequest.setState(ClarificationRequest.State.RESOLVED);
+                break;
+            default: throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
+        }
+
+        entityManager.persist(clarificationRequest);
+        return new ClarificationRequestDto(clarificationRequest);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ClarificationRequestDto changeClarificationType(int clarificationId, String type) {
+        ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND));
+
+        CourseExecution courseExecution = clarificationRequest.getQuestionAnswer()
+                .getQuizAnswer()
+                .getQuiz()
+                .getCourseExecution();
+
+        Question question = clarificationRequest.getQuestionAnswer().getQuizQuestion().getQuestion();
+
+        type = type.toUpperCase();
+        switch (type) {
+            case "PUBLIC":
+                clarificationRequest.setType(ClarificationRequest.Type.PUBLIC);
+                publicClarificationService.createPublicClarification(clarificationRequest, question, courseExecution);
+                break;
+            case "PRIVATE":
+                PublicClarification publicClarification = clarificationRequest.getPublicClarification();
+                clarificationRequest.setType(ClarificationRequest.Type.PRIVATE);
+                publicClarificationService.removePublicClarification(publicClarification);
+                break;
+            default: throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_TYPE);
+        }
+        entityManager.persist(clarificationRequest);
         return new ClarificationRequestDto(clarificationRequest);
     }
 

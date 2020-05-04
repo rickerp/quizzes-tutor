@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 public class ClarificationRequest {
 
     public enum State {UNRESOLVED, RESOLVED}
+    public enum Type {PUBLIC, PRIVATE}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,9 @@ public class ClarificationRequest {
 
     @Enumerated(EnumType.STRING)
     private ClarificationRequest.State state;
+
+    @Enumerated(EnumType.STRING)
+    private ClarificationRequest.Type type;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -43,11 +47,15 @@ public class ClarificationRequest {
     @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
     private ClarificationComment clarificationComment;
 
+    @OneToOne(cascade =CascadeType.ALL, mappedBy = "clarificationRequest")
+    private PublicClarification publicClarification;
+
     public ClarificationRequest() {}
 
     public ClarificationRequest(ClarificationRequestDto clarificationRequestDto, User user, QuestionAnswer questionAnswer) {
 
         setContent(clarificationRequestDto.getContent());
+        this.type = Type.PRIVATE;
 
         if (clarificationRequestDto.getState() != State.UNRESOLVED)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
@@ -75,24 +83,10 @@ public class ClarificationRequest {
     }
 
     public void setState(State state) {
+        if (this.state == state) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_ALREADY_IN_THIS_STATE, state.toString());
+        }
         this.state = state;
-    }
-
-    public void setState(String state) {
-        state = state.toUpperCase();
-
-        if (this.state.toString().equals(state)) {
-            throw new TutorException(ErrorMessage.CLARIFICATION_ALREADY_IN_THIS_STATE, state);
-        }
-        switch (state) {
-            case "UNRESOLVED":
-                this.setState(State.UNRESOLVED);
-                break;
-            case "RESOLVED":
-                this.setState(State.RESOLVED);
-                break;
-            default: throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
-        }
     }
 
     public String getContent() {
@@ -132,6 +126,29 @@ public class ClarificationRequest {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        if (this.type == type) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_ALREADY_THIS_TYPE, type.toString());
+        }
+        if (type == Type.PUBLIC && this.state != State.RESOLVED) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_CANNOT_MAKE_PUBLIC);
+        }
+        if (type == Type.PRIVATE) { this.publicClarification = null; }
+        this.type = type;
+    }
+
+    public PublicClarification getPublicClarification() {
+        return publicClarification;
+    }
+
+    public void setPublicClarification(PublicClarification publicClarification) {
+        this.publicClarification = publicClarification;
     }
 
     public ClarificationComment getClarificationComment() {

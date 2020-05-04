@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
 import static pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest.State.*
+import static pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest.Type.*
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationCommentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository
@@ -41,7 +42,7 @@ import spock.lang.Unroll
 import spock.lang.Shared
 
 @DataJpaTest
-class ChangeClarificationStateTest extends Specification {
+class ChangeClarificationTypeTest extends Specification {
 
     public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
 
@@ -127,6 +128,7 @@ class ChangeClarificationStateTest extends Specification {
         userRepository.save(student)
 
         clarificationRequest = new ClarificationRequest()
+        clarificationRequest.setState(RESOLVED)
         clarificationRequest.setContent(CLARIFICATION_CONTENT)
         clarificationRequest.setUser(student)
         clarificationRequest.setQuestionAnswer(questionAnswer)
@@ -134,59 +136,74 @@ class ChangeClarificationStateTest extends Specification {
         clarificationRequest.getId()
     }
 
-    def "Change Clarification Request state to RESOLVED when it had UNRESOLVED"() {
-        given: "a clarification request with state UNRESOLVED"
+    def "Make clarification request that is PRIVATE, and RESOLVED, PUBLIC"() {
+        when:
+        def clarificationReqDto = clarificationRequestService.changeClarificationType(clarificationRequest.getId(), PUBLIC.toString())
+
+        then:
+        def clarificationRequestCreated = clarificationRequestRepository.findById(clarificationRequest.getId()).orElseThrow()
+        clarificationRequestCreated.getType() == PUBLIC
+        clarificationReqDto.getType() == PUBLIC
+        clarificationRequestCreated.getPublicClarification().getQuestion() ==
+                clarificationRequestCreated.getQuestionAnswer().getQuizQuestion().getQuestion();
+        clarificationRequestCreated.getPublicClarification().getCourseExecutions()[0] ==
+                clarificationRequestCreated.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution();
+    }
+
+    def "Make clarification request that is PRIVATE, and UNRESOLVED, PUBLIC"() {
+        given: "Clarification with state Unresolved"
         clarificationRequest.setState(UNRESOLVED)
         clarificationRequestRepository.save(clarificationRequest)
-
         when:
-        def clarificationReqDto = clarificationRequestService.changeClarificationState(clarificationRequest.getId(), RESOLVED.toString())
-
-        then:
-        def clarificationRequestCreated = clarificationRequestRepository.findById(clarificationRequest.getId()).orElseThrow()
-        clarificationRequestCreated.getState() == RESOLVED;
-        clarificationReqDto.getState() == RESOLVED
-    }
-
-    def "Change Clarification Request state to UNRESOLVED, when it had RESOLVED"() {
-        given: "a clarification request with state RESOLVED"
-            clarificationRequest.setState(RESOLVED)
-            clarificationRequestRepository.save(clarificationRequest)
-
-        when:
-        def clarificationReqDto = clarificationRequestService.changeClarificationState(clarificationRequest.getId(), UNRESOLVED.toString())
-
-        then:
-        def clarificationRequestCreated = clarificationRequestRepository.findById(clarificationRequest.getId()).orElseThrow()
-        clarificationRequestCreated.getState() == UNRESOLVED;
-        clarificationReqDto.getState() == UNRESOLVED
-    }
-
-    def "Change a Clarification Request state to an invalid state"() {
-        when:
-        clarificationRequestService.changeClarificationState(clarificationRequest.getId(), "INVALID STATE")
+        clarificationRequestService.changeClarificationType(clarificationRequest.getId(), PUBLIC.toString())
 
         then:
         def error = thrown(TutorException)
-        error.getErrorMessage() == ErrorMessage.CLARIFICATION_INVALID_STATE
+        error.getErrorMessage() == ErrorMessage.CLARIFICATION_CANNOT_MAKE_PUBLIC
     }
 
-    @Unroll("Test: #originalState #changeState")
-    def "Change Clarification Request state to the same state that already is"() {
+    def "Make clarification request that is PUBLIC, PRIVATE"() {
+        given: "A public Clarification"
+            clarificationRequestService.changeClarificationType(clarificationRequest.getId(), PUBLIC.toString())
+        when:
+        def clarificationReqDto = clarificationRequestService.changeClarificationType(clarificationRequest.getId(), PRIVATE.toString())
+
+        then:
+        def clarificationRequestCreated = clarificationRequestRepository.findById(clarificationRequest.getId()).orElseThrow()
+        clarificationRequestCreated.getType() == PRIVATE
+        clarificationReqDto.getType() == PRIVATE
+        clarificationRequestCreated.getPublicClarification() == null
+        clarificationRequestCreated.getQuestionAnswer().getQuizQuestion().getQuestion()
+                .getPublicClarifications().size() == 0
+        clarificationRequestCreated.getQuestionAnswer().getQuizAnswer().getQuiz()
+                .getCourseExecution().getPublicClarifications().size() == 0
+    }
+
+    def "Change a Clarification Request type to an invalid type"() {
+        when:
+        clarificationRequestService.changeClarificationType(clarificationRequest.getId(), "INVALID Type")
+
+        then:
+        def error = thrown(TutorException)
+        error.getErrorMessage() == ErrorMessage.CLARIFICATION_INVALID_TYPE
+    }
+
+    @Unroll("Test: #originalType #changeType")
+    def "Change Clarification Request type to the same type that already is"() {
         given:
-        clarificationRequest.setState(originalState)
+        clarificationRequest.setType(originalType)
         clarificationRequestRepository.save(clarificationRequest)
 
         when:
-        clarificationRequestService.changeClarificationState(clarificationRequest.getId(), changeState)
+        clarificationRequestService.changeClarificationType(clarificationRequest.getId(), changeType)
 
         then:
         def error = thrown(TutorException)
-        error.getErrorMessage() == ErrorMessage.CLARIFICATION_ALREADY_IN_THIS_STATE
+        error.getErrorMessage() == ErrorMessage.CLARIFICATION_ALREADY_THIS_TYPE
 
         where:
-        originalState << [RESOLVED, UNRESOLVED]
-        changeState << ["RESOLVED", "UNRESOLVED"]
+        originalType << [PUBLIC, PRIVATE]
+        changeType << ["PUBLIC", "PRIVATE"]
     }
 
     @TestConfiguration

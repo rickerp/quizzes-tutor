@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
@@ -161,6 +162,11 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         @Bean
         ClarificationCommentService ClarificationCommentService() {
             return new ClarificationCommentService()
+        }
+
+        @Bean
+        PublicClarificationService PublicClarificationService() {
+            return new PublicClarificationService()
         }
     }
 }

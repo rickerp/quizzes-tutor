@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.course;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
@@ -43,6 +44,9 @@ public class CourseExecution implements DomainEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", fetch=FetchType.LAZY, orphanRemoval=true)
     private final Set<Assessment> assessments = new HashSet<>();
+
+    @ManyToMany(mappedBy = "courseExecutions")
+    private Set<PublicClarification> publicClarifications = new HashSet<>();
 
     public CourseExecution() {
     }
@@ -115,6 +119,18 @@ public class CourseExecution implements DomainEntity {
     public void setCourse(Course course) {
         this.course = course;
         course.addCourseExecution(this);
+    }
+
+    public Set<PublicClarification> getPublicClarifications() {
+        return publicClarifications;
+    }
+
+    public void setPublicClarifications(Set<PublicClarification> publicClarifications) {
+        this.publicClarifications = publicClarifications;
+    }
+
+    public void addPublicClarification(PublicClarification publicClarification) {
+        this.publicClarifications.add(publicClarification);
     }
 
     public Set<User> getUsers() {
