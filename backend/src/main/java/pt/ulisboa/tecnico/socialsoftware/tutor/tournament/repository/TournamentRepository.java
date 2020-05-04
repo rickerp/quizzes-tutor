@@ -17,4 +17,9 @@ public interface TournamentRepository extends JpaRepository<Tournament, Integer>
             "WHERE t.start_time > :now AND t.course_execution_id = :executionId",
             nativeQuery = true)
     List<Tournament> findOpenedTournaments(LocalDateTime now, Integer executionId);
+
+    @Query(value = "SELECT * FROM tournaments t " +
+            "WHERE t.start_time <= :now <= t.end_time AND t.course_execution_id = :executionId",
+            nativeQuery = true)
+    List<Tournament> findInProgressTournaments(LocalDateTime now, Integer executionId);
 }

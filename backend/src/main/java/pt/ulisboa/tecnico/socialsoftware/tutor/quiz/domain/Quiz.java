@@ -101,8 +101,6 @@ public class Quiz implements DomainEntity {
         setResultsDate(DateHandler.toLocalDateTime(quizDto.getResultsDate()));
         setSeries(quizDto.getSeries());
         setVersion(quizDto.getVersion());
-
-
     }
 
     @Override

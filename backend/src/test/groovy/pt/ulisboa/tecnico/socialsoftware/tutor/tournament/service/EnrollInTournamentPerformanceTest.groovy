@@ -91,7 +91,7 @@ class EnrollInTournamentPerformanceTest extends Specification {
         when: "Each User Enrolls in all Tournaments"
         for (Integer uId : usersIds) {
             for (Integer tId : tournamentsIds) {
-                tournamentService.enrollPlayer(uId, tId)
+                tournamentService.enroll(uId, tId)
             }
         }
 

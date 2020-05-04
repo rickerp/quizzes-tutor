@@ -27,15 +27,16 @@ public class TournamentDto implements Serializable {
     public TournamentDto() {}
 
     public TournamentDto(Tournament tournament) {
-        this.id = tournament.getId();
-        this.name = tournament.getName();
-        this.creatorId = tournament.getCreator().getId();
-        this.creatorName = tournament.getCreator().getUsername();
+
+        setId(tournament.getId());
+        setName(tournament.getName());
+        setCreatorId(tournament.getCreator().getId());
+        setCreatorName(tournament.getCreator().getName());
+        setCourseExecutionId(tournament.getCourseExecution().getId());
+        setNrQuestions(tournament.getNrQuestions());
         this.topicsId = tournament.getTopics().stream().map(Topic::getId).collect(Collectors.toSet());
         this.topicsName = tournament.getTopics().stream().map(Topic::getName).sorted().collect(Collectors.toList());
         this.playersId = tournament.getPlayers().stream().map(User::getId).collect(Collectors.toSet());
-        this.courseExecutionId = tournament.getCourseExecution().getId();
-        this.nrQuestions = tournament.getNrQuestions();
 
         if (tournament.getStartTime() != null) {
             this.startTime = DateHandler.toISOString(tournament.getStartTime());
@@ -58,6 +59,8 @@ public class TournamentDto implements Serializable {
     public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
 
     public String getCreatorName() { return creatorName; }
+
+    public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
 
     public Set<Integer> getTopicsId() { return topicsId; }
 

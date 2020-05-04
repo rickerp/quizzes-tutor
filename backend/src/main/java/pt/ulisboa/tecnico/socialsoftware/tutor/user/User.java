@@ -8,16 +8,20 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarificatio
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DUPLICATE_TOURNAMENT_ENROLL;
 
 @Entity
 @Table(name = "users")
@@ -59,6 +63,9 @@ public class User implements UserDetails, DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
+    private Set<TournamentAnswer> tournamentAnswers = new HashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private Set<ClarificationRequest> clarificationRequests = new HashSet<>();
 
@@ -67,9 +74,6 @@ public class User implements UserDetails, DomainEntity {
 
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "players")
-    private Set<Tournament> tournaments = new HashSet<>();
 
     public User() {
     }
@@ -160,6 +164,8 @@ public class User implements UserDetails, DomainEntity {
     public Set<QuizAnswer> getQuizAnswers() {
         return quizAnswers;
     }
+
+    public Set<TournamentAnswer> getTournamentAnswers() { return tournamentAnswers; }
 
     public Set<CourseExecution> getCourseExecutions() {
         return courseExecutions;
@@ -398,12 +404,14 @@ public class User implements UserDetails, DomainEntity {
         this.quizAnswers.add(quizAnswer);
     }
 
-    public void addCourse(CourseExecution course) {
-        this.courseExecutions.add(course);
+    public void addTournamentAnswer(TournamentAnswer tournamentAnswer) {
+        if (!this.tournamentAnswers.add(tournamentAnswer)) {
+            throw new TutorException(DUPLICATE_TOURNAMENT_ENROLL);
+        }
     }
 
-    public Set<Tournament> getTournaments() {
-        return this.tournaments;
+    public void addCourse(CourseExecution course) {
+        this.courseExecutions.add(course);
     }
 
     public void addClarification(ClarificationRequest clarificationRequest) { this.clarificationRequests.add(clarificationRequest); }

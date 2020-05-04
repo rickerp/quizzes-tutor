@@ -31,7 +31,6 @@
                 data-cy="newTdPStartTime"
               ></VueCtkDateTimePicker>
             </v-col>
-
             <v-col>
               <VueCtkDateTimePicker
                 label="End Date-Time *"
@@ -42,11 +41,9 @@
               ></VueCtkDateTimePicker>
             </v-col>
           </v-row>
-          <v-row class="mt-7">
+          <v-row class="mt-8">
             <v-col cols="3"
-              ><v-subheader class="text-left"
-                >Number Of Questions *</v-subheader
-              ></v-col
+              ><v-subheader>Number Of Questions *</v-subheader></v-col
             >
             <v-col>
               <v-slider
@@ -73,7 +70,7 @@
           </v-row>
           <v-row>
             <v-col cols="3">
-              <v-subheader class="text-left">Topics *</v-subheader>
+              <v-subheader>Topics *</v-subheader>
             </v-col>
             <v-col>
               <v-autocomplete

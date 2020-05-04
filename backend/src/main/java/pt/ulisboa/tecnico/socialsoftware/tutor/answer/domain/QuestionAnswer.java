@@ -6,6 +6,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -32,6 +34,14 @@ public class QuestionAnswer implements DomainEntity {
     private QuizAnswer quizAnswer;
 
     @ManyToOne
+    @JoinColumn(name = "tournament_question_id")
+    private TournamentQuestion tournamentQuestion;
+
+    @ManyToOne
+    @JoinColumn(name = "tournament_answer_id")
+    private TournamentAnswer tournamentAnswer;
+
+    @ManyToOne
     @JoinColumn(name = "option_id")
     private Option option;
 
@@ -56,6 +66,14 @@ public class QuestionAnswer implements DomainEntity {
         setQuizQuestion(quizQuestion);
         setSequence(sequence);
     }
+
+    public QuestionAnswer(TournamentAnswer tournamentAnswer, TournamentQuestion tournamentQuestion, int sequence) {
+        setTournamentAnswer(tournamentAnswer);
+        setTournamentQuestion(tournamentQuestion);
+        setSequence(sequence);
+    }
+
+    public boolean isFromTournament() { return tournamentQuestion != null && tournamentAnswer != null; }
 
     @Override
     public void accept(Visitor visitor) {
@@ -90,6 +108,24 @@ public class QuestionAnswer implements DomainEntity {
     public void setQuizAnswer(QuizAnswer quizAnswer) {
         this.quizAnswer = quizAnswer;
         quizAnswer.addQuestionAnswer(this);
+    }
+
+    public TournamentQuestion getTournamentQuestion() {
+        return tournamentQuestion;
+    }
+
+    public void setTournamentQuestion(TournamentQuestion tournamentQuestion) {
+        this.tournamentQuestion = tournamentQuestion;
+        tournamentQuestion.addQuestionAnswer(this);
+    }
+
+    public TournamentAnswer getTournamentAnswer() {
+        return tournamentAnswer;
+    }
+
+    public void setTournamentAnswer(TournamentAnswer tournamentAnswer) {
+        this.tournamentAnswer = tournamentAnswer;
+        tournamentAnswer.addQuestionAnswer(this);
     }
 
     public Option getOption() {

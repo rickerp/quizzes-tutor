@@ -1,11 +1,9 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +13,7 @@ public class StatementAnswerDto implements Serializable {
     private Integer timeTaken;
     private Integer sequence;
     private Integer optionId;
-    private List<ClarificationRequestDto> clarificationRequests = new ArrayList<>();
+    private List<ClarificationRequestDto> clarificationRequests;
 
     public StatementAnswerDto() {}
 
@@ -27,10 +25,12 @@ public class StatementAnswerDto implements Serializable {
         if (questionAnswer.getOption() != null) {
             this.optionId = questionAnswer.getOption().getId();
         }
-        this.clarificationRequests = questionAnswer.getClarificationRequests().stream()
-                .map(ClarificationRequestDto::new)
-                .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate)
-                        .reversed()).collect(Collectors.toList());
+        if (!questionAnswer.isFromTournament()) {
+            this.clarificationRequests = questionAnswer.getClarificationRequests().stream()
+                    .map(ClarificationRequestDto::new)
+                    .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate)
+                            .reversed()).collect(Collectors.toList());
+        }
     }
 
     public Integer getOptionId() {
