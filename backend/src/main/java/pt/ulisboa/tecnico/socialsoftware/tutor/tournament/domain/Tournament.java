@@ -24,31 +24,32 @@ public class Tournament {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "course_execution_id")
+    @JoinColumn(nullable = false, name = "course_execution_id")
     private CourseExecution courseExecution;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(nullable = false, name = "creator_id")
     private User creator;
 
-    @Column(name = "name")
+    @Column(nullable = false, name = "name")
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @Column(nullable = false, name = "topics")
     private Set<Topic> topics;
 
-    @Column(name = "nr_questions")
+    @Column(nullable = false, name = "nr_questions")
     private Integer nrQuestions;
 
-    @Column(name = "start_time")
+    @Column(nullable = false, name = "start_time")
     private LocalDateTime startTime;
 
-    @Column(name = "end_time")
+    @Column(nullable = false, name = "end_time")
     private LocalDateTime endTime;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
-    private TournamentQuiz quiz;
+    private TournamentQuiz quiz = null;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tournament", fetch = FetchType.LAZY, orphanRemoval = true)
     private final Set<TournamentAnswer> tournamentAnswers = new HashSet<>();

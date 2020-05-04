@@ -317,7 +317,7 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Unenroll student from tournament" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
-            <stringProp name="query">DELETE FROM tournaments_players WHERE tournaments_id = 100;
+            <stringProp name="query">DELETE FROM tournament_answers WHERE tournament_id = 100;
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>

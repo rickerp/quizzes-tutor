@@ -92,7 +92,9 @@ public class TournamentService {
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
         tournament.enroll(player);
-        if (tournament.getTournamentAnswers().size() > 1) { tournament.createQuiz(); }
+        if (!tournament.quizIsGenerated() && tournament.getTournamentAnswers().size() > 1) {
+            tournament.createQuiz();
+        }
         return new TournamentDto(tournament);
     }
 
