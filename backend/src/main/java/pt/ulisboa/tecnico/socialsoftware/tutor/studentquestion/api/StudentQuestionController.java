@@ -27,8 +27,8 @@ public class StudentQuestionController {
 
     @PostMapping("/studentquestions/{studentQuestionId}/publish")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#studentQuestionId, 'STUDENTQUESTION.ACCESS')")
-    public void publish(@PathVariable Integer studentQuestionId){
-        studentQuestionService.publishStudentQuestion(studentQuestionId);
+    public StudentQuestionDto publish(@PathVariable Integer studentQuestionId){
+        return studentQuestionService.publishStudentQuestion(studentQuestionId);
     }
 
     @PostMapping("/courses/{courseId}/studentquestion")

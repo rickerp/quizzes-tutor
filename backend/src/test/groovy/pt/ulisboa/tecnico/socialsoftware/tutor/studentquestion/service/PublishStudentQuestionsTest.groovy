@@ -1,4 +1,4 @@
-package groovy.pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.service
+package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -115,8 +115,9 @@ class PublishStudentQuestionsTest extends Specification {
         def evaluation = new Evaluation(studentQuestion, true, "all good")
         evaluationRepository.save(evaluation)
         when:
-        studentQuestionService.publishStudentQuestion(studentQuestion.getId())
+        def studentQuestionDto = studentQuestionService.publishStudentQuestion(studentQuestion.getId())
         then:
+        studentQuestionDto.getQuestion().getStatus() == Question.Status.AVAILABLE.name()
         question.getStatus() == Question.Status.AVAILABLE
     }
 
