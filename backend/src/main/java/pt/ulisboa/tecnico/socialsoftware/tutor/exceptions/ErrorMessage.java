@@ -105,7 +105,10 @@ public enum ErrorMessage {
     STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
     STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
     STUDENT_QUESTION_NOT_ACCEPTED("Student question must be accepted in order to edit it"),
-    JUSTIFICATION_NOT_FOUND("Justification not found");
+    JUSTIFICATION_NOT_FOUND("Justification not found"),
+    STUDENT_QUESTION_ALREADY_ADDED("Question was already added to available pool."),
+    EVALUATION_NOT_ACCEPTED("Evaluation must be accepted");
+
 
     public final String label;
 
