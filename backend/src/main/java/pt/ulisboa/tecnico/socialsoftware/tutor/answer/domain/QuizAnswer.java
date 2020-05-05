@@ -168,7 +168,7 @@ public class QuizAnswer implements DomainEntity {
             });
 
             getQuestionAnswers().forEach(questionAnswer ->
-                    questionAnswer.getQuizQuestion().getQuestion().addAnswerStatistics(questionAnswer));
+                    questionAnswer.getQuestion().addAnswerStatistics(questionAnswer));
 
             this.usedInStatistics = true;
         }

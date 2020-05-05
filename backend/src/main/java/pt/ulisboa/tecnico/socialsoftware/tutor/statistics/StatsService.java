@@ -80,7 +80,7 @@ public class StatsService {
                 .sorted(Comparator.comparing(QuizAnswer::getAnswerDate).reversed())
                 .map(QuizAnswer::getQuestionAnswers)
                 .flatMap(Collection::stream)
-                .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingInt(questionAnswer -> questionAnswer.getQuizQuestion().getQuestion().getId()))),
+                .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingInt(questionAnswer -> questionAnswer.getQuestion().getId()))),
                         ArrayList::new)).stream()
                 .map(QuestionAnswer::getOption)
                 .filter(Objects::nonNull)

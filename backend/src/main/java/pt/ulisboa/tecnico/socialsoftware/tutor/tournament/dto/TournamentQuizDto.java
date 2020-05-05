@@ -1,40 +1,46 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuiz;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
+import pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto.StatementAnswerDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto.StatementQuestionDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TournamentQuizDto implements Serializable {
 
-    private int tournamentId;
-    private List<QuestionDto> questions;
+    private List<StatementQuestionDto> questions;
+    private List<StatementAnswerDto> answers;
+    private Long timeToEnd;
 
-    public TournamentQuizDto(TournamentQuiz quiz) {
+    public TournamentQuizDto(TournamentAnswer answer) {
 
-        setTournamentId(quiz.getTournament().getId());
-        questions = new ArrayList<>();
-        List<TournamentQuestion> tournamentQuestions = quiz.getTournamentQuestions();
+        questions = answer.getQuestionsAnswers().stream()
+                .map(StatementQuestionDto::new)
+                .sorted(Comparator.comparing(StatementQuestionDto::getSequence))
+                .collect(Collectors.toList());
 
-        for (int seq = 0; seq < tournamentQuestions.size(); seq++) {
-            QuestionDto question = new QuestionDto(tournamentQuestions.get(seq).getQuestion());
-            question.setSequence(seq);
-            questions.add(question);
-        }
+        answers = answer.getQuestionsAnswers().stream()
+                .map(StatementAnswerDto::new)
+                .sorted(Comparator.comparing(StatementAnswerDto::getSequence))
+                .collect(Collectors.toList());
+
+        this.timeToEnd = ChronoUnit.MILLIS.between(DateHandler.now(), answer.getTournament().getEndTime());
     }
 
-    public int getTournamentId() { return tournamentId; }
+    public Long getTimeToEnd() { return timeToEnd; }
 
-    public void setTournamentId(int tournamentId) { this.tournamentId = tournamentId; }
+    public void setTimeToEnd(Long timeToEnd) { this.timeToEnd = timeToEnd; }
 
-    public void setQuestions(List<QuestionDto> questions) {
-        this.questions = questions;
-    }
+    public List<StatementQuestionDto> getQuestions() { return questions; }
 
-    public List<QuestionDto> getQuestions() {
-        return questions;
-    }
+    public void setQuestions(List<StatementQuestionDto> questions) { this.questions = questions; }
+
+    public List<StatementAnswerDto> getAnswers() { return answers; }
+
+    public void setAnswers(List<StatementAnswerDto> answers) { this.answers = answers; }
 }

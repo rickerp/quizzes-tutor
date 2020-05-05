@@ -456,9 +456,9 @@ public class User implements UserDetails, DomainEntity {
     public List<Question> filterQuestionsByStudentModel(Integer numberOfQuestions, List<Question> availableQuestions) {
         List<Question> studentAnsweredQuestions = getQuizAnswers().stream()
                 .flatMap(quizAnswer -> quizAnswer.getQuestionAnswers().stream())
-                .filter(questionAnswer -> availableQuestions.contains(questionAnswer.getQuizQuestion().getQuestion()))
+                .filter(questionAnswer -> availableQuestions.contains(questionAnswer.getQuestion()))
                 .filter(questionAnswer -> questionAnswer.getTimeTaken() != null && questionAnswer.getTimeTaken() != 0)
-                .map(questionAnswer -> questionAnswer.getQuizQuestion().getQuestion())
+                .map(questionAnswer -> questionAnswer.getQuestion())
                 .collect(Collectors.toList());
 
         List<Question> notAnsweredQuestions = availableQuestions.stream()

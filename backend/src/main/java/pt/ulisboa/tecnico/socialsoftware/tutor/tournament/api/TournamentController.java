@@ -56,11 +56,11 @@ public class TournamentController {
 
     @GetMapping("/executions/{executionId}/tournaments/ongoing")
     @PreAuthorize("hasPermission(#executionId, 'EXECUTION.ACCESS')")
-    public List<TournamentDto> getExecutionInProgressNonStartedTournaments(Principal principal, @PathVariable int executionId) {
+    public List<TournamentDto> getExecutionInProgressNonFinishedTournaments(Principal principal, @PathVariable int executionId) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
-        return tournamentService.getExecutionInProgressNonStartedTournaments(executionId, user.getId());
+        return tournamentService.getExecutionInProgressNonFinishedTournaments(executionId, user.getId());
     }
 
     @GetMapping("/executions/{executionId}/tournaments/{tournamentId}/quiz/begin")
@@ -77,14 +77,14 @@ public class TournamentController {
 
     @PostMapping("/executions/{executionId}/tournaments/{tournamentId}/quiz/answer")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
-    public void addQuestionAnswer(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId, @Valid @RequestBody StatementAnswerDto answer) {
+    public void selectQuestionOption(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId, @Valid @RequestBody StatementAnswerDto answer) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
 
         if (tournamentService.findTournamentCourseExecution(tournamentId).getCourseExecutionId() != executionId) {
             throw new TutorException(NO_TOURNAMENT_IN_EXECUTION, tournamentId);
         }
-        tournamentService.addQuestionAnswer(tournamentId, user.getId(), answer);
+        tournamentService.selectQuestionOption(tournamentId, user.getId(), answer);
     }
 
     @GetMapping("/executions/{executionId}/tournaments/{tournamentId}/quiz/finish")

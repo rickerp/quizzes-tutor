@@ -138,7 +138,7 @@ public class AnswerService {
                         .orElseThrow(() -> new TutorException(OPTION_NOT_FOUND, answer.getOptionId()));
 
                 if (isNotQuestionOption(questionAnswer.getQuizQuestion(), option)) {
-                    throw new TutorException(QUESTION_OPTION_MISMATCH, questionAnswer.getQuizQuestion().getQuestion().getId(), option.getId());
+                    throw new TutorException(QUESTION_OPTION_MISMATCH, questionAnswer.getQuestion().getId(), option.getId());
                 }
 
                 if (questionAnswer.getOption() != null) {

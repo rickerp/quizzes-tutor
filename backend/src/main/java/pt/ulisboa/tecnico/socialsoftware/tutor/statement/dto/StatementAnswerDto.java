@@ -18,6 +18,7 @@ public class StatementAnswerDto implements Serializable {
     public StatementAnswerDto() {}
 
     public StatementAnswerDto(QuestionAnswer questionAnswer) {
+
         this.timeTaken = questionAnswer.getTimeTaken();
         this.sequence = questionAnswer.getSequence();
         this.questionAnswerId = questionAnswer.getId();
@@ -25,12 +26,11 @@ public class StatementAnswerDto implements Serializable {
         if (questionAnswer.getOption() != null) {
             this.optionId = questionAnswer.getOption().getId();
         }
-        if (!questionAnswer.isFromTournament()) {
-            this.clarificationRequests = questionAnswer.getClarificationRequests().stream()
-                    .map(ClarificationRequestDto::new)
-                    .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate)
-                            .reversed()).collect(Collectors.toList());
-        }
+
+        this.clarificationRequests = questionAnswer.getClarificationRequests().stream()
+                .map(ClarificationRequestDto::new)
+                .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate).reversed())
+                .collect(Collectors.toList());
     }
 
     public Integer getOptionId() {

@@ -2,14 +2,11 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_ANSWER_NOT_FOUND;
 
 
 @Entity
@@ -28,10 +25,7 @@ public class TournamentAnswer {
     @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
-    @Column(name = "begin_time")
-    private LocalDateTime beginTime;
-
-    @Column(name = "finish_date")
+    @Column(name = "finish_time")
     private LocalDateTime finishTime;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tournamentAnswer", fetch = FetchType.LAZY, orphanRemoval = true)
@@ -78,28 +72,11 @@ public class TournamentAnswer {
         questionAnswers.add(questionAnswer);
     }
 
-    public LocalDateTime getBeginTime() {
-        return beginTime;
-    }
-
-    public LocalDateTime getFinishTime() {
-        return finishTime;
-    }
-
-    public boolean hasStarted() { return beginTime != null; }
-
-    public void start() { beginTime = DateHandler.now(); }
+    public LocalDateTime getFinishTime() { return finishTime; }
 
     public boolean isFinished() { return finishTime != null; }
 
     public void finish() { finishTime = DateHandler.now(); }
-
-    public QuestionAnswer getQuestionAnswer(int sequence) {
-        return questionAnswers.stream()
-                .filter(questionAnswer -> questionAnswer.getSequence().equals(sequence))
-                .findAny()
-                .orElseThrow(() -> new TutorException(QUESTION_ANSWER_NOT_FOUND, sequence));
-    }
 
     @Override
     public int hashCode() {

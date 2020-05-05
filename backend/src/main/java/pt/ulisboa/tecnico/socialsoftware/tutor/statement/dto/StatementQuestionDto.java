@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,14 +16,19 @@ public class StatementQuestionDto implements Serializable {
     private Integer questionAnswerId;
 
     public StatementQuestionDto(QuestionAnswer questionAnswer) {
-        this.content = questionAnswer.getQuizQuestion().getQuestion().getContent();
-        if (questionAnswer.getQuizQuestion().getQuestion().getImage() != null) {
-            this.image = new ImageDto(questionAnswer.getQuizQuestion().getQuestion().getImage());
-        }
-        this.options = questionAnswer.getQuizQuestion().getQuestion().getOptions().stream().map(StatementOptionDto::new).collect(Collectors.toList());
-        this.sequence = questionAnswer.getSequence();
 
         this.questionAnswerId = questionAnswer.getId();
+        this.sequence = questionAnswer.getSequence();
+
+        Question question = questionAnswer.getQuestion();
+
+        this.content = question.getContent();
+
+        if (question.getImage() != null) this.image = new ImageDto(question.getImage());
+
+        this.options = question.getOptions().stream()
+                .map(StatementOptionDto::new)
+                .collect(Collectors.toList());
     }
 
     public String getContent() {
@@ -75,5 +81,4 @@ public class StatementQuestionDto implements Serializable {
                 ", questionAnswerId=" + questionAnswerId+
                 '}';
     }
-
 }

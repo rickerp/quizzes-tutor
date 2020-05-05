@@ -5,6 +5,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
@@ -90,6 +91,10 @@ public class QuestionAnswer implements DomainEntity {
 
     public void setTimeTaken(Integer timeTaken) {
         this.timeTaken = timeTaken;
+    }
+
+    public Question getQuestion() {
+        return isFromTournament() ? tournamentQuestion.getQuestion() : quizQuestion.getQuestion();
     }
 
     public QuizQuestion getQuizQuestion() {

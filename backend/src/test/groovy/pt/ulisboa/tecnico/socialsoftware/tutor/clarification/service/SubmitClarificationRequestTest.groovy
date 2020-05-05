@@ -164,8 +164,8 @@ class SubmitClarificationRequestTest extends Specification {
         clarificationRequestCreatedList.size() == 1
         def clarificationRequestCreatedList2 = clarificationRequestRepository.findClarificationByQuestionAnswer(questionAnswerCreated.getId())
         clarificationRequestCreatedList2.size() == 1
-        def Question1 = clarificationRequestCreatedList[0].getQuestionAnswer().getQuizQuestion().getQuestion()
-        def Question2 = clarificationRequestCreatedList2[0].getQuestionAnswer().getQuizQuestion().getQuestion()
+        def Question1 = clarificationRequestCreatedList[0].getQuestionAnswer().getQuestion()
+        def Question2 = clarificationRequestCreatedList2[0].getQuestionAnswer().getQuestion()
         Question1.getId() == Question2.getId()
     }
 
