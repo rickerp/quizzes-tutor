@@ -1,6 +1,7 @@
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 
 export class PublicClarification {
+  id!: number;
   clarificationRequest!: ClarificationRequest;
   availability!: string;
   constructor(jsonObj?: PublicClarification) {
@@ -8,6 +9,7 @@ export class PublicClarification {
       this.clarificationRequest = new ClarificationRequest(
         jsonObj.clarificationRequest
       );
+      this.id = jsonObj.id;
       this.availability = jsonObj.availability;
     }
   }

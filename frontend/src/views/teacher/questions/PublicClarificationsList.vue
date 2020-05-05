@@ -42,7 +42,6 @@
             >
           </v-card-title>
         </template>
-
         <template v-slot:item.action="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -72,6 +71,36 @@
               >
             </template>
             <span>Show Clarification</span>
+          </v-tooltip>
+          <v-tooltip bottom v-if="item.availability === 'INVISIBLE'">
+            <template
+              v-slot:activator="{ on }"
+            >
+              <v-icon
+                large
+                color="green darken-4"
+                class="mr-2"
+                v-on="on"
+                data-cy="addCmt"
+                @click="addCourseExecutionToPClarification(item)"
+                >fas fa-plus</v-icon
+              >
+            </template>
+            <span>Show to Students</span>
+          </v-tooltip>
+          <v-tooltip bottom v-if="item.availability === 'VISIBLE'">
+            <template v-slot:activator="{ on }">
+              <v-icon
+                large
+                color="red darken-4"
+                class="mr-2"
+                v-on="on"
+                data-cy="addCmt"
+                @click="rmvCourseExecutionToPClarification(item)"
+                >fas fa-minus</v-icon
+              >
+            </template>
+            <span>Hide from Students</span>
           </v-tooltip>
         </template>
       </v-data-table>
@@ -164,7 +193,6 @@ export default class ListPublicClarifications extends Vue {
         this.pClarifications = await RemoteServices.getPublicClarifications(
           this.question.id
         );
-        console.log(this.pClarifications);
       } catch (error) {
         await this.$store.dispatch('error', error);
       }
@@ -205,6 +233,45 @@ export default class ListPublicClarifications extends Vue {
   getAvailabilityColor(availability: string) {
     if (availability === 'INVISIBLE') return 'red darken-2';
     else return 'green darken-2';
+  }
+
+  async addCourseExecutionToPClarification(
+    publicClarification: PublicClarification
+  ) {
+    await this.$store.dispatch('loading');
+    if (this.question.id) {
+      const index = this.pClarifications.indexOf(publicClarification);
+      try {
+        const result = await RemoteServices.addCourseExecutionToPublicClarification(
+          publicClarification.id,
+          this.question.id
+        );
+        this.pClarifications.splice(index, 1, result);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+      await this.$store.dispatch('clearLoading');
+    }
+  }
+
+  async rmvCourseExecutionToPClarification(
+    publicClarification: PublicClarification
+  ) {
+    console.log(publicClarification);
+    await this.$store.dispatch('loading');
+    if (this.question.id) {
+      const index = this.pClarifications.indexOf(publicClarification);
+      try {
+        const result = await RemoteServices.removeCourseExecutionToPublicClarification(
+          publicClarification.id,
+          this.question.id
+        );
+        this.pClarifications.splice(index, 1, result);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+      await this.$store.dispatch('clearLoading');
+    }
   }
 
   headers: object = [
