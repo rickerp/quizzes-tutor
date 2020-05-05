@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
@@ -9,6 +10,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -94,7 +96,27 @@ public class QuestionAnswer implements DomainEntity {
     }
 
     public Question getQuestion() {
-        return isFromTournament() ? tournamentQuestion.getQuestion() : quizQuestion.getQuestion();
+        return isFromTournament() ?
+                tournamentQuestion.getQuestion() :
+                quizQuestion.getQuestion();
+    }
+
+    public CourseExecution getCourseExecution() {
+        return isFromTournament() ?
+                tournamentQuestion.getQuiz().getTournament().getCourseExecution() :
+                quizQuestion.getQuiz().getCourseExecution();
+    }
+
+    public User getUser() {
+        return isFromTournament() ?
+                tournamentAnswer.getUser() :
+                quizAnswer.getUser();
+    }
+
+    public boolean isCompleted() {
+        return isFromTournament() ?
+                tournamentAnswer.isFinished() :
+                quizAnswer.isCompleted();
     }
 
     public QuizQuestion getQuizQuestion() {

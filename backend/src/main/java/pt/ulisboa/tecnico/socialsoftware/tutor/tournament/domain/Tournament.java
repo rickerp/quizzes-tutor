@@ -159,6 +159,7 @@ public class Tournament {
         if (!isOpened()) { throw new TutorException(TOURNAMENT_NOT_OPENED); }
         new TournamentAnswer(this, player);
     }
+
     public Set<TournamentAnswer> getTournamentAnswers() { return tournamentAnswers; }
 
     public void addTournamentAnswer(TournamentAnswer tournamentAnswer) {

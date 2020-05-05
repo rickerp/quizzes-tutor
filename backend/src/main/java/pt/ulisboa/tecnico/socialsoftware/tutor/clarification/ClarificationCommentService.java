@@ -68,7 +68,7 @@ public class ClarificationCommentService {
     }
 
     private void verifyCourse(User user, ClarificationRequest clarificationRequest) {
-        CourseExecution clarificationCourseExecution = clarificationRequest.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution();
+        CourseExecution clarificationCourseExecution = clarificationRequest.getQuestionAnswer().getCourseExecution();
         if (!user.getCourseExecutions().contains(clarificationCourseExecution)) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER_COURSE);
         }
@@ -83,5 +83,4 @@ public class ClarificationCommentService {
         }
         return clarificationRequest;
     }
-
 }

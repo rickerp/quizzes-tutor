@@ -23,7 +23,6 @@
     </div>
     <result-component
       v-model="seq"
-      :fromTournament="true"
       :answer="quiz.answers[seq]"
       :correctAnswer="quiz.correctAnswers[seq]"
       :question="quiz.questions[seq]"
