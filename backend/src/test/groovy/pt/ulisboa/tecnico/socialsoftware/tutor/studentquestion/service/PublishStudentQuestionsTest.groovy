@@ -122,7 +122,7 @@ class PublishStudentQuestionsTest extends Specification {
     }
 
     @TestConfiguration
-    static class ListStudentQuestionsServiceImplTestContextConfiguration {
+    static class PublishStudentQuestionsServiceImplTestContextConfiguration {
 
         @Bean
         QuestionService questionService() {

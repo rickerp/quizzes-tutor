@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService;
-import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.EvaluationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.DashboardDTO;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
@@ -50,5 +50,18 @@ public class StudentQuestionController {
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public List<StudentQuestionDto> getCourseStudentQuestions(Principal principal, @PathVariable int courseId){
         return studentQuestionService.listCourseStudentQuestions(courseId);
+    }
+
+    @GetMapping("/courses/{courseId}/studentquestionsdashboard")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public DashboardDTO getPrivateDashboard(Principal principal, @PathVariable int courseId){
+        User user = (User) ((Authentication) principal).getPrincipal();
+        return studentQuestionService.getPrivateDashboard(courseId, user.getId());
+    }
+
+    @GetMapping("/courses/{courseId}/studentquestionsdashboard/all")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public List<DashboardDTO> getDashboard(@PathVariable int courseId){
+        return studentQuestionService.getDashboard(courseId);
     }
 }

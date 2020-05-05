@@ -6,6 +6,9 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
@@ -13,6 +16,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.StudentQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.DashboardDTO;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto.StudentQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.repository.StudentQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -45,6 +49,9 @@ public class StudentQuestionService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CourseExecutionRepository courseExecutionRepository;
 
     @Retryable(
             value = { SQLException.class },
@@ -127,6 +134,37 @@ public class StudentQuestionService {
 
         studentQuestion.getQuestion().setStatus(Question.Status.AVAILABLE);
         return new StudentQuestionDto(studentQuestion);
+    }
+
+    @Retryable(value = { SQLException.class }, backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public DashboardDTO getPrivateDashboard(int courseId, int studentQuestionId) {
+        var list = list(courseId, studentQuestionId);
+        int total = list.size();
+        int accepted = (int) list
+                .stream()
+                .filter(q -> q.getEvaluation() != null && q.getEvaluation().isAccepted())
+                .count();
+        var dashboardDto =  new DashboardDTO();
+        dashboardDto.setAccepted(accepted);
+        dashboardDto.setTotal(total);
+        return dashboardDto;
+    }
+
+    @Retryable(value = { SQLException.class }, backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<DashboardDTO> getDashboard(int courseId) {
+        return courseExecutionRepository.findAll()
+                .stream()
+                .filter(c -> c.getCourse().getId() == courseId)
+                .flatMap(c -> c.getUsers().stream())
+                .filter(e -> e.getRole() == User.Role.STUDENT)
+                .map(s -> {
+                    var d = getPrivateDashboard(courseId, s.getId());
+                    d.setName(s.getName());
+                    return d;
+                })
+                .collect(Collectors.toList());
     }
 
 }
