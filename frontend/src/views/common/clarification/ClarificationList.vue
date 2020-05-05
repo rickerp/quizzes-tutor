@@ -252,10 +252,7 @@ export default class ClarificationList extends Vue {
     await this.$store.dispatch('clearLoading');
   }
 
-  async showFullClarification(
-    request: ClarificationRequest,
-    showAction: number
-  ) {
+  showFullClarification(request: ClarificationRequest, showAction: number) {
     this.viewAction = showAction;
     this.clarification = request;
     this.isResolved = this.clarification.state == 'RESOLVED';
@@ -265,7 +262,7 @@ export default class ClarificationList extends Vue {
     )[0];
   }
 
-  async closeAction() {
+  closeAction() {
     this.viewAction = 1;
   }
 

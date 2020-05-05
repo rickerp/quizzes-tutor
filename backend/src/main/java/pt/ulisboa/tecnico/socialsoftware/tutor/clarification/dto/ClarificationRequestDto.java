@@ -34,7 +34,9 @@ public class ClarificationRequestDto {
             this.setCreationDate(DateHandler.toISOString(clarificationRequest.getCreationDate()));
         }
         this.setUser(new UserDto(clarificationRequest.getUser()));
-        this.setQuestionAnswer(new QuestionAnswerDto(clarificationRequest.getQuestionAnswer()));
+
+        if (clarificationRequest.getQuestionAnswer() != null)
+            this.setQuestionAnswer(new QuestionAnswerDto(clarificationRequest.getQuestionAnswer()));
 
         if (clarificationRequest.getClarificationComments() != null) {
             setClarificationComments(clarificationRequest.getClarificationComments().stream()

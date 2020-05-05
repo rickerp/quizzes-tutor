@@ -7,7 +7,7 @@ public class PublicClarificationDto {
     public enum Availability {VISIBLE, INVISIBLE}
 
     private int id;
-    private ClarificationRequestDto clarificationRequestDto;
+    private ClarificationRequestDto clarificationRequest;
     private Availability availability;
 
     public PublicClarificationDto() {}
@@ -18,13 +18,13 @@ public class PublicClarificationDto {
             setAvailability(Availability.VISIBLE);
         } else { setAvailability(Availability.INVISIBLE); }
 
-        setClarificationRequestDto(new ClarificationRequestDto(publicClarification.getClarificationRequest()));
+        setClarificationRequest(new ClarificationRequestDto(publicClarification.getClarificationRequest()));
     }
 
     public PublicClarificationDto(PublicClarification publicClarification) {
         setId(publicClarification.getId());
         setAvailability(Availability.VISIBLE);
-        setClarificationRequestDto(new ClarificationRequestDto(publicClarification.getClarificationRequest()));
+        setClarificationRequest(new ClarificationRequestDto(publicClarification.getClarificationRequest()));
     }
 
     public int getId() {
@@ -35,12 +35,12 @@ public class PublicClarificationDto {
         this.id = id;
     }
 
-    public ClarificationRequestDto getClarificationRequestDto() {
-        return clarificationRequestDto;
+    public ClarificationRequestDto getClarificationRequest() {
+        return clarificationRequest;
     }
 
-    public void setClarificationRequestDto(ClarificationRequestDto clarificationRequestDto) {
-        this.clarificationRequestDto = clarificationRequestDto;
+    public void setClarificationRequest(ClarificationRequestDto clarificationRequestDto) {
+        this.clarificationRequest = clarificationRequestDto;
     }
 
     public Availability getAvailability() {

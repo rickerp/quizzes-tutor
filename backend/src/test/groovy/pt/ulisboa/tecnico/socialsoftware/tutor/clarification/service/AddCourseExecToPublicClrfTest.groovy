@@ -35,7 +35,7 @@ class AddCourseExecToPublicClrfTest extends Specification {
     public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
 
     @Autowired
-    PublicClarificationService pClrfService
+    PublicClarificationService publicClarificationService
 
     @Autowired
     ClarificationRequestRepository clarificationRequestRepository
@@ -89,7 +89,7 @@ class AddCourseExecToPublicClrfTest extends Specification {
 
     def "A teacher adds its courseExecution to a Public Clarification that doesn't have it"() {
         when:
-        def pClrfDto = pClrfService.addCourseExecToPublicClrf(pClrf.getId(), courseExecution.getId())
+        def pClrfDto = publicClarificationService.addCourseExecToPublicClrf(pClrf.getId(), courseExecution.getId())
 
         then:
         pClrfDto.availability == VISIBLE
@@ -103,7 +103,7 @@ class AddCourseExecToPublicClrfTest extends Specification {
         pClrfRepository.save(pClrf)
 
         when:
-        pClrfService.addCourseExecToPublicClrf(pClrf.getId(), courseExecution.getId())
+        publicClarificationService.addCourseExecToPublicClrf(pClrf.getId(), courseExecution.getId())
 
         then:
         def error = thrown(TutorException)
@@ -114,7 +114,7 @@ class AddCourseExecToPublicClrfTest extends Specification {
     static class ClarificationRequestServiceImplTestContextConfiguration {
 
         @Bean
-        PublicClarificationService pClrfService() {
+        PublicClarificationService publicClarificationService() {
             return new PublicClarificationService()
         }
     }

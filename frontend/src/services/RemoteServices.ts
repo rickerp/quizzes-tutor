@@ -18,6 +18,7 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
+import { PublicClarification } from '@/models/management/PublicClarification';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -589,6 +590,24 @@ export default class RemoteServices {
       .then(response => {
         return response.data.map((request: any) => {
           return new ClarificationRequest(request);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getPublicClarifications(
+    questionId: number
+  ): Promise<PublicClarification[]> {
+    const execId = Store.getters.getCurrentCourse.courseExecutionId;
+    return httpClient
+      .get(
+        `/questions/${questionId}/publicClarifications/executions/${execId}`
+      )
+      .then(response => {
+        return response.data.map((request: any) => {
+          return new PublicClarification(request);
         });
       })
       .catch(async error => {

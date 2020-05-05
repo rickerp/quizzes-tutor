@@ -92,7 +92,7 @@ public class PublicClarificationService {
         return question.getPublicClarifications().stream()
                 .filter(clr -> clr.getCourseExecutions().contains(courseExecution))
                 .map(PublicClarificationDto::new)
-                .sorted(Comparator.comparing((PublicClarificationDto p1) -> p1.getClarificationRequestDto()
+                .sorted(Comparator.comparing((PublicClarificationDto p1) -> p1.getClarificationRequest()
                         .getCreationDate())
                         .reversed())
                 .collect(Collectors.toList());
@@ -101,7 +101,7 @@ public class PublicClarificationService {
     private List<PublicClarificationDto> listAllClarificationsTeacher(CourseExecution courseExecution, Question question) {
         return  question.getPublicClarifications().stream()
                 .map(p1 -> new PublicClarificationDto(p1, courseExecution))
-                .sorted(Comparator.comparing((PublicClarificationDto p1) -> p1.getClarificationRequestDto()
+                .sorted(Comparator.comparing((PublicClarificationDto p1) -> p1.getClarificationRequest()
                         .getCreationDate())
                         .reversed())
                 .collect(Collectors.toList());
