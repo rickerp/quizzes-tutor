@@ -8,7 +8,12 @@
     >
       <template v-slot:top>
         <v-card-title>
-          <v-switch class="ma-4" label="Participate in public dashboard" />
+          <v-switch
+            class="ma-4"
+            label="Participate in public dashboard"
+            v-model="visibility"
+            @change="setVisibility"
+          />
         </v-card-title>
       </template>
 
@@ -38,12 +43,24 @@ export default class StudentQuestionsDashboardView extends Vue {
     { text: 'Acceptance', value: 'rate' }
   ];
 
+  visibility: boolean = false;
   dashboards: StudentQuestionDashboard[] = [];
+
+  async setVisibility(newValue: boolean) {
+    await this.$store.dispatch('loading');
+    try {
+      this.visibility = await RemoteServices.setDashboardVisibilitry(newValue);
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
+  }
 
   async created() {
     await this.$store.dispatch('loading');
     try {
       this.dashboards = await RemoteServices.getAllStudentQuestionsDashBoard();
+      this.visibility = await RemoteServices.getDashboardVisibilitry();
       this.dashboards.forEach((x: any) => {
         x.rate = x.accepted / x.total;
       });
@@ -62,8 +79,8 @@ export default class StudentQuestionsDashboardView extends Vue {
   percentageColor(item: StudentQuestionDashboard): string {
     if (item.total == 0) return 'gray';
     let rate = item.accepted / item.total;
-    if (rate > 0.75) return 'green';
-    if (rate > 0.5) return 'orange';
+    if (rate >= 0.75) return 'green';
+    if (rate >= 0.5) return 'orange';
     return 'red';
   }
 }

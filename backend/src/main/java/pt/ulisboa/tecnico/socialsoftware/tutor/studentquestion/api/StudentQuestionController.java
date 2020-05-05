@@ -71,4 +71,20 @@ public class StudentQuestionController {
     public List<DashboardDTO> getDashboard(@PathVariable int courseId){
         return studentQuestionService.getDashboard(courseId);
     }
+
+    @GetMapping("/studentquestionsdashboard/visibility")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public Boolean getDashboard(Principal principal){
+        User user = (User) ((Authentication) principal).getPrincipal();
+        return user.isPublicSuggestedQuestionsDashboard() != null &&
+                user.isPublicSuggestedQuestionsDashboard();
+    }
+
+    @PostMapping("/studentquestionsdashboard/visibility")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public Boolean setDashboard(Principal principal, @Valid @RequestBody Boolean publicDashboard){
+        User user = (User) ((Authentication) principal).getPrincipal();
+        return studentQuestionService.setDashboardVisibility(user.getId(), publicDashboard);
+    }
+
 }

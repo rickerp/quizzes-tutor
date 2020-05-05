@@ -74,6 +74,7 @@ class DashboardStudentQuestionTest extends Specification {
 
         user = new User("name", "username", 1, User.Role.STUDENT)
         user.addCourse(courseExecution)
+        user.setPublicSuggestedQuestionsDashboard(true)
         courseExecution.addUser(user)
         userRepository.save(user)
 
@@ -118,6 +119,16 @@ class DashboardStudentQuestionTest extends Specification {
         dashboardDtos.get(0).getName() == user.getName()
         dashboardDtos.get(0).getTotal() == 1
         dashboardDtos.get(0).getAccepted() == 0
+    }
+
+    def "get public dashboard with private settings"() {
+        given:
+        user.setPublicSuggestedQuestionsDashboard(false)
+        when:
+        def dashboardDtos = studentQuestionService.getDashboard(course.getId())
+        then:
+        dashboardDtos != null
+        dashboardDtos.size() == 0
     }
 
     @TestConfiguration

@@ -6,9 +6,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
@@ -179,13 +177,24 @@ public class StudentQuestionService {
     }
 
     @Retryable(value = { SQLException.class }, backoff = @Backoff(delay = 5000))
+    public Boolean setDashboardVisibility(int userId, Boolean value) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND));
+
+        user.setPublicSuggestedQuestionsDashboard(value);
+        userRepository.save(user);
+        return value;
+    }
+
+    @Retryable(value = { SQLException.class }, backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<DashboardDTO> getDashboard(int courseId) {
         return courseExecutionRepository.findAll()
                 .stream()
                 .filter(c -> c.getCourse().getId() == courseId)
                 .flatMap(c -> c.getUsers().stream())
-                .filter(e -> e.getRole() == User.Role.STUDENT)
+                .filter(e -> e.isPublicSuggestedQuestionsDashboard() != null &&
+                        e.isPublicSuggestedQuestionsDashboard() && e.getRole() == User.Role.STUDENT)
                 .map(s -> {
                     var d = getPrivateDashboard(courseId, s.getId());
                     d.setName(s.getName());

@@ -775,6 +775,28 @@ export default class RemoteServices {
       });
   }
 
+  static async getDashboardVisibilitry(): Promise<boolean> {
+    return httpClient
+      .get(`/studentquestionsdashboard/visibility`)
+      .then(response => {
+        return !!response.data;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async setDashboardVisibilitry(isPublic: boolean): Promise<boolean> {
+    return httpClient
+      .post(`/studentquestionsdashboard/visibility`, isPublic)
+      .then(response => {
+        return !!response.data;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getStudentQuestionDashBoard(): Promise<
     StudentQuestionDashboard
   > {
