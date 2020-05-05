@@ -134,6 +134,14 @@
                 <v-list-item-title>Calendar</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item to="/student/ongoing">
+              <v-list-item-action>
+                <v-icon>fas fa-paper-plane</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Ongoing</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-menu>
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>

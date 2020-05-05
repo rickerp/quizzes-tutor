@@ -13,11 +13,12 @@ export default class StatementAnswer {
       this.timeTaken = jsonObj.timeTaken;
       this.sequence = jsonObj.sequence;
       this.questionAnswerId = jsonObj.questionAnswerId;
-      this.clarificationRequests = jsonObj.clarificationRequests.map(
-        request => {
-          return new ClarificationRequest(request);
-        }
-      );
+
+      if (jsonObj.clarificationRequests) {
+        this.clarificationRequests = jsonObj.clarificationRequests.map(
+          request => new ClarificationRequest(request)
+        );
+      }
     }
   }
 }

@@ -21,7 +21,7 @@
       <v-btn
         color="primary"
         class="mr-3"
-        v-if="showClarifications"
+        v-if="!fromTournament && showClarifications"
         dark
         @click="showClarificationDialog"
       >
@@ -90,7 +90,7 @@
     >
     </chat-component>
     <new-clarification-dialog
-      v-if="create"
+      v-if="!fromTournament && create"
       v-model="newClarificationDialog"
       :request="newClarification"
       :question-answer-id="answer.questionAnswerId"
@@ -114,6 +114,12 @@ import { ClarificationRequest } from '@/models/management/ClarificationRequest';
   components: {
     'chat-component': ChatComponent,
     'new-clarification-dialog': NewClarificationRequestDialog
+  },
+  props: {
+    fromTournament: {
+      default: false,
+      type: Boolean
+    }
   }
 })
 export default class ResultComponent extends Vue {

@@ -21,7 +21,10 @@ import ClarificationList from '@/views/common/clarification/ClarificationList.vu
 
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
-import TournamentsView from '@/views/student/tournaments/TournamentsView.vue';
+import CalendarView from '@/views/student/tournaments/CalendarView.vue';
+import OngoingView from '@/views/student/tournaments/OngoingView.vue';
+import QuizTournamentView from '@/views/student/tournaments/QuizTournamentView.vue';
+import TournamentSolutionView from '@/views/student/tournaments/TournamentSolutionView.vue';
 
 import AdminManagementView from '@/views/admin/AdminManagementView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
@@ -157,9 +160,36 @@ let router = new Router({
         {
           path: 'calendar',
           name: 'tournaments-calendar',
-          component: TournamentsView,
+          component: CalendarView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Tournaments Calendar',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'ongoing',
+          name: 'tournaments-ongoing',
+          component: OngoingView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournaments Ongoing',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'tournament',
+          name: 'tournament-quiz',
+          component: QuizTournamentView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournament Quiz',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'solution',
+          name: 'tournament-solution',
+          component: TournamentSolutionView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournament Solution',
             requiredAuth: 'Student'
           }
         },
