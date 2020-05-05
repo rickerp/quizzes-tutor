@@ -10,11 +10,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-<<<<<<< HEAD
-=======
 import java.util.HashSet;
 import java.util.Set;
->>>>>>> DdP-F4
 
 @Entity
 @Table(name = "Clarification_requests")
