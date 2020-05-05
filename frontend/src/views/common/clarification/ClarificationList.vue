@@ -14,11 +14,33 @@
         <template v-slot:item.question.content="{ item }">
           <span v-html="convertMarkDownNoFigure(item.content)"
         /></template>
+
         <template v-slot:item.state="{ item }">
-          <v-chip filter :color="getStatusColor(item.state)" small>
-            <span>{{ item.state }}</span>
+          <v-chip
+            filter
+            :color="getStatusColor(item.state)"
+            class="white--text"
+            small
+          >
+            <span>
+              <strong> {{ item.state }} </strong></span
+            >
+          </v-chip> </template
+        >state
+
+        <template v-slot:item.type="{ item }">
+          <v-chip
+            filter
+            :color="getTypeColor(item.type)"
+            class="white--text"
+            small
+          >
+            <span>
+              <strong> {{ item.type }} </strong></span
+            >
           </v-chip>
         </template>
+
         <template v-slot:top>
           <v-card-title>
             <v-text-field
@@ -29,10 +51,12 @@
             />
           </v-card-title>
         </template>
+
         <template v-slot:item.action="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon
+                color="grey darken-3"
                 large
                 class="mr-2"
                 v-on="on"
@@ -43,10 +67,12 @@
             </template>
             <span>Show Question</span>
           </v-tooltip>
+
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon
                 large
+                color="primary darken-1"
                 class="mr-2"
                 v-on="on"
                 data-cy="showClrf"
@@ -56,17 +82,12 @@
             </template>
             <span>Show Clarification</span>
           </v-tooltip>
-          <v-tooltip bottom>
-            <template
-              v-if="
-                ($store.getters.isTeacher || $store.getters.isStudent) &&
-                  item.type === 'PRIVATE'
-              "
-              v-slot:activator="{ on }"
-            >
+
+          <v-tooltip bottom v-if="item.type === 'PRIVATE'">
+            <template v-slot:activator="{ on }">
               <v-icon
                 large
-                color="primary"
+                color="primary darken-1"
                 class="mr-2"
                 v-on="on"
                 data-cy="addCmt"
@@ -76,9 +97,32 @@
             </template>
             <span>Add Comment </span>
           </v-tooltip>
+
+          <v-tooltip
+            bottom
+            v-if="$store.getters.isTeacher && item.state === 'RESOLVED'"
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon
+                large
+                color="grey darken-3"
+                class="mr-2"
+                v-on="on"
+                data-cy="changeType"
+                @click="changeType(item)"
+                >{{
+                  item.type === 'PUBLIC' ? 'fas fa-lock' : 'fas fa-unlock'
+                }}</v-icon
+              >
+            </template>
+            <span
+              >{{ item.type === 'PUBLIC' ? 'Make Private' : 'Make Public' }}
+            </span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
+
     <v-container
       v-if="viewAction > 1"
       class="white mt-3 pt-0"
@@ -98,6 +142,7 @@
             {{ viewAction === 3 ? 'Clarifications' : 'Question' }}
           </v-toolbar-title>
           <v-switch
+            v-if="clarification.type === 'PRIVATE'"
             class="pt-6 pl-4"
             flat
             color="primary"
@@ -116,11 +161,7 @@
           <v-spacer />
           <v-card-actions>
             <v-btn
-              v-if="
-                ($store.getters.isTeacher || $store.getters.isStudent) &&
-                  clarification.type === 'PRIVATE' &&
-                  viewAction === 3
-              "
+              v-if="viewAction === 3 && clarification.type === 'PRIVATE'"
               color="primary"
               dark
               data-cy="bttnAddComment"
@@ -139,6 +180,7 @@
           </v-card-actions>
         </v-toolbar>
       </v-row>
+
       <v-row>
         <req-component
           v-if="viewAction === 2"
@@ -147,6 +189,7 @@
           :correctOption="correctOption"
         />
       </v-row>
+
       <v-row>
         <chat-component
           v-if="viewAction === 3"
@@ -156,6 +199,7 @@
         />
       </v-row>
     </v-container>
+
     <new-comment-dialog
       v-if="newCommentDialog"
       v-model="addComment"
@@ -208,46 +252,6 @@ export default class ClarificationList extends Vue {
     await this.$store.dispatch('clearLoading');
   }
 
-  headers: object = [
-    {
-      text: 'Action',
-      value: 'action',
-      align: 'left',
-      width: '10%',
-      sortable: false
-    },
-    {
-      text: 'Clarification Request',
-      value: 'content',
-      align: 'left',
-      width: '25%'
-    },
-    {
-      text: 'Question Title',
-      value: 'questionAnswer.question.title',
-      align: 'left',
-      width: '15%'
-    },
-    {
-      text: 'Question',
-      value: 'questionAnswer.question.content',
-      align: 'left',
-      width: '25%'
-    },
-    {
-      text: 'Creation Date',
-      value: 'creationDate',
-      align: 'left',
-      width: '15%'
-    },
-    {
-      text: 'State',
-      value: 'state',
-      align: 'center',
-      width: '10%'
-    }
-  ];
-
   async showFullClarification(
     request: ClarificationRequest,
     showAction: number
@@ -259,11 +263,6 @@ export default class ClarificationList extends Vue {
     this.correctOption = this.questionAnswer.question.options.filter(
       option => (option.correct = true)
     )[0];
-  }
-
-  getStatusColor(status: string) {
-    if (status === 'UNRESOLVED') return 'red';
-    else return 'green';
   }
 
   async closeAction() {
@@ -301,12 +300,12 @@ export default class ClarificationList extends Vue {
     if (this.clarification && this.comment) {
       const index = this.clarifications.indexOf(this.clarification);
 
-      let newclarification = newComment.clarificationRequest;
+      let newClarification = newComment.clarificationRequest;
       this.clarification.clarificationComments.forEach(entry =>
-        newclarification.clarificationComments.push(entry)
+        newClarification.clarificationComments.push(entry)
       );
-      newclarification.clarificationComments.push(newComment);
-      this.clarification = newclarification;
+      newClarification.clarificationComments.push(newComment);
+      this.clarification = newClarification;
 
       this.comment.clarificationRequest = this.clarification;
       this.clarifications.splice(index, 1, this.clarification);
@@ -330,6 +329,77 @@ export default class ClarificationList extends Vue {
       }
     }
   }
+
+  async changeType(clrfReq: ClarificationRequest) {
+    let type = 'PUBLIC';
+    if (clrfReq.type == 'PUBLIC') type = 'PRIVATE';
+    const index = this.clarifications.indexOf(clrfReq);
+    try {
+      const result = await RemoteServices.changeClarificationType(
+        clrfReq.id,
+        type
+      );
+      this.clarifications.splice(index, 1, result);
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+  }
+
+  getStatusColor(status: string) {
+    if (status === 'UNRESOLVED') return 'red darken-2';
+    else return 'green darken-2';
+  }
+
+  getTypeColor(type: string) {
+    if (type === 'PRIVATE') return 'grey darken-3';
+    return 'primary darken-2';
+  }
+
+  headers: object = [
+    {
+      text: 'Action',
+      value: 'action',
+      align: 'left',
+      width: '13%',
+      sortable: false
+    },
+    {
+      text: 'Clarification Request',
+      value: 'content',
+      align: 'left',
+      width: '23%'
+    },
+    {
+      text: 'Question Title',
+      value: 'questionAnswer.question.title',
+      align: 'left',
+      width: '15%'
+    },
+    {
+      text: 'Question',
+      value: 'questionAnswer.question.content',
+      align: 'left',
+      width: '20%'
+    },
+    {
+      text: 'Creation Date',
+      value: 'creationDate',
+      align: 'left',
+      width: '10%'
+    },
+    {
+      text: 'State',
+      value: 'state',
+      align: 'left',
+      width: '10%'
+    },
+    {
+      text: 'Type',
+      value: 'type',
+      align: 'left',
+      width: '10%'
+    }
+  ];
 }
 </script>
 

@@ -35,6 +35,12 @@ describe('Clarification Comment Walkthrough', () => {
     cy.createClarificationCommentAct(CLARIFICATION_CONTENT, COMMENT_CONTENT);
   });
 
+  it('Change ClarificationType', () => {
+    cy.showClarifications();
+    cy.changeType(CLARIFICATION_CONTENT, 'PRIVATE', 'PUBLIC');
+    cy.changeType(CLARIFICATION_CONTENT, 'PUBLIC', 'PRIVATE');
+  });
+
   it('Create Clarification Comment in Chat View', () => {
     cy.showClarifications();
     cy.createClarificationCommentChat(CLARIFICATION_CONTENT2, COMMENT_CONTENT);

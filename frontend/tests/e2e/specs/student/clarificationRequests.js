@@ -30,6 +30,12 @@ describe('Clarification Request walkthrough', () => {
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
   });
 
+  it('Change ClarificationState', () => {
+    cy.showClarifications();
+    cy.changeState(CLARIFICATION_CONTENT,'Unresolved', 'RESOLVED');
+    cy.changeState(CLARIFICATION_CONTENT,'Resolved', 'UNRESOLVED');
+  });
+
   it('Show Question of a clarification request submitted', () => {
     cy.showClarifications();
     cy.showQuestionClarification(CLARIFICATION_CONTENT);

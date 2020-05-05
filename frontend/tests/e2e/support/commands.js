@@ -161,7 +161,7 @@ Cypress.Commands.add('createInvalidClarificationComment', crlfContent => {
   cy.contains(crlfContent)
     .parent()
     .children()
-    .should('have.length', 6)
+    .should('have.length', 7)
     .find('[data-cy="showClrf"]')
     .click();
   cy.get('[data-cy="bttnAddComment"]').click();
@@ -175,7 +175,7 @@ Cypress.Commands.add(
     cy.contains(clrfContent)
       .parent()
       .children()
-      .should('have.length', 6)
+      .should('have.length', 7)
       .find('[data-cy="addCmt"]')
       .click();
     cy.get('[data-cy="cmtContent"]').type(cmtContent);
@@ -183,7 +183,7 @@ Cypress.Commands.add(
     cy.contains(clrfContent)
       .parent()
       .children()
-      .should('have.length', 6)
+      .should('have.length', 7)
       .contains('RESOLVED')
       .click();
   }
@@ -195,7 +195,7 @@ Cypress.Commands.add(
     cy.contains(clrfContent)
       .parent()
       .children()
-      .should('have.length', 6)
+      .should('have.length', 7)
       .find('[data-cy="showClrf"]')
       .click();
     cy.get('[data-cy="bttnAddComment"]').click();
@@ -209,12 +209,50 @@ Cypress.Commands.add('showClarifications', () => {
   cy.contains('Clarifications').click();
 });
 
+Cypress.Commands.add('changeState', (clrfContent, oldState, newState ) => {
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="showClrf"]')
+    .click();
+  cy.contains(oldState).click();
+  cy.get('[data-cy="bttnClose"]').click();
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .contains(newState)
+    .click();
+});
+
+Cypress.Commands.add('changeType', (clrfContent, oldType, newType ) => {
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .contains(oldType);
+
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="changeType"]')
+    .click();
+
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .contains(newType);
+});
+
 Cypress.Commands.add('showQuestionClarification', clrfContent => {
   cy.contains(clrfContent)
     .parent()
     .should('have.length', 1)
     .children()
-    .should('have.length', 6)
+    .should('have.length', 7)
     .find('[data-cy="showQuestion"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();
@@ -224,7 +262,7 @@ Cypress.Commands.add('showClarification', clrfContent => {
   cy.contains(clrfContent)
     .parent()
     .children()
-    .should('have.length', 6)
+    .should('have.length', 7)
     .find('[data-cy="showClrf"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();

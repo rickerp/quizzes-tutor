@@ -624,6 +624,20 @@ export default class RemoteServices {
       });
   }
 
+  static async changeClarificationType(
+    clrfReqId: number,
+    type: string
+  ): Promise<ClarificationRequest> {
+    return httpClient
+      .post(`/clarifications/${clrfReqId}/type/${type}`)
+      .then(response => {
+        return new ClarificationRequest(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async createClarificationComment(
     clarificationRequestId: number,
     clarificationComment: ClarificationComment
