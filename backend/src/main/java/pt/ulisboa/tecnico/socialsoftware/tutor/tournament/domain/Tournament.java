@@ -47,7 +47,7 @@ public class Tournament {
     @Column(nullable = false, name = "end_time")
     private LocalDateTime endTime;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tournament")
     @JoinColumn(name = "quiz_id")
     private TournamentQuiz quiz = null;
 
