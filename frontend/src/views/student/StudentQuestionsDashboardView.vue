@@ -8,7 +8,7 @@
     >
       <template v-slot:top>
         <v-card-title>
-          <v-switch class="ma-4" label="Participate in publish dashboard" />
+          <v-switch class="ma-4" label="Participate in public dashboard" />
         </v-card-title>
       </template>
 

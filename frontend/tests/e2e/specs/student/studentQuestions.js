@@ -12,6 +12,7 @@ describe('Student suggested question workflow', () => {
   before(() => {
     cy.demoStudentLogin();
   });
+
   it('Create question suggestion', () => {
     let data;
     let { questionContent, options, questionTitle } = (data = generateData());
@@ -30,6 +31,17 @@ describe('Student suggested question workflow', () => {
       .parent()
       .find('button')
       .click();
+  });
+
+  it('Public dashboard screen', () => {
+    cy.contains('Suggested Question').click();
+    cy.contains('Participate in public dashboard');
+  });
+
+  it('Private stats screen', () => {
+    cy.contains('Suggested Question').click();
+    cy.contains('Statistics').click();
+    cy.contains('Total').click();
   });
 
   after(() => {
