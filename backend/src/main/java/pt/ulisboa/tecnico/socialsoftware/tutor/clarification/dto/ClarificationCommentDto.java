@@ -33,6 +33,7 @@ public class ClarificationCommentDto {
     private void setClarificationDto(ClarificationRequest clarification){
         clarificationRequest.setId(clarification.getId());
         clarificationRequest.setState(clarification.getState());
+        clarificationRequest.setType(clarification.getType());
         clarificationRequest.setContent(clarification.getContent());
         clarificationRequest.setUser(new UserDto(clarification.getUser()));
         if (clarification.getCreationDate() != null) {
