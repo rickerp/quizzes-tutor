@@ -17,26 +17,63 @@ describe('Clarification Comment Walkthrough', () => {
   });
 
   beforeEach(() => {
-    cy.demoTeacherLogin();
-    cy.get('.bttnManagement').click();
   });
 
   afterEach(() => {
     cy.contains('Logout').click();
   });
 
-  it('Create a invalid Clarification Comment', () => {
+  it('Teacher Creates a invalid Clarification Comment', () => {
+    cy.demoTeacherLogin();
+    cy.get('.bttnManagement').click();
     cy.showClarifications();
     cy.createInvalidClarificationComment(CLARIFICATION_CONTENT);
   });
 
-  it('Create Clarification Comment in Action', () => {
+  it('Teacher Creates Clarification Comment in Action', () => {
+    cy.demoTeacherLogin();
+    cy.get('.bttnManagement').click();
     cy.showClarifications();
-    cy.createClarificationCommentAct(CLARIFICATION_CONTENT, COMMENT_CONTENT);
+    cy.createClarificationCommentAct(
+      CLARIFICATION_CONTENT,
+      COMMENT_CONTENT + ' TEACHER'
+    );
   });
 
-  it('Create Clarification Comment in Chat View', () => {
+  it('Teacher Creates Create Clarification Comment in Chat View', () => {
+    cy.demoTeacherLogin();
+    cy.get('.bttnManagement').click();
     cy.showClarifications();
-    cy.createClarificationCommentChat(CLARIFICATION_CONTENT2, COMMENT_CONTENT);
+    cy.createClarificationCommentChat(
+      CLARIFICATION_CONTENT2,
+      COMMENT_CONTENT + ' TEACHER'
+    );
+  });
+
+  it('Student Creates a invalid Clarification Comment', () => {
+    cy.demoStudentLogin();
+    cy.get('.quizzesButton').click();
+    cy.showClarifications();
+    cy.createInvalidClarificationComment(CLARIFICATION_CONTENT);
+  });
+
+  it('Student Creates Clarification Comment in Action', () => {
+    cy.demoStudentLogin();
+    cy.get('.quizzesButton').click();
+    cy.showClarifications();
+    cy.createClarificationCommentAct(
+      CLARIFICATION_CONTENT,
+      COMMENT_CONTENT + ' STUDENT'
+    );
+  });
+
+  it('Student Creates Clarification Comment in Chat View', () => {
+    cy.demoStudentLogin();
+    cy.get('.quizzesButton').click();
+    cy.showClarifications();
+    cy.createClarificationCommentChat(
+      CLARIFICATION_CONTENT2,
+      COMMENT_CONTENT + ' STUDENT'
+    );
   });
 });

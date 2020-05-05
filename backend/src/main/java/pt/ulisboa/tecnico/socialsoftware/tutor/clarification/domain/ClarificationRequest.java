@@ -154,7 +154,6 @@ public class ClarificationRequest {
 
     public Set<ClarificationComment> getClarificationComments() {
         return clarificationComments;
-
     }
 
     public void addClarificationComment(ClarificationComment clarificationComment) {
