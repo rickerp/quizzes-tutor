@@ -10,6 +10,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+<<<<<<< HEAD
+=======
+import java.util.HashSet;
+import java.util.Set;
+>>>>>>> DdP-F4
 
 @Entity
 @Table(name = "Clarification_requests")
@@ -43,8 +48,8 @@ public class ClarificationRequest {
     @OneToOne(cascade=CascadeType.ALL)
     private Image image;
 
-    @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
-    private ClarificationComment clarificationComment;
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
+    private Set<ClarificationComment> clarificationComments = new HashSet<>();
 
     @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
     private PublicClarification publicClarification;
@@ -150,11 +155,16 @@ public class ClarificationRequest {
         this.publicClarification = publicClarification;
     }
 
-    public ClarificationComment getClarificationComment() {
-        return clarificationComment;
+    public Set<ClarificationComment> getClarificationComments() {
+        return clarificationComments;
+
     }
 
-    public void setClarificationComment(ClarificationComment clarificationComment) {
-        this.clarificationComment = clarificationComment;
+    public void addClarificationComment(ClarificationComment clarificationComment) {
+        this.clarificationComments.add(clarificationComment);
+    }
+
+    public void setClarificationComments(Set<ClarificationComment> clarificationComments) {
+        this.clarificationComments = clarificationComments;
     }
 }

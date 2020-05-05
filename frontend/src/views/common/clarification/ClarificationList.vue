@@ -58,7 +58,10 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template
-              v-if="$store.getters.isTeacher && item.state === 'UNRESOLVED'"
+              v-if="
+                ($store.getters.isTeacher || $store.getters.isStudent) &&
+                  item.type === 'PRIVATE'
+              "
               v-slot:activator="{ on }"
             >
               <v-icon
@@ -114,8 +117,8 @@
           <v-card-actions>
             <v-btn
               v-if="
-                $store.getters.isTeacher &&
-                  clarification.state === 'UNRESOLVED' &&
+                ($store.getters.isTeacher || $store.getters.isStudent) &&
+                  clarification.type === 'PRIVATE' &&
                   viewAction === 3
               "
               color="primary"
@@ -297,9 +300,15 @@ export default class ClarificationList extends Vue {
 
     if (this.clarification && this.comment) {
       const index = this.clarifications.indexOf(this.clarification);
-      this.clarification = newComment.clarificationRequest;
-      this.clarification.clarificationComment = newComment;
-      this.comment.clarificationRequest = newComment.clarificationRequest;
+
+      let newclarification = newComment.clarificationRequest;
+      this.clarification.clarificationComments.forEach(entry =>
+        newclarification.clarificationComments.push(entry)
+      );
+      newclarification.clarificationComments.push(newComment);
+      this.clarification = newclarification;
+
+      this.comment.clarificationRequest = this.clarification;
       this.clarifications.splice(index, 1, this.clarification);
     }
   }

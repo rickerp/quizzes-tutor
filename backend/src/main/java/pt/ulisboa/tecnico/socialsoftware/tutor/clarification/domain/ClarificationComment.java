@@ -25,7 +25,7 @@ public class ClarificationComment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "clarification_request_id")
     private ClarificationRequest clarificationRequest;
 
