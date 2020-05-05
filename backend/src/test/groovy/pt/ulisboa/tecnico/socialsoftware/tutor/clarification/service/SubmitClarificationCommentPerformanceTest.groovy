@@ -134,6 +134,7 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         1.upto(1, {
             clarificationRequest = new ClarificationRequest()
             clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
+            clarificationRequest.setType(ClarificationRequest.Type.PRIVATE)
             clarificationRequest.setContent(CLARIFICATION_CONTENT)
             clarificationRequest.setUser(student)
             clarificationRequest.setQuestionAnswer(questionAnswer)

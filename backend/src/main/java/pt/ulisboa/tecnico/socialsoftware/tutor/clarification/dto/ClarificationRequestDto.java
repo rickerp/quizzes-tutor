@@ -6,6 +6,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ClarificationRequestDto {
 
     private int id;
@@ -15,7 +19,7 @@ public class ClarificationRequestDto {
     private String creationDate;
     private UserDto user;
     private QuestionAnswerDto questionAnswer;
-    private ClarificationCommentDto clarificationComment;
+    private List<ClarificationCommentDto> clarificationComments;
     private ImageDto image;
     public ClarificationRequestDto() {
     }
@@ -30,12 +34,12 @@ public class ClarificationRequestDto {
             this.setCreationDate(DateHandler.toISOString(clarificationRequest.getCreationDate()));
         }
         this.setUser(new UserDto(clarificationRequest.getUser()));
+        this.setQuestionAnswer(new QuestionAnswerDto(clarificationRequest.getQuestionAnswer()));
 
-        if (clarificationRequest.getQuestionAnswer() != null)
-            this.setQuestionAnswer(new QuestionAnswerDto(clarificationRequest.getQuestionAnswer()));
-
-        if (clarificationRequest.getClarificationComment() != null) {
-            setClarificationComment(new ClarificationCommentDto(clarificationRequest.getClarificationComment()));
+        if (clarificationRequest.getClarificationComments() != null) {
+            setClarificationComments(clarificationRequest.getClarificationComments().stream()
+                    .map(ClarificationCommentDto::new)
+                    .collect(Collectors.toList()));
         }
 
         if (clarificationRequest.getImage() != null) { this.setImage(new ImageDto(clarificationRequest.getImage())); }
@@ -94,12 +98,14 @@ public class ClarificationRequestDto {
         this.image = image;
     }
 
-    public ClarificationCommentDto getClarificationComment() {
-        return clarificationComment;
+    public List<ClarificationCommentDto> getClarificationComments() {
+        return this.clarificationComments;
     }
 
-    public void setClarificationComment(ClarificationCommentDto clarificationComment) {
-        this.clarificationComment = clarificationComment;
+    public void setClarificationComments(List<ClarificationCommentDto> clarificationComments) {
+        this.clarificationComments = clarificationComments.stream()
+                .sorted(Comparator.comparing(ClarificationCommentDto::getCreationDate))
+                .collect(Collectors.toList());
     }
 
     public QuestionAnswerDto getQuestionAnswer() {

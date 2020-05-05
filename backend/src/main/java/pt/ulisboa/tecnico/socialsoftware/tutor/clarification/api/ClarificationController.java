@@ -56,13 +56,11 @@ public class ClarificationController {
     }
 
     @PostMapping("/clarifications/{clarificationRequestId}/comment")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
+    @PreAuthorize("(hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')) and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
     public ClarificationCommentDto createClarificationComment(Principal principal, @PathVariable int clarificationRequestId, @RequestBody ClarificationCommentDto clarificationCommentDto) {
 
         User user = (User) ((Authentication) principal).getPrincipal();
-        if (user == null) {
-            throw new TutorException(AUTHENTICATION_ERROR);
-        }
+        if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
 
         clarificationCommentDto.setUser(new UserDto(user));
         return clarificationCommentService.createClarificationComment(clarificationRequestId, clarificationCommentDto);
