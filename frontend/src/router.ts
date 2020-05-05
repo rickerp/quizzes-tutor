@@ -30,6 +30,8 @@ import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import StudentQuestionsEvaluationView from '@/views/teacher/studentquestions/StudentQuestionsEvaluationView.vue';
+import StudentQuestionsDashboardView from '@/views/student/StudentQuestionsDashboardView.vue';
+import StudentQuestionStatsView from '@/views/student/StudentQuestionStatsView.vue';
 
 Vue.use(Router);
 
@@ -151,6 +153,24 @@ let router = new Router({
           component: MyQuestionsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - My Questions',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'question/stats',
+          name: 'student-stats',
+          component: StudentQuestionStatsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student Question Stats',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'question/dashboard',
+          name: 'student-dashboard',
+          component: StudentQuestionsDashboardView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student Question Dashboard',
             requiredAuth: 'Student'
           }
         },

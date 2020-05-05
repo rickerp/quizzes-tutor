@@ -18,6 +18,7 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
+import StudentQuestionDashboard from '@/models/studentquestion/StudentQuestionDashboard';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -751,6 +752,38 @@ export default class RemoteServices {
       .post(`/studentquestions/${id}/evaluation`, evaluation)
       .then(response => {
         return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getAllStudentQuestionsDashBoard(): Promise<
+    StudentQuestionDashboard[]
+  > {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestionsdashboard/all`
+      )
+      .then(response => {
+        return response.data.map((course: any) => {
+          return new StudentQuestionDashboard(course);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getStudentQuestionDashBoard(): Promise<
+    StudentQuestionDashboard
+  > {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestionsdashboard`
+      )
+      .then(response => {
+        return new StudentQuestionDashboard(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));
