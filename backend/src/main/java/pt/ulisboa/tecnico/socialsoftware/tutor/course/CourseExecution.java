@@ -133,6 +133,10 @@ public class CourseExecution implements DomainEntity {
         this.publicClarifications.add(publicClarification);
     }
 
+    public void removePublicClarification(PublicClarification publicClarification) {
+        this.publicClarifications.remove(publicClarification);
+    }
+
     public Set<User> getUsers() {
         return users;
     }

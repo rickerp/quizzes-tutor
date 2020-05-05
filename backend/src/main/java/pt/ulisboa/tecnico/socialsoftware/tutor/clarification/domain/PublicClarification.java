@@ -41,8 +41,19 @@ public class PublicClarification {
     }
 
     public void addCourseExecution(CourseExecution courseExecution) {
+        if (this.courseExecutions.contains(courseExecution)) {
+            throw new TutorException(ErrorMessage.EXECUTION_ALREADY_VISIBLE);
+        }
         this.courseExecutions.add(courseExecution);
         courseExecution.addPublicClarification(this);
+    }
+
+    public void removeCourseExecution(CourseExecution courseExecution) {
+        if (!this.courseExecutions.contains(courseExecution)) {
+            throw new TutorException(ErrorMessage.EXECUTION_ALREADY_INVISIBLE);
+        }
+        this.courseExecutions.remove(courseExecution);
+        courseExecution.removePublicClarification(this);
     }
 
     public Set<CourseExecution> getCourseExecutions() {

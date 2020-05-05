@@ -9,7 +9,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "Clarification_comments")

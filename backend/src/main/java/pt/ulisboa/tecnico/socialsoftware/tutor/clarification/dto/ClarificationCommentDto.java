@@ -8,9 +8,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class ClarificationCommentDto {
 
     private int id;
@@ -18,8 +15,6 @@ public class ClarificationCommentDto {
     private UserDto user;
     private String creationDate;
     private ClarificationRequestDto clarificationRequest;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     public ClarificationCommentDto() {}
 
     public ClarificationCommentDto(ClarificationComment clarificationComment) {

@@ -1,10 +1,8 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
-import net.bytebuddy.description.annotation.AnnotationValue
-import org.h2.store.DataHandler
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification
@@ -162,7 +160,7 @@ class ListAllPublicClarificationTest extends Specification {
         then:
         publicClrsList.size() == 3
         for(def i = 0; i < 2; i++) {
-            publicClrsList[i].getAvailability() == NOT_VISIBLE
+            publicClrsList[i].getAvailability() == INVISIBLE
         }
         publicClrsList[2].getAvailability() == VISIBLE
 
@@ -175,7 +173,7 @@ class ListAllPublicClarificationTest extends Specification {
         then:
         publicClrsList.size() == 3
         for(def i = 0; i < 3; i++) {
-            publicClrsList[i].getAvailability() == NOT_VISIBLE
+            publicClrsList[i].getAvailability() == INVISIBLE
         }
     }
 

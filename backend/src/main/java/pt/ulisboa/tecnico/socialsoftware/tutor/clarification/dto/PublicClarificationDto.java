@@ -4,7 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarif
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 
 public class PublicClarificationDto {
-    public enum Availability {VISIBLE, NOT_VISIBLE}
+    public enum Availability {VISIBLE, INVISIBLE}
 
     private int id;
     private ClarificationRequestDto clarificationRequestDto;
@@ -16,7 +16,7 @@ public class PublicClarificationDto {
         setId(publicClarification.getId());
         if (publicClarification.getCourseExecutions().contains(courseExecution)) {
             setAvailability(Availability.VISIBLE);
-        } else { setAvailability(Availability.NOT_VISIBLE); }
+        } else { setAvailability(Availability.INVISIBLE); }
 
         setClarificationRequestDto(new ClarificationRequestDto(publicClarification.getClarificationRequest()));
     }

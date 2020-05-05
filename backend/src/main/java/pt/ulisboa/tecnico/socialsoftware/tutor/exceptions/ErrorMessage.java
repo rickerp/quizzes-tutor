@@ -99,6 +99,9 @@ public enum ErrorMessage {
     CLARIFICATION_ALREADY_THIS_TYPE("ClarificationRequest is already of this type: %s"),
     CLARIFICATION_CANNOT_MAKE_PUBLIC("ClarificationRequest must be marked as resolved"),
     PUBLIC_CLARIFICATION_INVALID_CLARIFICATION("ClarificationRequest type must be Public"),
+    PUBLIC_CLARIFICATION_NOT_FOUND("PublicClarification with id %d not found"),
+    EXECUTION_ALREADY_VISIBLE("Students with course execution with id %d, can already see this PublicClarification"),
+    EXECUTION_ALREADY_INVISIBLE("Students with course execution with id %d, already can't see this PublicClarification "),
 
     COMMENT_INVALID_CLARIFICATION("ClarificationRequest associated to comment is invalid"),
     COMMENT_INVALID_CONTENT("ClarificationComment content is invalid"),
