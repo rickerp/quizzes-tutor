@@ -45,6 +45,7 @@
         <v-tooltip bottom v-if="item.evaluation && item.evaluation.accepted">
           <template v-slot:activator="{ on }">
             <v-icon
+              data-cy="publish"
               large
               class="mr-2"
               v-on="on"
@@ -54,6 +55,19 @@
           </template>
           <span>Publish Question</span>
         </v-tooltip>
+        <v-tooltip bottom v-if="item.evaluation && item.evaluation.accepted">
+          <template v-slot:activator="{ on }">
+            <v-icon
+              data-cy="edit"
+              large
+              class="mr-2"
+              v-on="on"
+              @click="editQuestion(item.studentQuestion)"
+              >edit</v-icon
+            >
+          </template>
+          <span>Edit Question</span>
+        </v-tooltip>
       </template>
     </v-data-table>
 
@@ -62,6 +76,14 @@
       v-model="newQuestionDialog"
       v-on:submit-question="onSubmitQuestion"
       v-on:close-submit-question-dialog="onCloseSubmitQuestionDialog"
+    />
+
+    <edit-question-dialog
+      v-if="editQuestionDialog"
+      v-model="editQuestionDialog"
+      :studentQuestion="studentQuestion"
+      v-on:edit-question="onEditQuestion"
+      v-on:close-edit-question-dialog="onCloseEditQuestionDialog"
     />
 
     <evaluation-dialog
@@ -99,13 +121,15 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import EvaluationDialog from '@/views/student/EvaluationDialog.vue';
 import SubmitQuestionDialog from '@/views/student/SubmitQuestionDialog.vue';
 import SubmitEvaluationDialog from '@/views/teacher/studentquestions/SubmitEvaluationDialog.vue';
+import EditQuestionDialog from '@/views/teacher/studentquestions/EditQuestionDialog.vue';
 
 @Component({
   components: {
     'submit-question-dialog': SubmitQuestionDialog,
     'evaluation-dialog': EvaluationDialog,
     'show-question-dialog': ShowQuestionDialog,
-    'submit-evaluation-dialog': SubmitEvaluationDialog
+    'submit-evaluation-dialog': SubmitEvaluationDialog,
+    'edit-question-dialog': EditQuestionDialog
   }
 })
 export default class MyQuestionsView extends Vue {
@@ -117,6 +141,7 @@ export default class MyQuestionsView extends Vue {
   questionDialog = false;
   submitEvaluationDialog = false;
   newQuestionDialog = false;
+  editQuestionDialog = false;
 
   headers = [
     ...(this.teacherView
@@ -169,6 +194,11 @@ export default class MyQuestionsView extends Vue {
   publish(question: StudentQuestion) {
     RemoteServices.publishStudentQuestion(question);
     this.questions = this.questions.filter(q => q !== question);
+  }
+
+  editQuestion(question: StudentQuestion) {
+    this.studentQuestion = question;
+    this.editQuestionDialog = true;
   }
 
   showQuestionDialog(question: StudentQuestion) {
@@ -229,6 +259,19 @@ export default class MyQuestionsView extends Vue {
   onSubmitQuestion(studentQuestion: StudentQuestion) {
     this.questions.unshift(studentQuestion);
     this.newQuestionDialog = false;
+  }
+
+  onCloseEditQuestionDialog() {
+    this.editQuestionDialog = false;
+  }
+
+  onEditQuestion(studentQuestion: StudentQuestion) {
+    this.studentQuestion = studentQuestion;
+    this.questions = this.questions.filter(
+      studentQuestion => studentQuestion.id !== this.studentQuestion?.id
+    );
+    this.questions.unshift(studentQuestion);
+    this.editQuestionDialog = false;
   }
 }
 </script>

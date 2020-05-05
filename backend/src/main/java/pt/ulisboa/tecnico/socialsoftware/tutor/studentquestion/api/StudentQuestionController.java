@@ -41,8 +41,6 @@ public class StudentQuestionController {
     @PutMapping("/courses/{courseId}/editstudentquestion")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public StudentQuestionDto editStudentQuestion(Principal principal, @PathVariable int courseId, @Valid @RequestBody StudentQuestionDto studentQuestionDto) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        studentQuestionDto.setStudent(user.getId());
         return studentQuestionService.editStudentQuestion(studentQuestionDto);
     }
 
