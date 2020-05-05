@@ -40,6 +40,20 @@ describe('Teacher creating evaluation walktrough', () => {
       .click();
   });
 
+  it('Publish student question', () => {
+    cy.createEvaluation(data, 'Good Question');
+    cy.contains(data.questionTitle)
+      .parent()
+      .contains('publish')
+      .parent()
+      .find('button')
+      .click();
+
+    cy.contains('Management').click();
+    cy.contains('Questions').click();
+    cy.contains(data.questionTitle).click();
+  });
+
   afterEach(() => {
     cy.contains('Logout').click();
   });
