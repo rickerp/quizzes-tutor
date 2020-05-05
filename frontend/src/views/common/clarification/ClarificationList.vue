@@ -94,6 +94,22 @@
           <v-toolbar-title>
             {{ viewAction === 3 ? 'Clarifications' : 'Question' }}
           </v-toolbar-title>
+          <v-switch
+            class="pt-6 pl-4"
+            flat
+            color="primary"
+            :dense="true"
+            v-model="isResolved"
+            @change="changeState()"
+          >
+            <template v-slot:label>
+              <div>
+                <strong class="grey--text text--lighten-2 ">
+                  {{ isResolved ? 'Resolved' : 'Unresolved' }}
+                </strong>
+              </div>
+            </template>
+          </v-switch>
           <v-spacer />
           <v-card-actions>
             <v-btn
@@ -159,6 +175,7 @@ import RemoteServices from '@/services/RemoteServices';
 import Question from '@/models/management/Question';
 import NewClarificationCommentDialog from '@/views/teacher/quizzes/NewClarificationCommentDialog.vue';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
+
 @Component({
   components: {
     'req-component': ClarificationQuestionComponent,
@@ -175,6 +192,7 @@ export default class ClarificationList extends Vue {
   newCommentDialog: boolean = false;
   addComment: boolean = false;
   viewAction: number = 1;
+  isResolved: boolean = true;
   search: string = '';
 
   async created() {
@@ -233,6 +251,7 @@ export default class ClarificationList extends Vue {
   ) {
     this.viewAction = showAction;
     this.clarification = request;
+    this.isResolved = this.clarification.state == 'RESOLVED';
     this.questionAnswer = request.questionAnswer;
     this.correctOption = this.questionAnswer.question.options.filter(
       option => (option.correct = true)
@@ -243,6 +262,7 @@ export default class ClarificationList extends Vue {
     if (status === 'UNRESOLVED') return 'red';
     else return 'green';
   }
+
   async closeAction() {
     this.viewAction = 1;
   }
@@ -250,6 +270,7 @@ export default class ClarificationList extends Vue {
   convertMarkDownNoFigure(text: string): string {
     return convertMarkDownNoFigure(text, null);
   }
+
   customFilter(
     value: string,
     search: string,
@@ -282,5 +303,25 @@ export default class ClarificationList extends Vue {
       this.clarifications.splice(index, 1, this.clarification);
     }
   }
+
+  async changeState() {
+    let state = 'UNRESOLVED';
+    if (this.isResolved) state = 'RESOLVED';
+
+    if (this.clarification) {
+      const index = this.clarifications.indexOf(this.clarification);
+      try {
+        this.clarification = await RemoteServices.changeClarificationState(
+          this.clarification.id,
+          state
+        );
+        this.clarifications.splice(index, 1, this.clarification);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+    }
+  }
 }
 </script>
+
+<style></style>

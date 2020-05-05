@@ -103,7 +103,12 @@
           <v-container fluid>
             <v-row>
               <v-col>
-                <v-text-field v-model="search" data-cy="bttnSearch" label="Search" class="mx-4" />
+                <v-text-field
+                  v-model="search"
+                  data-cy="bttnSearch"
+                  label="Search"
+                  class="mx-4"
+                />
               </v-col>
               <v-col>
                 <v-btn
@@ -150,7 +155,13 @@
           </v-tooltip>
           <v-tooltip bottom v-if="!item.sequence">
             <template v-slot:activator="{ on }">
-              <v-icon data-cy="ActAddQuestion" large class="mr-2" v-on="on" @click="addToQuiz(item)">
+              <v-icon
+                data-cy="ActAddQuestion"
+                large
+                class="mr-2"
+                v-on="on"
+                @click="addToQuiz(item)"
+              >
                 add</v-icon
               >
             </template>
