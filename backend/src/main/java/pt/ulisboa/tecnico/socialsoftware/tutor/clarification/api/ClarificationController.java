@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -66,38 +67,38 @@ public class ClarificationController {
         return clarificationCommentService.createClarificationComment(clarificationRequestId, clarificationCommentDto);
     }
 
-    @PostMapping("/clarifications/{clarificationRequestId}/state/{state}")
+    @PostMapping("/clarifications/{clarificationRequestId}/set-state")
     @PreAuthorize("(hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT')) and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
-    public ClarificationRequestDto changeClarificationState(@PathVariable int clarificationRequestId, @PathVariable String state) {
+    public ClarificationRequestDto changeClarificationState(@PathVariable int clarificationRequestId, @Valid @RequestBody String state) {
         return clarificationRequestService.changeClarificationState(clarificationRequestId, state);
     }
 
-    @PostMapping("/clarifications/{clarificationRequestId}/type/{type}")
+    @PostMapping("/clarifications/{clarificationRequestId}/set-type")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
-    public ClarificationRequestDto changeClarificationType(@PathVariable int clarificationRequestId, @PathVariable String type) {
+    public ClarificationRequestDto changeClarificationType(@PathVariable int clarificationRequestId, @Valid @RequestBody String type) {
         return clarificationRequestService.changeClarificationType(clarificationRequestId, type);
     }
 
     @GetMapping("/questions/{questionId}/publicClarifications/executions/{execId}")
     @PreAuthorize("(hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT')) and hasPermission(#questionId, 'QUESTION.ACCESS')")
-    public List<PublicClarificationDto> listPublicClarifications(Principal principal, @PathVariable int execId,
-                                                                 @PathVariable int questionId) {
+    public List<PublicClarificationDto> listPublicClarifications(Principal principal, @PathVariable int questionId,
+                                                                 @PathVariable int execId) {
         User user = (User) ((Authentication) principal).getPrincipal();
         return publicClarificationService.listAllClarifications(user, execId, questionId);
     }
 
-    @PostMapping("/questions/{questionId}/publicClarifications/{pClrId}/add/executions/{execId}")
+    @PostMapping("/questions/{questionId}/publicClarifications/{pClrId}/add")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public PublicClarificationDto addCourseExecToPublicClrf(@PathVariable int questionId, @PathVariable int pClrId,
-                                                                @PathVariable int execId) {
+                                                            @Valid @RequestBody int execId) {
 
         return publicClarificationService.addCourseExecToPublicClrf(pClrId, execId);
     }
 
-    @PostMapping("/questions/{questionId}/publicClarifications/{pClrId}/remove/executions/{execId}")
+    @PostMapping("/questions/{questionId}/publicClarifications/{pClrId}/remove")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public PublicClarificationDto rmvCourseExecToPublicClrf(@PathVariable int questionId, @PathVariable int pClrId,
-                                                                   @PathVariable int execId) {
+                                                            @Valid @RequestBody  int execId) {
         return publicClarificationService.rmvCourseExecToPublicClrf(pClrId, execId);
     }
 }
