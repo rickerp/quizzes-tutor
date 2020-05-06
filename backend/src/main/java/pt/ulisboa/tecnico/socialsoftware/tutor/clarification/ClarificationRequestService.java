@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRe
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.stats.ClarificationStatsDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.PublicClarificationRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -34,7 +35,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_EXECUTION_NOT_FOUND;
 
 
 @Service
@@ -165,14 +166,37 @@ public class ClarificationRequestService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationStatsDto getClarificationsStats(int userId) {
+    public ClarificationStatsDto getClarificationsStats(int userId, int executionId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND));
 
         if (user.getRole() != User.Role.STUDENT)
             throw new TutorException(ErrorMessage.USER_NOT_STUDENT, user.getId());
 
-        return new ClarificationStatsDto(user);
+        CourseExecution courseExec = courseExecutionRepository.findById(executionId)
+                .orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, executionId));
+
+        List<ClarificationRequest> execClarifications =  user.getClarificationRequests().stream()
+                .filter(entry -> entry.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution().getId().equals(courseExec.getId()))
+                .collect(Collectors.toList());
+
+        int totalClarifications = execClarifications.size();
+
+        int publicClarifications = (int)execClarifications.stream().
+                filter(entry -> entry.getType() == ClarificationRequest.Type.PUBLIC)
+                .count();
+
+        float percentagePublicClr = totalClarifications > 0 ?
+                (float)publicClarifications/totalClarifications * 100 : 0;
+
+        ClarificationStatsDto statsDto = new ClarificationStatsDto();
+        statsDto.setUsername(user.getUsername());
+        statsDto.setName(user.getName());
+        statsDto.setTotalClarificationRequests(totalClarifications);
+        statsDto.setPublicClarificationRequests(publicClarifications);
+        statsDto.setPercentageOfPublicClarifications(percentagePublicClr);
+
+        return statsDto;
     }
 
     private List<ClarificationRequestDto> getClarificationsOfStudent(User user, int executionId) {

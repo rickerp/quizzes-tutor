@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Bean
 
 
 @DataJpaTest
-class GetClarificationStatsTest  extends Specification {
+class GetClarificationsStatsTest extends Specification {
 
     public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
 
@@ -80,15 +80,16 @@ class GetClarificationStatsTest  extends Specification {
     @Shared
     def student
 
-    def clarificationRequest
+    def courseExecution
     def questionAnswer
+    def clarificationRequest
 
     def setup() {
         def course = new Course()
         course.setName("course")
         courseRepository.save(course)
 
-        def courseExecution = new CourseExecution()
+        courseExecution = new CourseExecution()
         courseExecution.setCourse(course)
         courseExecutionRepository.save(courseExecution)
 
@@ -145,7 +146,7 @@ class GetClarificationStatsTest  extends Specification {
         userRepository.save(student2)
 
         when:
-        def clarificationsStats = clarificationRequestService.getClarificationsStats(student2.getId())
+        def clarificationsStats = clarificationRequestService.getClarificationsStats(student2.getId(), courseExecution.getId())
 
         then:
         clarificationsStats.getName() == student2.getName()
@@ -157,7 +158,7 @@ class GetClarificationStatsTest  extends Specification {
 
     def "A student requests Clarifications Statistics"() {
         when:
-        def clarificationsStats = clarificationRequestService.getClarificationsStats(student.getId())
+        def clarificationsStats = clarificationRequestService.getClarificationsStats(student.getId(), courseExecution.getId())
 
         then:
         clarificationsStats.getName() == student.getName()
@@ -179,7 +180,7 @@ class GetClarificationStatsTest  extends Specification {
         student.addClarification(newClarificationRequest)
 
         when:
-        def clarificationsStats = clarificationRequestService.getClarificationsStats(student.getId())
+        def clarificationsStats = clarificationRequestService.getClarificationsStats(student.getId(), courseExecution.getId())
 
         then:
         clarificationsStats.getName() == student.getName()
@@ -191,16 +192,25 @@ class GetClarificationStatsTest  extends Specification {
 
     def "A teacher requests Clarifications Statistics"() {
         when:
-        clarificationRequestService.getClarificationsStats(teacher.getId())
+        clarificationRequestService.getClarificationsStats(teacher.getId(), courseExecution.getId())
 
         then:
         def error = thrown(TutorException)
         error.getErrorMessage() == ErrorMessage.USER_NOT_STUDENT
     }
 
+    def "A student requests Clarifications Statistics of a non existing Execution Course "() {
+        when:
+        clarificationRequestService.getClarificationsStats(student.getId(), 0)
+
+        then:
+        def error = thrown(TutorException)
+        error.getErrorMessage() == ErrorMessage.COURSE_EXECUTION_NOT_FOUND
+    }
+
 
     @TestConfiguration
-    static class GetClarificationStatsTestContextConfiguration {
+    static class GetClarificationsStatsTestContextConfiguration {
 
         @Bean
         ClarificationRequestService ClarificationRequestService() {

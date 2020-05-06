@@ -109,6 +109,6 @@ public class ClarificationController {
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
 
-        return clarificationRequestService.getClarificationsStats(user.getId());
+        return clarificationRequestService.getClarificationsStats(user.getId(), executionId);
     }
 }
