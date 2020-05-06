@@ -66,7 +66,7 @@
           <stringProp name="queryType">Callable Statement</stringProp>
           <stringProp name="query">UPDATE questions SET status = &apos;PENDING&apos; WHERE id = 1339;
 INSERT INTO student_questions(id, question_id, user_id) values (&apos;1&apos;,&apos;1339&apos;,&apos;676&apos;);
-INSERT INTO evaluations(accepted, justification, student_question_id) values (&apos;true&apos;, &apos;good work&apos;, &apos;1&apos;);</stringProp>
+INSERT INTO evaluations(accepted, justification, student_question_id) values (&apos;false&apos;, &apos;Please resubmit your question&apos;, &apos;1&apos;);</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -128,7 +128,7 @@ INSERT INTO evaluations(accepted, justification, student_question_id) values (&a
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login as Demo Teacher" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login as Demo Student" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -136,7 +136,7 @@ INSERT INTO evaluations(accepted, justification, student_question_id) values (&a
           <stringProp name="HTTPSampler.port">${port}</stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/auth/demo/teacher</stringProp>
+          <stringProp name="HTTPSampler.path">/auth/demo/student</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -180,8 +180,8 @@ INSERT INTO evaluations(accepted, justification, student_question_id) values (&a
    &quot;student&quot;: 676,&#xd;
    &quot;evaluation&quot;: {&#xd;
    	&quot;id&quot;:1,&#xd;
-   	&quot;accepted&quot;:true,&#xd;
-   	&quot;justification&quot;: &quot;good work&quot;	&#xd;
+   	&quot;accepted&quot;:false,&#xd;
+   	&quot;justification&quot;: &quot;Please resubmit your question&quot;	&#xd;
    },&#xd;
    &quot;question&quot;:{&#xd;
    	 &quot;id&quot;: 1339, &#xd;
@@ -213,7 +213,7 @@ INSERT INTO evaluations(accepted, justification, student_question_id) values (&a
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/courses/2/editstudentquestion</stringProp>
+            <stringProp name="HTTPSampler.path">/studentquestions/1/resubmit</stringProp>
             <stringProp name="HTTPSampler.method">PUT</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

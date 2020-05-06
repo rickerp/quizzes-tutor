@@ -134,6 +134,35 @@ public class StudentQuestionService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public StudentQuestionDto reSubmitStudentQuestion(StudentQuestionDto studentQuestionDto) {
+        if (studentQuestionDto == null)
+            throw new TutorException(ErrorMessage.STUDENT_QUESTION_IS_EMPTY);
+
+        StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionDto.getId())
+                .orElseThrow(() -> new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND));
+
+        QuestionDto questionDto = studentQuestionDto.getQuestion();
+
+        if (questionDto == null)
+            throw new TutorException(ErrorMessage.QUESTION_IS_EMPTY);
+
+        Evaluation evaluation = studentQuestion.getEvaluation();
+        if (evaluation == null || evaluation.isAccepted())
+            throw new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_ACCEPTED);
+
+        studentQuestion.setEvaluation(null);
+        QuestionDto updatedQuestion = questionService.updateQuestion(studentQuestion.getQuestion().getId(), questionDto);
+
+        studentQuestionDto.setQuestion(updatedQuestion);
+        studentQuestionDto.setEvaluation(null);
+        return studentQuestionDto;
+    }
+
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public StudentQuestionDto findById(Integer studentQuestionId) {
         StudentQuestion studentQuestion = studentQuestionRepository.findById(studentQuestionId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_FOUND));
