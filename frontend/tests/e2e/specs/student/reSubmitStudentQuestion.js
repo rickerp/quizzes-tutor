@@ -10,27 +10,33 @@ function generateData() {
 
 let data;
 
-describe('List student question walktrough', () => {
+describe('Student resubmiting question walktrough', () => {
   beforeEach(() => {
     cy.demoStudentLogin();
     data = generateData();
     cy.createStudentSuggestion(data);
     cy.contains('Logout').click();
     cy.demoTeacherLogin();
-    cy.createEvaluation(data, 'Good Question', true);
-    cy.contains('Logout').click();
+    cy.createEvaluation(data, 'Good Question', false);
     cy.demoStudentLogin();
   });
 
-  it('View student question info', () => {
+  it('Resubmit question', () => {
     cy.contains('Suggested Questions').click();
-    cy.contains(data.questionContent)
+    cy.contains('My Suggested').click();
+    cy.contains(data.questionTitle)
       .parent()
+      .contains('edit')
       .parent()
-      .children()
-      .find('[data-cy="evaluationBtn"]')
+      .find('[data-cy="edit"]')
       .click();
-    cy.contains('close').click();
+    cy.get('[data-cy="questionContent"]').type('TESTE');
+    cy.get('[data-cy="option1"]').type('TESTE1');
+    cy.get('[data-cy="option2"]').type('TESTE2');
+    cy.get('[data-cy="option3"]').type('TESTE3');
+    cy.get('[data-cy="option4"]').type('TESTE4');
+    cy.get('[data-cy="saveQuestionBtn"]').click();
+    cy.wait(100);
   });
 
   afterEach(() => {

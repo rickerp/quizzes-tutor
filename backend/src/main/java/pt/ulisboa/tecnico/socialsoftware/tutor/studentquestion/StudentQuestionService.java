@@ -150,6 +150,7 @@ public class StudentQuestionService {
         if (evaluation == null || evaluation.isAccepted())
             throw new TutorException(ErrorMessage.STUDENT_QUESTION_NOT_ACCEPTED);
 
+        this.entityManager.remove(studentQuestion.getEvaluation());
         studentQuestion.setEvaluation(null);
         QuestionDto updatedQuestion = questionService.updateQuestion(studentQuestion.getQuestion().getId(), questionDto);
 

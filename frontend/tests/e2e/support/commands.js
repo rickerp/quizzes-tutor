@@ -59,7 +59,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'createEvaluation',
-  ({ questionTitle, questionContent, options }, justification) => {
+  ({ questionTitle, questionContent, options }, justification, evaluation) => {
     cy.contains('Management').click();
     cy.contains('Student Questions').click();
     cy.contains('Title').click();
@@ -69,7 +69,7 @@ Cypress.Commands.add(
       .children()
       .find('[data-cy="evaluationBtn"]')
       .click();
-    cy.get('[data-cy="accepted"]').click({ force: true });
+    if (evaluation) cy.get('[data-cy="accepted"]').click({ force: true });
     cy.get('[data-cy="justification"]').type(justification);
     cy.contains('Save').click();
     cy.contains(questionContent)

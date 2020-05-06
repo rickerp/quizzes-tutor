@@ -17,7 +17,7 @@ describe('Teacher editing question walktrough', () => {
     cy.createStudentSuggestion(data);
     cy.contains('Logout').click();
     cy.demoTeacherLogin();
-    cy.createEvaluation(data, 'Good Question');
+    cy.createEvaluation(data, 'Good Question', true);
   });
 
   it('Edit question', () => {

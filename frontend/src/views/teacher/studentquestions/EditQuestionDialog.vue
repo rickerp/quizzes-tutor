@@ -65,6 +65,8 @@ export default class EditQuestionDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
   @Prop({ type: StudentQuestion, required: true })
   readonly studentQuestion!: StudentQuestion;
+  @Prop({ type: Boolean, required: true })
+  readonly teacher!: boolean;
 
   editQuestion!: StudentQuestion;
 
@@ -90,7 +92,10 @@ export default class EditQuestionDialog extends Vue {
     }
 
     try {
-      const result = await RemoteServices.editQuestion(this.editQuestion);
+      let result;
+      if (this.teacher)
+        result = await RemoteServices.editQuestion(this.editQuestion);
+      else result = await RemoteServices.reSubmitQuestion(this.editQuestion);
       this.$emit('edit-question', result);
     } catch (error) {
       await this.$store.dispatch('error', error);

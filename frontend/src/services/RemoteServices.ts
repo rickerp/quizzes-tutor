@@ -730,6 +730,19 @@ export default class RemoteServices {
       });
   }
 
+  static async reSubmitQuestion(
+    studentQuestion: StudentQuestion
+  ): Promise<StudentQuestion> {
+    return httpClient
+      .put(`/studentquestions/${studentQuestion.id}/resubmit`, studentQuestion)
+      .then(response => {
+        return new StudentQuestion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async listStudentQuestions(): Promise<StudentQuestion[]> {
     return httpClient
       .get(
@@ -793,7 +806,7 @@ export default class RemoteServices {
 
   static async getDashboardVisibilitry(): Promise<boolean> {
     return httpClient
-      .get(`/studentquestionsdashboard/visibility`)
+      .get('/studentquestionsdashboard/visibility')
       .then(response => {
         return !!response.data;
       })
@@ -804,7 +817,7 @@ export default class RemoteServices {
 
   static async setDashboardVisibilitry(isPublic: boolean): Promise<boolean> {
     return httpClient
-      .post(`/studentquestionsdashboard/visibility`, isPublic)
+      .post('/studentquestionsdashboard/visibility', isPublic)
       .then(response => {
         return !!response.data;
       })

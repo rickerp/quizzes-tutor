@@ -39,16 +39,16 @@ public class StudentQuestionController {
         return studentQuestionService.createStudentQuestion(courseId, studentQuestionDto);
     }
 
-    @PutMapping("/studentquestions/{studentQuestionId}/resubmit ")
+    @PutMapping("/studentquestions/{studentQuestionId}/resubmit")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#studentQuestionId, 'STUDENTQUESTION.ACCESS')")
-    public StudentQuestionDto editStudentQuestion(@PathVariable int studentQuestionId, @Valid @RequestBody StudentQuestionDto studentQuestionDto) {
+    public StudentQuestionDto reSubmitStudentQuestion(@PathVariable int studentQuestionId, @Valid @RequestBody StudentQuestionDto studentQuestionDto) {
         return studentQuestionService.reSubmitStudentQuestion(studentQuestionDto);
     }
 
 
     @PutMapping("/courses/{courseId}/editstudentquestion")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
-    public StudentQuestionDto editStudentQuestion(Principal principal, @PathVariable int courseId, @Valid @RequestBody StudentQuestionDto studentQuestionDto) {
+    public StudentQuestionDto editStudentQuestion(@PathVariable int courseId, @Valid @RequestBody StudentQuestionDto studentQuestionDto) {
         return studentQuestionService.editStudentQuestion(studentQuestionDto);
     }
 

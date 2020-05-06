@@ -45,6 +45,7 @@
         <v-tooltip bottom v-if="item.evaluation && item.evaluation.accepted">
           <template v-slot:activator="{ on }">
             <v-icon
+              v-if="teacherView"
               data-cy="publish"
               large
               class="mr-2"
@@ -55,7 +56,14 @@
           </template>
           <span>Publish Question</span>
         </v-tooltip>
-        <v-tooltip bottom v-if="item.evaluation && item.evaluation.accepted">
+        <v-tooltip
+          bottom
+          v-if="
+            item.evaluation &&
+              ((!teacherView && !item.evaluation.accepted) ||
+                (teacherView && item.evaluation.accepted))
+          "
+        >
           <template v-slot:activator="{ on }">
             <v-icon
               data-cy="edit"
@@ -82,6 +90,7 @@
       v-if="editQuestionDialog"
       v-model="editQuestionDialog"
       :studentQuestion="studentQuestion"
+      :teacher="teacherView"
       v-on:edit-question="onEditQuestion"
       v-on:close-edit-question-dialog="onCloseEditQuestionDialog"
     />
@@ -149,7 +158,7 @@ export default class MyQuestionsView extends Vue {
           { text: 'Actions', value: 'action' },
           { text: 'Student', value: 'student' }
         ]
-      : []),
+      : [{ text: 'Actions', value: 'action' }]),
     { text: 'Title', value: 'title' },
     { text: 'Question', value: 'content' },
     { text: 'Creation Date', value: 'creationDate' },

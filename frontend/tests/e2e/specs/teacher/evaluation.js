@@ -20,7 +20,7 @@ describe('Teacher creating evaluation walktrough', () => {
   });
 
   it('Create Evaluation', () => {
-    cy.createEvaluation(data, 'Good Question');
+    cy.createEvaluation(data, 'Good Question', true);
   });
 
   it('Create invalid Evaluation', () => {
@@ -41,7 +41,7 @@ describe('Teacher creating evaluation walktrough', () => {
   });
 
   it('Publish student question', () => {
-    cy.createEvaluation(data, 'Good Question');
+    cy.createEvaluation(data, 'Good Question', true);
     cy.contains(data.questionTitle)
       .parent()
       .contains('publish')
