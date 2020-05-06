@@ -101,21 +101,6 @@
             <span>Show Clarification</span>
           </v-tooltip>
 
-          <v-tooltip bottom v-if="item.type === 'PRIVATE'">
-            <template v-slot:activator="{ on }">
-              <v-icon
-                large
-                color="primary darken-1"
-                class="mr-2"
-                v-on="on"
-                data-cy="addCmt"
-                @click="createComment(item)"
-                >fas fa-plus</v-icon
-              >
-            </template>
-            <span>Add Comment </span>
-          </v-tooltip>
-
           <v-tooltip
             bottom
             v-if="$store.getters.isTeacher && item.state === 'RESOLVED'"
@@ -137,6 +122,22 @@
               >{{ item.type === 'PUBLIC' ? 'Make Private' : 'Make Public' }}
             </span>
           </v-tooltip>
+
+          <v-tooltip bottom v-if="item.type === 'PRIVATE'">
+            <template v-slot:activator="{ on }">
+              <v-icon
+                large
+                color="primary darken-1"
+                class="mr-2"
+                v-on="on"
+                data-cy="addCmt"
+                @click="createComment(item)"
+                >fas fa-plus</v-icon
+              >
+            </template>
+            <span>Add Comment </span>
+          </v-tooltip>
+
           <v-tooltip bottom v-if="canDeleteClr(item)">
             <template v-slot:activator="{ on }">
               <v-icon
@@ -419,7 +420,7 @@ export default class ClarificationList extends Vue {
       text: 'Action',
       value: 'action',
       align: 'left',
-      width: '15%',
+      width: '20%',
       sortable: false
     },
     {
@@ -450,7 +451,7 @@ export default class ClarificationList extends Vue {
       text: 'Creation Date',
       value: 'creationDate',
       align: 'left',
-      width: '10%'
+      width: '5%'
     },
     {
       text: 'Type',
