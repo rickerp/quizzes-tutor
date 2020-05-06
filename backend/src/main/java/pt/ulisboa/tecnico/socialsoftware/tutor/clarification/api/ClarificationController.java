@@ -104,11 +104,21 @@ public class ClarificationController {
 
     @GetMapping("/executions/{executionId}/clarifications/clarificationsStats")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
-    public ClarificationStatsDto getClarificationsStates(Principal principal, @PathVariable int executionId) {
+    public ClarificationStatsDto getClarificationsStats(Principal principal, @PathVariable int executionId) {
 
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
 
         return clarificationRequestService.getClarificationsStats(user.getId(), executionId);
+    }
+
+    @PostMapping("/executions/{executionId}/clarifications/clarificationsStats/{state}")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public ClarificationStatsDto changeDashboardState(Principal principal, @PathVariable int executionId, @PathVariable String state) {
+
+        User user = (User) ((Authentication) principal).getPrincipal();
+        if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
+
+        return clarificationRequestService.changeDashboardState(user, executionId, state);
     }
 }
