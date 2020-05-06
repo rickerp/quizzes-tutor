@@ -30,7 +30,7 @@ describe('Clarification Requests walkthrough', () => {
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
   });
 
-  it('Change ClarificationState in Chat', () => {
+  it('Change ClarificationState', () => {
     cy.showClarifications();
     cy.changeState(CLARIFICATION_CONTENT,'Unresolved', 'RESOLVED');
     cy.changeState(CLARIFICATION_CONTENT,'Resolved', 'UNRESOLVED');
@@ -44,5 +44,10 @@ describe('Clarification Requests walkthrough', () => {
   it('Show Clarification of a Clarification request submitted', () => {
     cy.showClarifications();
     cy.showClarification(CLARIFICATION_CONTENT);
+  });
+
+  it('Delete a Clarification', () => {
+    cy.showClarifications();
+    cy.deleteClarification(CLARIFICATION_CONTENT);
   });
 });

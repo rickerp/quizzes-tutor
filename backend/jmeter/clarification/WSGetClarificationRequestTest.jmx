@@ -266,7 +266,7 @@ INSERT INTO clarification_requests (id, creation_date, state, question_answer_id
             </JSONPathAssertion>
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert comment Id" enabled="true">
-              <stringProp name="JSON_PATH">$..clarificationComment.id</stringProp>
+              <stringProp name="JSON_PATH">$..clarificationComments..id</stringProp>
               <stringProp name="EXPECTED_VALUE">1</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>

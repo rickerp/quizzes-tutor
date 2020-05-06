@@ -137,6 +137,20 @@
               >{{ item.type === 'PUBLIC' ? 'Make Private' : 'Make Public' }}
             </span>
           </v-tooltip>
+          <v-tooltip bottom v-if="canDeleteClr(item)">
+            <template v-slot:activator="{ on }">
+              <v-icon
+                large
+                class="mr-2"
+                v-on="on"
+                @click="deleteClarification(item)"
+                color="red"
+                data-cy="deleteClrf"
+                >delete</v-icon
+              >
+            </template>
+            <span>Delete Clarification</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -381,19 +395,38 @@ export default class ClarificationList extends Vue {
     return 'primary darken-2';
   }
 
+  canDeleteClr(clarification: ClarificationRequest) {
+    return (
+      clarification.type === 'PRIVATE' &&
+      clarification.clarificationComments.length == 0
+    );
+  }
+
+  async deleteClarification(clarification: ClarificationRequest) {
+    if (confirm('Are you sure you want to delete this quiz?')) {
+      const index = this.clarifications.indexOf(clarification);
+      try {
+        await RemoteServices.deleteClarification(clarification.id);
+        this.clarifications.splice(index, 1);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+    }
+  }
+
   headers: object = [
     {
       text: 'Action',
       value: 'action',
       align: 'left',
-      width: '13%',
+      width: '15%',
       sortable: false
     },
     {
       text: 'State',
       value: 'state',
       align: 'left',
-      width: '7%'
+      width: '5%'
     },
     {
       text: 'Clarification Request',

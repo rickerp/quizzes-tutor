@@ -306,6 +306,16 @@ Cypress.Commands.add('showClarification', clrfContent => {
   cy.get('[data-cy="bttnClose"]').click();
 });
 
+Cypress.Commands.add('deleteClarification', clrfContent => {
+  cy.on('window:confirm', () => true);
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="deleteClrf"]')
+    .click();
+});
+
 Cypress.Commands.add('clickRowButton', (elem, button) => {
   cy.contains(elem)
     .parent()

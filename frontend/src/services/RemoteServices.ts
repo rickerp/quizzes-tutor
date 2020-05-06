@@ -417,6 +417,14 @@ export default class RemoteServices {
     });
   }
 
+  static async deleteClarification(clarificationId: number) {
+    return httpClient
+      .delete(`/clarifications/${clarificationId}/remove`)
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getQuiz(quizId: number): Promise<Quiz> {
     return httpClient
       .get(`/quizzes/${quizId}`)
@@ -602,7 +610,7 @@ export default class RemoteServices {
   ): Promise<PublicClarification[]> {
     const execId = Store.getters.getCurrentCourse.courseExecutionId;
     return httpClient
-      .get(`/questions/${questionId}/publicClarifications`, execId)
+      .get(`/questions/${questionId}/publicClarifications/executions/${execId}`)
       .then(response => {
         return response.data.map((request: any) => {
           return new PublicClarification(request);

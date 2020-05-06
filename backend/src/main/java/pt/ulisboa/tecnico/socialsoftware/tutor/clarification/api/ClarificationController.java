@@ -83,7 +83,7 @@ public class ClarificationController {
         return clarificationRequestService.changeClarificationType(clarificationRequestId, type);
     }
 
-    @PostMapping("/clarifications/{clarificationRequestId}/remove")
+    @DeleteMapping("/clarifications/{clarificationRequestId}/remove")
     @PreAuthorize("(hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER'))  and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
     public ResponseEntity removeClarification(@PathVariable Integer clarificationRequestId) {
         clarificationRequestService.removeClarification(clarificationRequestId);
