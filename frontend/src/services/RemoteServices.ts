@@ -602,7 +602,7 @@ export default class RemoteServices {
   ): Promise<PublicClarification[]> {
     const execId = Store.getters.getCurrentCourse.courseExecutionId;
     return httpClient
-      .get(`/questions/${questionId}/publicClarifications/executions/${execId}`)
+      .get(`/questions/${questionId}/publicClarifications`, execId)
       .then(response => {
         return response.data.map((request: any) => {
           return new PublicClarification(request);
@@ -621,7 +621,8 @@ export default class RemoteServices {
     return httpClient
       .post(
         `/questions/${questionId}/publicClarifications/` +
-          `${publicClarificationId}/add/executions/${execId}`
+          `${publicClarificationId}/add`,
+        execId
       )
       .then(response => {
         return new PublicClarification(response.data);
@@ -639,7 +640,8 @@ export default class RemoteServices {
     return httpClient
       .post(
         `/questions/${questionId}/publicClarifications/` +
-          `${publicClarificationId}/remove/executions/${execId}`
+          `${publicClarificationId}/remove`,
+        execId
       )
       .then(response => {
         return new PublicClarification(response.data);
@@ -668,7 +670,7 @@ export default class RemoteServices {
     state: string
   ): Promise<ClarificationRequest> {
     return httpClient
-      .post(`/clarifications/${clrfReqId}/state/${state}`)
+      .post(`/clarifications/${clrfReqId}/set-state`, state)
       .then(response => {
         return new ClarificationRequest(response.data);
       })
@@ -682,7 +684,7 @@ export default class RemoteServices {
     type: string
   ): Promise<ClarificationRequest> {
     return httpClient
-      .post(`/clarifications/${clrfReqId}/type/${type}`)
+      .post(`/clarifications/${clrfReqId}/set-type`, type)
       .then(response => {
         return new ClarificationRequest(response.data);
       })

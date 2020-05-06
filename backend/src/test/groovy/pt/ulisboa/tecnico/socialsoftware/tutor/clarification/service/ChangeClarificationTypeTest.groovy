@@ -133,7 +133,6 @@ class ChangeClarificationTypeTest extends Specification {
         clarificationRequest.setUser(student)
         clarificationRequest.setQuestionAnswer(questionAnswer)
         clarificationRequestRepository.save(clarificationRequest)
-        clarificationRequest.getId()
     }
 
     def "Make clarification request that is PRIVATE, and RESOLVED, PUBLIC"() {

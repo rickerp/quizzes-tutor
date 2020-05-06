@@ -26,30 +26,30 @@
         >
           <v-subheader
             class="mt-3 mb-3"
-            v-bind:class="{ 'justify-end': comment.user.role === 'TEACHER' }"
+            v-bind:class="{ 'justify-end': isTeacher(comment.user) }"
           >
             {{ comment.creationDate }}
           </v-subheader>
           <v-divider
             :inset="true"
             class="mb-4"
-            v-bind:class="{ 'mr-0 ml-12': comment.user.role === 'STUDENT' }"
+            v-bind:class="{ 'mr-0 ml-12': isStudent(comment.user) }"
           ></v-divider>
           <v-hover v-slot:default="{ hover }" open-delay="200">
             <v-card
               shaped
               class=""
               v-bind:class="{
-                'ml-12 mr-2 mb-2': comment.user.role === 'TEACHER',
-                'ml-2 mb-2 mr-12': comment.user.role === 'STUDENT'
+                'ml-12 mr-2 mb-2': isTeacher(comment.user),
+                'ml-2 mb-2 mr-12': isStudent(comment.user)
               }"
               :elevation="hover ? 12 : 3"
             >
               <v-card-title
                 class="justify-end -italic"
                 v-bind:class="{
-                  'justify-end -italic': comment.user.role === 'TEACHER',
-                  '-italic': comment.user.role === 'STUDENT'
+                  'justify-end -italic': isTeacher(comment.user),
+                  '-italic': isStudent(comment.user)
                 }"
               >
                 {{ comment.user.username }}
@@ -69,12 +69,21 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
+import User from '@/models/user/User';
 
 @Component
 export default class ChatComponent extends Vue {
   @Prop({ type: Array, required: true })
   readonly requests!: ClarificationRequest[];
   @Prop() readonly showToolbar!: boolean;
+
+  isTeacher(user: User) {
+    return user.role === 'TEACHER';
+  }
+
+  isStudent(user: User) {
+    return user.role === 'STUDENT';
+  }
 }
 </script>
 <style>

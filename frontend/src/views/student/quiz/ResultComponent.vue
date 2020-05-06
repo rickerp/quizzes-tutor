@@ -159,7 +159,7 @@ export default class ResultComponent extends Vue {
   @Prop(StatementAnswer) readonly answer!: StatementAnswer;
   @Prop() readonly questionNumber!: number;
   hover: boolean = false;
-  resultStage: number = 0
+  resultStage: number = 0;
   changeInAnswer: boolean = true;
   Pclarifications: ClarificationRequest[] = [];
   create: boolean = false;

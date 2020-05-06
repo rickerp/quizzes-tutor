@@ -73,6 +73,12 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="query">UPDATE quiz_answers SET user_id = 676 WHERE user_id = 678;
+
+DELETE from clarification_comments;
+DELETE from public_clarifications_course_executions;
+DELETE from public_clarifications;
+DELETE from clarification_requests;
+
 INSERT INTO clarification_requests (id, content, state, question_answer_id, user_id) VALUES (1, &apos;Content&apos;, &apos;RESOLVED&apos;, 64073, 676);
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
@@ -221,8 +227,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">&#xd;
-</stringProp>
+                  <stringProp name="Argument.value">PUBLIC</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -231,7 +236,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/clarifications/${clarificationId}/type/public</stringProp>
+            <stringProp name="HTTPSampler.path">/clarifications/${clarificationId}/set-type</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -258,8 +263,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">&#xd;
-</stringProp>
+                  <stringProp name="Argument.value">PRIVATE</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -268,7 +272,7 @@ INSERT INTO clarification_requests (id, content, state, question_answer_id, user
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/clarifications/${clarificationId}/type/private</stringProp>
+            <stringProp name="HTTPSampler.path">/clarifications/${clarificationId}/set-type</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

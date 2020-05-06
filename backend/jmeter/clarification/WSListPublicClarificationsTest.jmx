@@ -79,6 +79,11 @@
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="query">UPDATE quiz_answers SET user_id = 676 WHERE user_id = 678;
 
+DELETE from clarification_comments;
+DELETE from public_clarifications_course_executions;
+DELETE from public_clarifications;
+DELETE from clarification_requests;
+
 INSERT INTO clarification_requests (id, creation_date, state, user_id, type) VALUES (1, &apos;2020-05-05T08:46:16&apos;, &apos;RESOLVED&apos;, 676, &apos;PUBLIC&apos;);
 INSERT INTO clarification_requests (id, creation_date, state, user_id, type) VALUES (2, &apos;2020-06-05T08:46:16&apos;, &apos;RESOLVED&apos;, 676, &apos;PUBLIC&apos;);
 INSERT INTO clarification_requests (id, creation_date, state, user_id, type) VALUES (3, &apos;2020-07-05T08:46:16&apos; ,&apos;RESOLVED&apos;, 676, &apos;PUBLIC&apos;);
@@ -234,7 +239,7 @@ INSERT INTO public_clarifications_course_executions(public_clarifications_id, co
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">&#xd;
+                  <stringProp name="Argument.value">11&#xd;
 </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
@@ -397,16 +402,8 @@ INSERT INTO public_clarifications_course_executions(public_clarifications_id, co
           </HeaderManager>
           <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request to get public clarifications" enabled="true">
-            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-              <collectionProp name="Arguments.arguments">
-                <elementProp name="" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">&#xd;
-</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-              </collectionProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${server}</stringProp>
             <stringProp name="HTTPSampler.port">${port}</stringProp>

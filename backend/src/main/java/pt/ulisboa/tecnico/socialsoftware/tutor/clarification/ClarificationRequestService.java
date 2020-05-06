@@ -1,4 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification;
+import io.jsonwebtoken.lang.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -19,7 +20,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarif
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.stats.ClarificationStatsDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.PublicClarificationRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -29,13 +29,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
-
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_EXECUTION_NOT_FOUND;
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USER_NOT_STUDENT;
 
 
 @Service
@@ -51,9 +46,6 @@ public class ClarificationRequestService {
 
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
-
-    @Autowired
-    private PublicClarificationRepository publicClarificationRepository;
 
     @Autowired
     private PublicClarificationService publicClarificationService;
@@ -174,7 +166,7 @@ public class ClarificationRequestService {
             throw new TutorException(ErrorMessage.USER_NOT_STUDENT, user.getId());
 
         CourseExecution courseExec = courseExecutionRepository.findById(executionId)
-                .orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, executionId));
+                .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, executionId));
 
         List<ClarificationRequest> execClarifications =  user.getClarificationRequests().stream()
                 .filter(entry -> entry.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution().getId().equals(courseExec.getId()))
@@ -207,7 +199,7 @@ public class ClarificationRequestService {
     public List<ClarificationStatsDto> getPublicClarificationsStats(int executionId) {
 
         CourseExecution courseExec = courseExecutionRepository.findById(executionId)
-                .orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, executionId));
+                .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, executionId));
 
         return courseExec.getUsers().stream()
                 .filter(entry -> entry.getRole() == User.Role.STUDENT
@@ -223,7 +215,7 @@ public class ClarificationRequestService {
     public ClarificationStatsDto changeDashboardState(User user, int executionId, String state) {
 
         if (user.getRole() != User.Role.STUDENT)
-            throw new TutorException(USER_NOT_STUDENT, user.getId());
+            throw new TutorException(ErrorMessage.USER_NOT_STUDENT, user.getId());
 
         switch (state.toUpperCase()) {
             case "PUBLIC":
@@ -269,5 +261,16 @@ public class ClarificationRequestService {
                 .map(QuizAnswer::getQuiz)
                 .map(Quiz::getCourseExecution)
                 .orElseThrow(() -> new TutorException((ErrorMessage.CLARIFICATION_NOT_FOUND))));
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void removeClarification(int clarificationRequestId) {
+        ClarificationRequest request = clarificationRequestRepository.findById(clarificationRequestId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND));
+        request.remove();
+        clarificationRequestRepository.delete(request);
     }
 }

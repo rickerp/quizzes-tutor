@@ -16,17 +16,35 @@
         /></template>
 
         <template v-slot:item.state="{ item }">
-          <v-chip
-            filter
-            :color="getStatusColor(item.state)"
-            class="white--text"
-            small
-          >
-            <span>
-              <strong> {{ item.state }} </strong></span
+          <span v-if="item.type === 'PRIVATE'">
+            <v-select
+              v-model="item.state"
+              :items="stateList"
+              dense
+              @change="changeState(item, item.state)"
             >
-          </v-chip> </template
-        >state
+              <template v-slot:selection="{ item }">
+                <v-chip :color="getStatusColor(item)" class="white--text" small>
+                  <span>
+                    <strong> {{ item }} </strong>
+                  </span>
+                </v-chip>
+              </template>
+            </v-select>
+          </span>
+          <span v-if="item.type === 'PUBLIC'">
+            <v-chip
+              filter
+              :color="getStatusColor(item.state)"
+              class="white--text"
+              small
+            >
+              <span>
+                <strong> {{ item.state }} </strong></span
+              >
+            </v-chip>
+          </span>
+        </template>
 
         <template v-slot:item.type="{ item }">
           <v-chip
@@ -60,7 +78,7 @@
                 large
                 class="mr-2"
                 v-on="on"
-                @click="changeCrrState(item, 2)"
+                @click="changeVue(item, 2)"
                 data-cy="showQuestion"
                 >visibility</v-icon
               >
@@ -76,7 +94,7 @@
                 class="mr-2"
                 v-on="on"
                 data-cy="showClrf"
-                @click="changeCrrState(item, 3)"
+                @click="changeVue(item, 3)"
                 >fas fa-comments</v-icon
               >
             </template>
@@ -148,7 +166,7 @@
             color="primary"
             :dense="true"
             v-model="isResolved"
-            @change="changeState()"
+            @change="changeStateClarification()"
           >
             <template v-slot:label>
               <div>
@@ -241,6 +259,7 @@ export default class ClarificationList extends Vue {
   viewAction: number = 1;
   isResolved: boolean = true;
   search: string = '';
+  stateList = ['RESOLVED', 'UNRESOLVED'];
 
   async created() {
     await this.$store.dispatch('loading');
@@ -252,7 +271,7 @@ export default class ClarificationList extends Vue {
     await this.$store.dispatch('clearLoading');
   }
 
-  changeCrrState(request: ClarificationRequest, showAction: number) {
+  changeVue(request: ClarificationRequest, showAction: number) {
     this.viewAction = showAction;
     this.clarification = request;
     this.isResolved = this.clarification.state == 'RESOLVED';
@@ -309,7 +328,7 @@ export default class ClarificationList extends Vue {
     }
   }
 
-  async changeState() {
+  async changeStateClarification() {
     let state = 'UNRESOLVED';
     if (this.isResolved) state = 'RESOLVED';
 
@@ -324,6 +343,16 @@ export default class ClarificationList extends Vue {
       } catch (error) {
         await this.$store.dispatch('error', error);
       }
+    }
+  }
+
+  async changeState(clarificationReq: ClarificationRequest, state: string) {
+    try {
+      const index = this.clarifications.indexOf(clarificationReq);
+      await RemoteServices.changeClarificationState(clarificationReq.id, state);
+      this.clarifications.splice(index, 1, clarificationReq);
+    } catch (error) {
+      await this.$store.dispatch('error', error);
     }
   }
 
@@ -361,32 +390,32 @@ export default class ClarificationList extends Vue {
       sortable: false
     },
     {
+      text: 'State',
+      value: 'state',
+      align: 'left',
+      width: '7%'
+    },
+    {
       text: 'Clarification Request',
       value: 'content',
       align: 'left',
-      width: '23%'
+      width: '25%'
     },
     {
       text: 'Question Title',
       value: 'questionAnswer.question.title',
       align: 'left',
-      width: '15%'
+      width: '10%'
     },
     {
       text: 'Question',
       value: 'questionAnswer.question.content',
       align: 'left',
-      width: '20%'
+      width: '25%'
     },
     {
       text: 'Creation Date',
       value: 'creationDate',
-      align: 'left',
-      width: '10%'
-    },
-    {
-      text: 'State',
-      value: 'state',
       align: 'left',
       width: '10%'
     },

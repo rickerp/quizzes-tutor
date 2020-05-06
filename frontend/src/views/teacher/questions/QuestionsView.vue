@@ -16,6 +16,7 @@
           <v-card-title>
             <v-text-field
               v-model="search"
+              data-cy="bttnSearch"
               append-icon="search"
               label="Search"
               class="mx-2"
@@ -115,6 +116,7 @@
                 class="mr-2"
                 v-on="on"
                 @click="showPublicClarifications(item)"
+                data-cy="ShowPClarifications"
                 >fas fa-comments</v-icon
               >
             </template>
