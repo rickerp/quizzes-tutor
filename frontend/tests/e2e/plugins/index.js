@@ -6,12 +6,25 @@
 // https://docs.cypress.io/api/plugins/preprocessors-api.html#Examples
 
 // const webpack = require('@cypress/webpack-preprocessor')
+const { Pool } = require('pg');
+const pool = new Pool({
+  host: 'localhost',
+  port: 5432,
+  database: 'tutordb',
+  user: '',
+  password: ''
+});
 
 module.exports = (on, config) => {
   // on('file:preprocessor', webpack({
   //  webpackOptions: require('@vue/cli-service/webpack.config'),
   //  watchOptions: {}
   // }))
+  on('task', {
+    query({ sql, values }) {
+      return pool.query(sql, values);
+    }
+  });
 
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',

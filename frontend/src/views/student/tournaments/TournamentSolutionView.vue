@@ -18,6 +18,7 @@
         class="right-button"
         @click="nextQuestion"
         v-if="seq + 1 < quiz.questions.length"
+        data-cy="NextQuestionTdP"
         ><i class="fas fa-chevron-right"
       /></span>
     </div>

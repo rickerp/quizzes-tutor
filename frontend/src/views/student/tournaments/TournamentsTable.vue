@@ -94,6 +94,7 @@
               class="mr-2"
               v-on="on"
               @click="$emit('start-quiz', item)"
+              data-cy="playTdP"
               >fas fa-gamepad</v-icon
             >
           </template>

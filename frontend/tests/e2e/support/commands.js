@@ -266,6 +266,7 @@ Cypress.Commands.add(
   'createTournament',
   (name, startDay, endDay, nrQuestions) => {
     cy.get('[data-cy="newTdPButton"]').click();
+    cy.wait(500);
     cy.get('[data-cy="newTdPName"]').type(name);
     cy.setDay('newTdPStartTime', 'startDateInput', startDay);
     cy.setDay('newTdPEndTime', 'endDateInput', endDay);
@@ -320,4 +321,23 @@ Cypress.Commands.add('setDay', (button, id, day) => {
       '> .validate'
   ).click({ force: true });
   cy.wait(500);
+});
+
+Cypress.Commands.add('doTournamentQuiz', options => {
+  let i = options.length;
+  cy.wrap(options).each(option => {
+    cy.get('.option-list > :nth-child(' + option + ')').click();
+    cy.wait(500);
+    if (--i > 0) cy.get('[data-cy="NextQuestionTdP"]').click();
+    else cy.get('[data-cy="FinishQuizTdP"]').click();
+  });
+  cy.get('[data-cy="Im-SureTdP"]').click();
+});
+
+Cypress.Commands.add('seeTournamentQuizSolution', nrQuestions => {
+  let i = nrQuestions;
+  cy.wrap(Array.from({length: nrQuestions})).each(() => {
+    cy.wait(500);
+    if (--i > 0) cy.get('[data-cy="NextQuestionTdP"]').click();
+  });
 });

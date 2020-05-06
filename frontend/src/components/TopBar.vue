@@ -126,7 +126,7 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item to="/student/calendar">
+            <v-list-item to="/student/tournaments/calendar">
               <v-list-item-action>
                 <v-icon>fas fa-calendar-alt</v-icon>
               </v-list-item-action>
@@ -134,12 +134,12 @@
                 <v-list-item-title>Calendar</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/ongoing">
+            <v-list-item to="/student/tournaments/inprogress">
               <v-list-item-action>
-                <v-icon>fas fa-paper-plane</v-icon>
+                <v-icon>fas fa-calendar-check</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Ongoing</v-list-item-title>
+                <v-list-item-title>In Progress</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>

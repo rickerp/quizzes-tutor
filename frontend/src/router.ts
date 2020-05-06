@@ -158,7 +158,7 @@ let router = new Router({
           }
         },
         {
-          path: 'calendar',
+          path: 'tournaments/calendar',
           name: 'tournaments-calendar',
           component: CalendarView,
           meta: {
@@ -167,8 +167,8 @@ let router = new Router({
           }
         },
         {
-          path: 'ongoing',
-          name: 'tournaments-ongoing',
+          path: 'tournaments/inprogress',
+          name: 'tournaments-inprogress',
           component: OngoingView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Tournaments Ongoing',
@@ -176,7 +176,7 @@ let router = new Router({
           }
         },
         {
-          path: 'tournament',
+          path: 'tournaments/quiz',
           name: 'tournament-quiz',
           component: QuizTournamentView,
           meta: {
@@ -185,7 +185,7 @@ let router = new Router({
           }
         },
         {
-          path: 'solution',
+          path: 'tournaments/solution',
           name: 'tournament-solution',
           component: TournamentSolutionView,
           meta: {

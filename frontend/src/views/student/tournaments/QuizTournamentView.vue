@@ -11,7 +11,7 @@
         <i class="fas fa-clock"></i>
         <span v-if="showTime">{{ quizTimer }}</span>
       </span>
-      <span class="end-quiz" @click="confirmDialog = true"
+      <span class="end-quiz" @click="confirmDialog = true" data-cy="FinishQuizTdP"
         ><i class="fas fa-flag-checkered" />Finish</span
       >
     </header>
@@ -33,6 +33,7 @@
         v-if="seq + 1 < quiz.questions.length"
         class="right-button"
         @click="nextQuestion"
+        data-cy="NextQuestionTdP"
         ><i class="fas fa-chevron-right"
       /></span>
     </div>
@@ -68,7 +69,7 @@
           <v-btn color="secondary" text @click="confirmDialog = false">
             Cancel
           </v-btn>
-          <v-btn color="primary" text @click="finishQuiz">
+          <v-btn color="primary" text @click="finishQuiz" data-cy="Im-SureTdP">
             I'm sure
           </v-btn>
         </v-card-actions>
