@@ -1,17 +1,17 @@
 const QUIZ_TITLE = 'My Quiz Test';
-const QUESTION = 'Utility tree';
+const QUESTION = 'UtilityTree';
 const COMMENT_CONTENT = 'THIS IS A COMMENT TO A CLARIFICATION';
 const CLARIFICATION_CONTENT = 'THIS IS A CLARIFICATION REQUEST';
 const CLARIFICATION_CONTENT2 = 'THIS IS A 2nd CLARIFICATION REQUEST';
 
-describe('Clarification Comment Walkthrough', () => {
+describe('Clarification Comments Walkthrough', () => {
   before(() => {
     cy.demoTeacherLogin();
     cy.createQuiz(QUIZ_TITLE, QUESTION);
     cy.demoStudentLogin();
     cy.get('.quizzesButton').click();
     cy.respondQuiz(QUIZ_TITLE);
-    cy.goToClarification(QUIZ_TITLE);
+    cy.goToMyClarifications(QUIZ_TITLE);
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
     cy.createClarificationRequest(CLARIFICATION_CONTENT2);
   });

@@ -79,7 +79,7 @@
                 color="green darken-4"
                 class="mr-2"
                 v-on="on"
-                data-cy="addCmt"
+                data-cy="changeVisibility"
                 @click="addCourseExecutionToPClarification(item)"
                 >fas fa-plus</v-icon
               >
@@ -93,7 +93,7 @@
                 color="red darken-4"
                 class="mr-2"
                 v-on="on"
-                data-cy="addCmt"
+                data-cy="changeVisibility"
                 @click="rmvCourseExecutionToPClarification(item)"
                 >fas fa-minus</v-icon
               >

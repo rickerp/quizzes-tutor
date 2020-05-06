@@ -138,10 +138,30 @@ Cypress.Commands.add('respondQuiz', quiz_title => {
   cy.get('.quizzesButton').click();
 });
 
-Cypress.Commands.add('goToClarification', quiz_title => {
+Cypress.Commands.add('goToMyClarifications', quiz_title => {
   cy.contains('Solved').click();
   cy.contains(quiz_title).click();
-  cy.contains('Show Clarifications').click();
+  cy.contains('My Clarifications').click();
+});
+
+Cypress.Commands.add('goToPublicClarifications', quiz_title => {
+  cy.contains('Solved').click();
+  cy.contains(quiz_title).click();
+  cy.contains('Public Clarifications').click();
+});
+
+Cypress.Commands.add('goToQuestionPublicClarification', question => {
+  cy.contains('Questions').click();
+  cy.get('[data-cy="bttnSearch"]').type(question);
+  cy.contains(question)
+    .parent()
+    .should('have.length', 1)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 10)
+    .find('[data-cy="ShowPClarifications"]')
+    .click();
 });
 
 Cypress.Commands.add('createInvalidClarificationRequest', () => {
@@ -209,7 +229,7 @@ Cypress.Commands.add('showClarifications', () => {
   cy.contains('Clarifications').click();
 });
 
-Cypress.Commands.add('changeState', (clrfContent, oldState, newState ) => {
+Cypress.Commands.add('changeState', (clrfContent, oldState, newState) => {
   cy.contains(clrfContent)
     .parent()
     .children()
@@ -226,7 +246,7 @@ Cypress.Commands.add('changeState', (clrfContent, oldState, newState ) => {
     .click();
 });
 
-Cypress.Commands.add('changeType', (clrfContent, oldType, newType ) => {
+Cypress.Commands.add('changeType', (clrfContent, oldType, newType) => {
   cy.contains(clrfContent)
     .parent()
     .children()
@@ -246,6 +266,24 @@ Cypress.Commands.add('changeType', (clrfContent, oldType, newType ) => {
     .should('have.length', 7)
     .contains(newType);
 });
+
+Cypress.Commands.add(
+  'changeAvailabilityPClarification',
+  (clrfContent, newAvailability) => {
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 5)
+      .find('[data-cy="changeVisibility"]')
+      .click();
+
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 5)
+      .contains(newAvailability);
+  }
+);
 
 Cypress.Commands.add('showQuestionClarification', clrfContent => {
   cy.contains(clrfContent)
