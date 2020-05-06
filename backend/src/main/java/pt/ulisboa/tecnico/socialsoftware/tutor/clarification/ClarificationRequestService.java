@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerR
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.stats.ClarificationStatsDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
@@ -30,6 +31,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 
 @Service
 public class ClarificationRequestService {
@@ -150,6 +152,82 @@ public class ClarificationRequestService {
         }
         entityManager.persist(clarificationRequest);
         return new ClarificationRequestDto(clarificationRequest);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ClarificationStatsDto getClarificationsStats(int userId, int executionId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND));
+
+        if (user.getRole() != User.Role.STUDENT)
+            throw new TutorException(ErrorMessage.USER_NOT_STUDENT, user.getId());
+
+        CourseExecution courseExec = courseExecutionRepository.findById(executionId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, executionId));
+
+        List<ClarificationRequest> execClarifications =  user.getClarificationRequests().stream()
+                .filter(entry -> entry.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution().getId().equals(courseExec.getId()))
+                .collect(Collectors.toList());
+
+        int totalClarifications = execClarifications.size();
+
+        int publicClarifications = (int)execClarifications.stream()
+                .filter(entry -> entry.getType() == ClarificationRequest.Type.PUBLIC)
+                .count();
+
+        float percentagePublicClr = totalClarifications > 0 ?
+                (float)publicClarifications/totalClarifications * 100 : 0;
+
+        ClarificationStatsDto statsDto = new ClarificationStatsDto();
+        statsDto.setUsername(user.getUsername());
+        statsDto.setName(user.getName());
+        statsDto.setDashboardState(user.getClarificationDashState());
+        statsDto.setTotalClarificationRequests(totalClarifications);
+        statsDto.setPublicClarificationRequests(publicClarifications);
+        statsDto.setPercentageOfPublicClarifications(percentagePublicClr);
+
+        return statsDto;
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<ClarificationStatsDto> getPublicClarificationsStats(int executionId) {
+
+        CourseExecution courseExec = courseExecutionRepository.findById(executionId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, executionId));
+
+        return courseExec.getUsers().stream()
+                .filter(entry -> entry.getRole() == User.Role.STUDENT
+                        && entry.getClarificationDashState() == User.DashBoardState.PUBLIC)
+                .map(entry -> getClarificationsStats(entry.getId(), courseExec.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ClarificationStatsDto changeDashboardState(User user, int executionId, String state) {
+
+        if (user.getRole() != User.Role.STUDENT)
+            throw new TutorException(ErrorMessage.USER_NOT_STUDENT, user.getId());
+
+        switch (state.toUpperCase()) {
+            case "PUBLIC":
+                user.setClarificationDashState(User.DashBoardState.PUBLIC);
+                break;
+            case "PRIVATE":
+                user.setClarificationDashState(User.DashBoardState.PRIVATE);
+                break;
+            default: throw new TutorException(ErrorMessage.CLARIFICATION_DASHBOARD_INVALID_STATE);
+        }
+        userRepository.save(user);
+        return getClarificationsStats(user.getId(), executionId);
     }
 
     private List<ClarificationRequestDto> getClarificationsOfStudent(User user, int executionId) {

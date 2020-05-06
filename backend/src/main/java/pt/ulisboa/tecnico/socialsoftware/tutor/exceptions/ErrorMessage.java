@@ -104,6 +104,7 @@ public enum ErrorMessage {
     PUBLIC_CLARIFICATION_NOT_FOUND("PublicClarification with id %d not found"),
     EXECUTION_ALREADY_VISIBLE("Students with course execution with id %d, can already see this PublicClarification"),
     EXECUTION_ALREADY_INVISIBLE("Students with course execution with id %d, already can't see this PublicClarification "),
+    CLARIFICATION_DASHBOARD_INVALID_STATE("Clarification Dashboard state invalid"),
 
     COMMENT_INVALID_CLARIFICATION("ClarificationRequest associated to comment is invalid"),
     COMMENT_INVALID_CONTENT("ClarificationComment content is invalid"),

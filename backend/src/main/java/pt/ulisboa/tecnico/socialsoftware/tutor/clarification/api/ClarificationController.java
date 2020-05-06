@@ -14,15 +14,13 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCo
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.PublicClarificationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.stats.ClarificationStatsDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Assessment;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import javax.validation.Valid;
-import java.nio.file.Files;
 import java.security.Principal;
 import java.util.List;
 
@@ -111,5 +109,32 @@ public class ClarificationController {
     public PublicClarificationDto rmvCourseExecToPublicClrf(@PathVariable int questionId, @PathVariable int pClrId,
                                                             @Valid @RequestBody  int execId) {
         return publicClarificationService.rmvCourseExecToPublicClrf(pClrId, execId);
+    }
+
+    @GetMapping("/executions/{executionId}/clarifications/clarificationsStats")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public ClarificationStatsDto getClarificationsStats(Principal principal, @PathVariable int executionId) {
+
+        User user = (User) ((Authentication) principal).getPrincipal();
+        if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
+
+        return clarificationRequestService.getClarificationsStats(user.getId(), executionId);
+    }
+
+    @PostMapping("/executions/{executionId}/clarifications/clarificationsStats/{state}")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public ClarificationStatsDto changeDashboardState(Principal principal, @PathVariable int executionId, @PathVariable String state) {
+
+        User user = (User) ((Authentication) principal).getPrincipal();
+        if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
+
+        return clarificationRequestService.changeDashboardState(user, executionId, state);
+    }
+
+    @GetMapping("/executions/{executionId}/clarifications/publicClarificationsStats")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public List<ClarificationStatsDto> getPublicClarificationsStats(@PathVariable int executionId) {
+
+        return clarificationRequestService.getPublicClarificationsStats(executionId);
     }
 }
