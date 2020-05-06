@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,13 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRe
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.PublicClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Assessment;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import javax.validation.Valid;
+import java.nio.file.Files;
 import java.security.Principal;
 import java.util.List;
 
@@ -77,6 +81,13 @@ public class ClarificationController {
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
     public ClarificationRequestDto changeClarificationType(@PathVariable int clarificationRequestId, @Valid @RequestBody String type) {
         return clarificationRequestService.changeClarificationType(clarificationRequestId, type);
+    }
+
+    @PostMapping("/clarifications/{clarificationRequestId}/remove")
+    @PreAuthorize("(hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER'))  and hasPermission(#clarificationRequestId, 'CLARIFICATION.ACCESS')")
+    public ResponseEntity removeClarification(@PathVariable Integer clarificationRequestId) {
+        clarificationRequestService.removeClarification(clarificationRequestId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/questions/{questionId}/publicClarifications/executions/{execId}")

@@ -78,6 +78,12 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="query">UPDATE quiz_answers SET user_id = 676 WHERE user_id = 678;
+
+DELETE from clarification_comments;
+DELETE from public_clarifications_course_executions;
+DELETE from public_clarifications;
+DELETE from clarification_requests;
+
 INSERT INTO clarification_requests (id, creation_date, state, question_answer_id, user_id) VALUES (1, &apos;2020-07-05T08:46:16&apos;, &apos;UNRESOLVED&apos;, 64073, 676);
 INSERT INTO clarification_comments (id, creation_date, clarification_request_id, user_id) VALUES (1, &apos;2020-06-05T08:46:16&apos;, 1, 676);
 

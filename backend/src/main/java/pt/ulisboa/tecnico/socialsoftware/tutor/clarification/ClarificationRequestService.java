@@ -1,4 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification;
+import io.jsonwebtoken.lang.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -18,7 +19,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.Clarificatio
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.PublicClarificationRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -28,13 +28,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
-
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-
-
 
 @Service
 public class ClarificationRequestService {
@@ -49,9 +44,6 @@ public class ClarificationRequestService {
 
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
-
-    @Autowired
-    private PublicClarificationRepository publicClarificationRepository;
 
     @Autowired
     private PublicClarificationService publicClarificationService;
@@ -191,5 +183,16 @@ public class ClarificationRequestService {
                 .map(QuizAnswer::getQuiz)
                 .map(Quiz::getCourseExecution)
                 .orElseThrow(() -> new TutorException((ErrorMessage.CLARIFICATION_NOT_FOUND))));
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void removeClarification(int clarificationRequestId) {
+        ClarificationRequest request = clarificationRequestRepository.findById(clarificationRequestId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND));
+        request.remove();
+        clarificationRequestRepository.delete(request);
     }
 }
