@@ -6,7 +6,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
-import spock.lang.Shared
 import spock.lang.Specification
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
@@ -40,7 +39,7 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
 @DataJpaTest
-class GetClarificationsStatsTest extends Specification {
+class GetPublicClarificationsStatsTest extends Specification {
 
     public static final String CLARIFICATION_CONTENT = "ClarificationRequest Question"
 
@@ -74,14 +73,7 @@ class GetClarificationsStatsTest extends Specification {
     @Autowired
     ClarificationRequestRepository clarificationRequestRepository
 
-    @Shared
-    def teacher
-    @Shared
-    def student
-
     def courseExecution
-    def questionAnswer
-    def clarificationRequest
 
     def setup() {
         def course = new Course()
@@ -91,11 +83,6 @@ class GetClarificationsStatsTest extends Specification {
         courseExecution = new CourseExecution()
         courseExecution.setCourse(course)
         courseExecutionRepository.save(courseExecution)
-
-        teacher = new User("Name", "Username", 1, User.Role.TEACHER)
-        teacher.addCourse(courseExecution)
-        courseExecution.addUser(teacher)
-        userRepository.save(teacher)
 
         def quiz = new Quiz()
         quiz.setTitle("titleQuiz")
@@ -116,91 +103,39 @@ class GetClarificationsStatsTest extends Specification {
         quizAnswer.setQuiz(quiz)
         quizAnswerRepository.save(quizAnswer)
 
-        questionAnswer = new QuestionAnswer()
+        def questionAnswer = new QuestionAnswer()
         questionAnswer.setQuizAnswer(quizAnswer)
         questionAnswer.setQuizQuestion(quizQuestion)
         questionAnswerRepository.save(questionAnswer)
 
-        student = new User("Student", "Student", 2, User.Role.STUDENT)
-        student.addCourse(courseExecution)
-        courseExecution.addUser(student)
-        userRepository.save(student)
+        1.upto(3, {
+            def student = new User("Student" + it , "Student" + it, it.intValue(), User.Role.STUDENT)
+            student.setClarificationDashState(User.DashBoardState.PUBLIC)
+            student.addCourse(courseExecution)
+            courseExecution.addUser(student)
+            userRepository.save(student)
 
-        clarificationRequest = new ClarificationRequest()
-        clarificationRequest.setState(ClarificationRequest.State.RESOLVED)
-        clarificationRequest.setType(ClarificationRequest.Type.PUBLIC)
-        clarificationRequest.setContent(CLARIFICATION_CONTENT)
-        clarificationRequest.setUser(student)
-        clarificationRequest.setQuestionAnswer(questionAnswer)
-        clarificationRequestRepository.save(clarificationRequest)
-
-        student.addClarification(clarificationRequest)
-        teacher.addClarification(clarificationRequest)
-
+            def clarificationRequest = new ClarificationRequest()
+            clarificationRequest.setState(ClarificationRequest.State.RESOLVED)
+            clarificationRequest.setType(ClarificationRequest.Type.PUBLIC)
+            clarificationRequest.setContent(CLARIFICATION_CONTENT)
+            clarificationRequest.setUser(student)
+            clarificationRequest.setQuestionAnswer(questionAnswer)
+            clarificationRequestRepository.save(clarificationRequest)
+        })
     }
 
-    def "A student requests Clarifications Statistics without making any Clarification Request"() {
-        given: "A student with no Clarifications"
-        def student2 = new User("Student2", "Student2", 3, User.Role.STUDENT)
-        userRepository.save(student2)
-
+    def "Student requests all Public Clarifications Stats"() {
         when:
-        def clarificationsStats = clarificationRequestService.getClarificationsStats(student2.getId(), courseExecution.getId())
+        def publicStatsDto = clarificationRequestService.getPublicClarificationsStats(courseExecution.getId())
 
         then:
-        clarificationsStats.getName() == student2.getName()
-        clarificationsStats.getUsername() == student2.getUsername()
-        clarificationsStats.getTotalClarificationRequests() == 0
-        clarificationsStats.getPublicClarificationRequests() == 0
-        clarificationsStats.getPercentageOfPublicClarifications() == 0
+        publicStatsDto.size() == 3
     }
 
-    def "A student requests Clarifications Statistics"() {
+    def "Student requests all Public Clarifications Stats of a non existing Course Execution"() {
         when:
-        def clarificationsStats = clarificationRequestService.getClarificationsStats(student.getId(), courseExecution.getId())
-
-        then:
-        clarificationsStats.getName() == student.getName()
-        clarificationsStats.getUsername() == student.getUsername()
-        clarificationsStats.getTotalClarificationRequests() == 1
-        clarificationsStats.getPublicClarificationRequests() == 1
-        clarificationsStats.getPercentageOfPublicClarifications() == 100
-    }
-
-    def "A student requests Clarifications Statistics with one Public and a non Public Clarification"() {
-        given: "A non Public Clarification"
-        def newClarificationRequest = new ClarificationRequest()
-        newClarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
-        newClarificationRequest.setType(ClarificationRequest.Type.PRIVATE)
-        newClarificationRequest.setContent(CLARIFICATION_CONTENT)
-        newClarificationRequest.setUser(student)
-        newClarificationRequest.setQuestionAnswer(questionAnswer)
-        clarificationRequestRepository.save(newClarificationRequest)
-        student.addClarification(newClarificationRequest)
-
-        when:
-        def clarificationsStats = clarificationRequestService.getClarificationsStats(student.getId(), courseExecution.getId())
-
-        then:
-        clarificationsStats.getName() == student.getName()
-        clarificationsStats.getUsername() == student.getUsername()
-        clarificationsStats.getTotalClarificationRequests() == 2
-        clarificationsStats.getPublicClarificationRequests() == 1
-        clarificationsStats.getPercentageOfPublicClarifications() == 50
-    }
-
-    def "A teacher requests Clarifications Statistics"() {
-        when:
-        clarificationRequestService.getClarificationsStats(teacher.getId(), courseExecution.getId())
-
-        then:
-        def error = thrown(TutorException)
-        error.getErrorMessage() == ErrorMessage.USER_NOT_STUDENT
-    }
-
-    def "A student requests Clarifications Statistics of a non existing Execution Course "() {
-        when:
-        clarificationRequestService.getClarificationsStats(student.getId(), 0)
+        clarificationRequestService.getPublicClarificationsStats(0)
 
         then:
         def error = thrown(TutorException)
@@ -209,7 +144,7 @@ class GetClarificationsStatsTest extends Specification {
 
 
     @TestConfiguration
-    static class GetClarificationsStatsContextConfiguration {
+    static class GetPublicClarificationsStatsContextConfiguration {
 
         @Bean
         ClarificationRequestService ClarificationRequestService() {

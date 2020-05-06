@@ -100,7 +100,7 @@ class ChangeDashboardStateTest extends Specification  {
     }
 
     @TestConfiguration
-    static class ChangeDashboardStateTestContextConfiguration {
+    static class ChangeDashboardStateContextConfiguration {
 
         @Bean
         ClarificationRequestService ClarificationRequestService() {

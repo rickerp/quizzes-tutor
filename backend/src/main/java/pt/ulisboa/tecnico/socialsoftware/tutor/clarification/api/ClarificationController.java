@@ -121,4 +121,11 @@ public class ClarificationController {
 
         return clarificationRequestService.changeDashboardState(user, executionId, state);
     }
+
+    @GetMapping("/executions/{executionId}/clarifications/publicClarificationsStats")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public List<ClarificationStatsDto> getPublicClarificationsStats(@PathVariable int executionId) {
+
+        return clarificationRequestService.getPublicClarificationsStats(executionId);
+    }
 }

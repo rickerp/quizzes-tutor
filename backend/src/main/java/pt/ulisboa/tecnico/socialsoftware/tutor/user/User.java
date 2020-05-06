@@ -72,6 +72,8 @@ public class User implements UserDetails, DomainEntity {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "players")
     private Set<Tournament> tournaments = new HashSet<>();
 
+    @Column(name = "clarification_dashboard_state")
+    @Enumerated(EnumType.STRING)
     private DashBoardState clarificationDashState;
 
     public User() {

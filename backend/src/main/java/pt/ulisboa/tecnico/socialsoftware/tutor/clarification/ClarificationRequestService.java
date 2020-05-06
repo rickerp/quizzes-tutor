@@ -204,6 +204,22 @@ public class ClarificationRequestService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<ClarificationStatsDto> getPublicClarificationsStats(int executionId) {
+
+        CourseExecution courseExec = courseExecutionRepository.findById(executionId)
+                .orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, executionId));
+
+        return courseExec.getUsers().stream()
+                .filter(entry -> entry.getRole() == User.Role.STUDENT
+                        && entry.getClarificationDashState() == User.DashBoardState.PUBLIC)
+                .map(entry -> getClarificationsStats(entry.getId(), courseExec.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public ClarificationStatsDto changeDashboardState(User user, int executionId, String state) {
 
         if (user.getRole() != User.Role.STUDENT)
