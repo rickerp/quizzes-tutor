@@ -98,9 +98,10 @@ public class Tournament {
 
     public TournamentQuiz getQuiz() { return quiz; }
 
-    public void createQuiz() {
+    public TournamentQuiz createQuiz() {
         quiz = new TournamentQuiz(this);
         tournamentAnswers.forEach(TournamentAnswer::createQuestionAnswers);
+        return quiz;
     }
 
     public Set<User> getPlayers() {

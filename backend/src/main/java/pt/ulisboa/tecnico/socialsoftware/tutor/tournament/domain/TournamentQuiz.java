@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain;
 
 import javax.persistence.*;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS;
 
 @Entity
 @Table(name = "tournament_quizzes")
@@ -69,20 +72,18 @@ public class TournamentQuiz {
             Iterator<List<Question>> topicIt = topicsQuestions.iterator();
             while (qRem > 0 && topicIt.hasNext()) {
                 List<Question> topicQuestions = topicIt.next();
-                while (true) {
-                    if (topicQuestions.isEmpty()) {
-                        topicIt.remove();
-                        break;
-                    }
-                    Question question = topicQuestions.remove(0);
-                    if (questions.add(question)) {
+                while (!topicQuestions.isEmpty()) {
+                    if (questions.add(topicQuestions.remove(0))) {
                         qRem--;
                         hadQuestion = true;
-                        new TournamentQuestion(this, question);
                         break;
                     }
                 }
+                if (topicQuestions.isEmpty()) topicIt.remove();
             }
         } while (hadQuestion);
+
+        if (qRem > 0) throw new TutorException(TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS);
+        for (Question question: questions) new TournamentQuestion(this, question);
     }
 }

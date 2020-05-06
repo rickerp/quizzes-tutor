@@ -5,10 +5,16 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentRepository
@@ -38,7 +44,16 @@ class EnrollTournamentServiceTest extends Specification {
     UserRepository userRepository
 
     @Autowired
+    OptionRepository optionRepository
+
+    @Autowired
+    QuestionRepository questionRepository
+
+    @Autowired
     TopicRepository topicRepository
+
+    @Autowired
+    CourseRepository courseRepository
 
     @Autowired
     CourseExecutionRepository courseExecutionRepository
@@ -55,6 +70,9 @@ class EnrollTournamentServiceTest extends Specification {
     def tournament
 
     def setup() {
+        "Create a Course"
+        Course course = new Course(NAME, Course.Type.TECNICO)
+        courseRepository.save(course)
         "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
@@ -63,12 +81,30 @@ class EnrollTournamentServiceTest extends Specification {
         player = new User(NAME, USERNAME_1, KEY_1, STUDENT)
         player.addCourse(courseExecution)
         userRepository.save(player)
-        "Create 5 Topics"
+        "Create 5 Topics, each with 2 questions"
         topics = new HashSet<Topic>()
         1.upto(5, {
             Topic topic = new Topic()
             topic.setName(NAME + it)
             topicRepository.save(topic)
+
+            1.upto(2, {
+                Option option = new Option()
+                option.setSequence(topic.getId() * 5 + it)
+                option.setCorrect(true)
+                option.setContent(NAME + it)
+                optionRepository.save(option)
+
+                Question question = new Question()
+                question.setKey(topic.getId() * 5 + it)
+                question.setCourse(course)
+                question.setTitle(NAME + it)
+                questionRepository.save(question)
+                option.setQuestion(question)
+
+                question.addTopic(topic)
+            })
+
             topics.add(topic)
         })
         "Create a Tournament"

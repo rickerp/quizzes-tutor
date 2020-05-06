@@ -100,10 +100,8 @@ public class TournamentService {
                 .orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
 
         tournament.enroll(player);
-        if (!tournament.quizIsGenerated() && tournament.getTournamentAnswers().size() > 1) {
-            tournament.createQuiz();
-            tournamentQuizRepository.save(tournament.getQuiz());
-        }
+        if (!tournament.quizIsGenerated() && tournament.getTournamentAnswers().size() > 1) 
+            this.generateQuiz(tournamentId);
         return new TournamentDto(tournament);
     }
 
@@ -140,11 +138,19 @@ public class TournamentService {
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public TournamentQuizDto beginQuiz(int tournamentId, int userId) {
-
         TournamentAnswer tournamentAnswer = findTournamentAnswer(tournamentId, userId);
-
         return new TournamentQuizDto(tournamentAnswer);
-    }
+	}
+	
+	@Retryable(
+		value = { SQLException.class },
+		backoff = @Backoff(delay = 5000))
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public void generateQuiz(int tournamentId) {
+		Tournament tournament = tournamentRepository.findById(tournamentId)
+									.orElseThrow(() -> new TutorException(ErrorMessage.TOURNAMENT_NOT_FOUND, tournamentId));
+		tournamentQuizRepository.save(tournament.createQuiz());
+	}
 
     @Retryable(
             value = { SQLException.class },

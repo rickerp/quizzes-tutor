@@ -123,7 +123,7 @@ class QuizAnsweringTest extends Specification {
         question.addTopic(topic)
         topics = new HashSet<Topic>()
         topics.add(topic)
-        "Create Opened Tournaments"
+        "Create Opened Tournament"
         tournament = new Tournament()
         tournament.setName(T_NAME)
         tournament.setCreator(creator)
