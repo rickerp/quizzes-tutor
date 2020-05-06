@@ -47,7 +47,6 @@ public class ClarificationRequestDto {
         if (clarificationRequest.getImage() != null) { this.setImage(new ImageDto(clarificationRequest.getImage())); }
     }
 
-
     public int getId() {
         return id;
     }

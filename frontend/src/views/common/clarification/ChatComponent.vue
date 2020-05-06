@@ -2,10 +2,10 @@
   <v-card
     :elevation="0"
     :style="showToolbar ? 'max-height: 650px;' : 'max-height: 500px;'"
-    class="scrollbar mb-2 pb-2 'mt-0 pt-0 mr-0 pr-0' : !showToolbar"
+    class="scrollbar mb-2 pb-2"
   >
     <div v-for="request in requests" v-bind:key="request.id">
-      <v-subheader class="font-weight-medium mt-3 mb-3">
+      <v-subheader class="mt-3 mb-3">
         {{ request.creationDate }}
       </v-subheader>
       <v-divider :inset="true" class="mb-4"></v-divider>
@@ -25,7 +25,7 @@
           :key="comment.id"
         >
           <v-subheader
-            class="font-weight-medium"
+            class="mt-3 mb-3"
             v-bind:class="{ 'justify-end': comment.user.role === 'TEACHER' }"
           >
             {{ comment.creationDate }}
@@ -61,6 +61,7 @@
           </v-hover>
         </span>
       </span>
+      <hr v-if="request.id !== requests[requests.length - 1].id" class="rounded mt-10 mb-10" />
     </div>
   </v-card>
 </template>
@@ -76,3 +77,12 @@ export default class ChatComponent extends Vue {
   @Prop() readonly showToolbar!: boolean;
 }
 </script>
+<style>
+hr.rounded {
+  border-top: 4px dotted #333333;
+}
+.v-subheader {
+  color: black !important;
+  font-size: 17px !important;
+}
+</style>

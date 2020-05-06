@@ -73,9 +73,7 @@
             <span>Show Clarification</span>
           </v-tooltip>
           <v-tooltip bottom v-if="item.availability === 'INVISIBLE'">
-            <template
-              v-slot:activator="{ on }"
-            >
+            <template v-slot:activator="{ on }">
               <v-icon
                 large
                 color="green darken-4"

@@ -60,7 +60,7 @@
                 large
                 class="mr-2"
                 v-on="on"
-                @click="showFullClarification(item, 2)"
+                @click="changeCrrState(item, 2)"
                 data-cy="showQuestion"
                 >visibility</v-icon
               >
@@ -76,7 +76,7 @@
                 class="mr-2"
                 v-on="on"
                 data-cy="showClrf"
-                @click="showFullClarification(item, 3)"
+                @click="changeCrrState(item, 3)"
                 >fas fa-comments</v-icon
               >
             </template>
@@ -252,7 +252,7 @@ export default class ClarificationList extends Vue {
     await this.$store.dispatch('clearLoading');
   }
 
-  showFullClarification(request: ClarificationRequest, showAction: number) {
+  changeCrrState(request: ClarificationRequest, showAction: number) {
     this.viewAction = showAction;
     this.clarification = request;
     this.isResolved = this.clarification.state == 'RESOLVED';
