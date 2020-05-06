@@ -22,6 +22,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto.StatementAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentQuizDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentAnswerRepository;
@@ -112,17 +113,6 @@ public class TournamentService {
             this.generateQuiz(tournamentId);
         }
         return new TournamentDto(tournament);
-    }
-
-    @Retryable(
-            value = { SQLException.class },
-            backoff = @Backoff(delay = 5000))
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void generateQuiz(int tournamentId) {
-
-        Tournament tournament = tournamentRepository.findById(tournamentId)
-                .orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
-        tournamentQuizRepository.save(tournament.createQuiz());
     }
 
     @Retryable(
@@ -247,6 +237,32 @@ public class TournamentService {
         if (tournament.quizIsGenerated()) tournamentQuizRepository.delete(tournament.getQuiz());
         tournamentRepository.delete(tournament);
     }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void generateQuiz(int tournamentId) {
+
+        Tournament tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
+        tournamentQuizRepository.save(tournament.createQuiz());
+    }
+
+     @Retryable(
+             value = { SQLException.class },
+             backoff = @Backoff(delay = 5000))
+     @Transactional(isolation = Isolation.REPEATABLE_READ)
+     public List<TournamentAnswerDto> getStudentTournamentAnswers(int userId, int executionId) {
+         User student = userRepository.findById(userId)
+                 .orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+         return student.getTournamentAnswers().stream()
+                 .filter(tA -> tA.getTournament().getCourseExecution().getId() == executionId
+                         && tA.getFinishTime() != null)
+                 .map(TournamentAnswerDto::new).collect(Collectors.toList());
+     }
+
 
     @Retryable(
             value = { SQLException.class },

@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.CorrectAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto.StatementAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentQuizDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -79,6 +80,16 @@ public class TournamentController {
         checkPathCoherence(tournamentId, executionId);
         tournamentService.removeTournament(tournamentId, getUser(principal).getId());
     }
+
+     @GetMapping("/executions/{executionId}/tournaments/answers")
+     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+     public List<TournamentAnswerDto> getStudentTournamentAnswers(Principal principal, @PathVariable int executionId) {
+         User user = (User) ((Authentication) principal).getPrincipal();
+         if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
+
+         return tournamentService.getStudentTournamentAnswers(user.getId(), executionId);
+     }
+
 
     private User getUser(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
