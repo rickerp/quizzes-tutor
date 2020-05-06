@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerR
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.stats.ClarificationStatsDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.PublicClarificationRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
@@ -158,6 +159,20 @@ public class ClarificationRequestService {
         }
         entityManager.persist(clarificationRequest);
         return new ClarificationRequestDto(clarificationRequest);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ClarificationStatsDto getClarificationsStats(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND));
+
+        if (user.getRole() != User.Role.STUDENT)
+            throw new TutorException(ErrorMessage.USER_NOT_STUDENT, user.getId());
+
+        return new ClarificationStatsDto(user);
     }
 
     private List<ClarificationRequestDto> getClarificationsOfStudent(User user, int executionId) {

@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCo
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.PublicClarificationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.stats.ClarificationStatsDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -99,5 +100,15 @@ public class ClarificationController {
     public PublicClarificationDto rmvCourseExecToPublicClrf(@PathVariable int questionId, @PathVariable int pClrId,
                                                                    @PathVariable int execId) {
         return publicClarificationService.rmvCourseExecToPublicClrf(pClrId, execId);
+    }
+
+    @GetMapping("/executions/{executionId}/clarifications/clarificationsStats")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public ClarificationStatsDto getClarificationsStates(Principal principal, @PathVariable int executionId) {
+
+        User user = (User) ((Authentication) principal).getPrincipal();
+        if (user == null) throw new TutorException(AUTHENTICATION_ERROR);
+
+        return clarificationRequestService.getClarificationsStats(user.getId());
     }
 }
