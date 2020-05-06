@@ -5,6 +5,7 @@
       :tournaments="tournaments"
       v-on:new-tournament="newTournament"
       v-on:enroll-player="enrollPlayer"
+      v-on:cancel-tournament="removeTournament"
     ></tournaments-table>
     <edit-tournament-dialog
       v-if="currentTournament"
@@ -83,6 +84,20 @@ export default class CalendarView extends Vue {
           1,
           await RemoteServices.enrollPlayer(item.id)
         );
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+      await this.$store.dispatch('clearLoading');
+    }
+  }
+
+  async removeTournament(item: Tournament) {
+    if (confirm('Are you sure you want to Cancel "' + item.name + '"?')) {
+      await this.$store.dispatch('loading');
+      try {
+        await RemoteServices.removeTournament(item.id);
+        let idx = this.tournaments.findIndex(e => e.id === item.id);
+        this.tournaments.splice(idx, 1);
       } catch (error) {
         await this.$store.dispatch('error', error);
       }

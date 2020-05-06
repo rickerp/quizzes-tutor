@@ -84,6 +84,20 @@
           </template>
           <span>Enroll</span>
         </v-tooltip>
+        <v-tooltip v-if="item.creatorId === userId" bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              large
+              color="red"
+              class="mr-2"
+              v-on="on"
+              @click="$emit('cancel-tournament', item)"
+              data-cy="cancelTdP"
+              >fas fa-trash</v-icon
+            >
+          </template>
+          <span>Cancel</span>
+        </v-tooltip>
       </div>
       <div v-else>
         <v-tooltip bottom>

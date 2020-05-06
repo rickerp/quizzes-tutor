@@ -14,20 +14,23 @@ describe('Tournament Quizzes Tests', () => {
     cy.clickRowButton('Demo-Tournament-Quiz', 'topicsTdP');
     /* Get Tournament Id */
     cy.task('query', {
-      sql: 'SELECT id FROM tournaments WHERE name = \'Demo-Tournament-Quiz\' ' +
+      sql:
+        'SELECT id FROM tournaments WHERE name = \'Demo-Tournament-Quiz\' ' +
         'AND creator_id = 676'
     }).then(command => {
       let tid = command?.rows[command?.rows.length - 1].id;
       /* Enroll User in Tournament */
       cy.task('query', {
-        sql: 'INSERT INTO tournament_answers(tournament_id, user_id) VALUES ($1, 651)',
+        sql:
+          'INSERT INTO tournament_answers(tournament_id, user_id) VALUES ($1, 651)',
         values: [tid]
       });
       /* Enroll Creator in Tournament (Generating the Quiz for Tournament) */
       cy.clickRowButton('Demo-Tournament-Quiz', 'enrollTdP');
       /* Opened Tournament > In Progress Tournament */
       cy.task('query', {
-        sql: 'UPDATE tournaments SET start_time = \'2000-01-01T12:00:00Z\' WHERE id = $1',
+        sql:
+          'UPDATE tournaments SET start_time = \'2000-01-01T12:00:00Z\' WHERE id = $1',
         values: [tid]
       });
     });

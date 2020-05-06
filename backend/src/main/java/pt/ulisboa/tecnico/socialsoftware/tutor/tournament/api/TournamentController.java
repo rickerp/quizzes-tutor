@@ -74,7 +74,7 @@ public class TournamentController {
     }
 
     @DeleteMapping("/executions/{executionId}/tournaments/{tournamentId}/cancel")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
     public void removeTournament(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId) {
         checkPathCoherence(tournamentId, executionId);
         tournamentService.removeTournament(tournamentId, getUser(principal).getId());

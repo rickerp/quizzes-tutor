@@ -141,6 +141,16 @@ export default class RemoteServices {
       });
   }
 
+  static async removeTournament(id: number) {
+    return httpClient
+      .delete(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}/cancel`
+      )
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async startTournamentQuiz(id: number): Promise<TournamentQuiz> {
     return httpClient
       .get(
