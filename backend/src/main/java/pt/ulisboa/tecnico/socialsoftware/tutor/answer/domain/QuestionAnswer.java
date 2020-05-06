@@ -50,7 +50,7 @@ public class QuestionAnswer implements DomainEntity {
 
     private Integer sequence;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch=FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch = FetchType.LAZY)
     private Set<ClarificationRequest> clarificationRequests = new HashSet<>();
 
     public QuestionAnswer() {
@@ -197,12 +197,13 @@ public class QuestionAnswer implements DomainEntity {
     }
 
     public void remove() {
-        quizAnswer.getQuestionAnswers().remove(this);
-        quizAnswer = null;
+        if (!isFromTournament()) {
+            quizAnswer.getQuestionAnswers().remove(this);
+            quizAnswer = null;
 
-        quizQuestion.getQuestionAnswers().remove(this);
-        quizQuestion = null;
-
+            quizQuestion.getQuestionAnswers().remove(this);
+            quizQuestion = null;
+        }
         if (option != null) {
             option.getQuestionAnswers().remove(this);
             option = null;

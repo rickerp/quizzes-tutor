@@ -20,14 +20,14 @@ import StatementTournamentQuiz from '@/models/statement/StatementTournamentQuiz'
     'tournaments-table': TournamentsTable
   }
 })
-export default class OngoingView extends Vue {
+export default class InProgressView extends Vue {
   tournaments: Tournament[] = [];
   calendar: boolean = false;
 
   async created() {
     await this.$store.dispatch('loading');
     try {
-      this.tournaments = await RemoteServices.getOngoingTournaments();
+      this.tournaments = await RemoteServices.getInProgressTournaments();
     } catch (error) {
       await this.$store.dispatch('error', error);
     }

@@ -65,7 +65,7 @@ public class TournamentQuiz {
         topicsQuestions.forEach(Collections::shuffle);
         Set<Question> questions = new HashSet<>();
 
-        int qRem = getTournament().getNrQuestions();
+        Integer qRem = getTournament().getNrQuestions();
         boolean hadQuestion;
         do {
             hadQuestion = false;
@@ -83,7 +83,11 @@ public class TournamentQuiz {
             }
         } while (hadQuestion);
 
-        if (qRem > 0) throw new TutorException(TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS);
-        for (Question question: questions) new TournamentQuestion(this, question);
+        if (qRem > 0) { throw new TutorException(TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS); }
+        for (Question question: questions) { new TournamentQuestion(this, question); }
+    }
+
+    public void remove() {
+        tournamentQuestions.forEach(TournamentQuestion::remove);
     }
 }

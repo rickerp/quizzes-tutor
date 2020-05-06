@@ -19,12 +19,12 @@ public class TournamentQuizDto implements Serializable {
 
     public TournamentQuizDto(TournamentAnswer answer) {
 
-        questions = answer.getQuestionsAnswers().stream()
+        questions = answer.getQuestionAnswers().stream()
                 .map(StatementQuestionDto::new)
                 .sorted(Comparator.comparing(StatementQuestionDto::getSequence))
                 .collect(Collectors.toList());
 
-        answers = answer.getQuestionsAnswers().stream()
+        answers = answer.getQuestionAnswers().stream()
                 .map(StatementAnswerDto::new)
                 .sorted(Comparator.comparing(StatementAnswerDto::getSequence))
                 .collect(Collectors.toList());

@@ -87,6 +87,7 @@ public enum ErrorMessage {
     TOURNAMENT_NOT_ACCEPTING_RESPONSES("The Tournament with id %d is not accepting responses"),
     TOURNAMENT_ALREADY_FINISHED("The Tournament with id %d is already finished by the user with id %d"),
     TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS("The questions associated with the tournament topics are insufficient for the number of questions in the tournament"),
+    INVALID_TOURNAMENT_CREATOR("The Student with id %d is not the Creator of the Tournament with id %d"),
 
     CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("ClarificationRequest content invalid"),

@@ -28,10 +28,7 @@ public class TournamentController {
     @PostMapping("/executions/{executionId}/tournaments")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#tournamentDto, 'TOURNAMENT.CREATE', #executionId)")
     public TournamentDto createTournament(Principal principal, @RequestBody TournamentDto tournamentDto, @PathVariable int executionId) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-        tournamentDto.setCreatorId(user.getId());
+        tournamentDto.setCreatorId(getUser(principal).getId());
         tournamentDto.setCourseExecutionId(executionId);
         return tournamentService.createTournament(tournamentDto);
     }
@@ -39,13 +36,8 @@ public class TournamentController {
     @PutMapping("/executions/{executionId}/tournaments/{tournamentId}")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
     public TournamentDto enroll(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        if(user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-        if (tournamentService.findTournamentCourseExecution(tournamentId).getCourseExecutionId() != executionId) {
-            throw new TutorException(NO_TOURNAMENT_IN_EXECUTION, tournamentId);
-        }
-        return tournamentService.enroll(user.getId(), tournamentId);
+        checkPathCoherence(tournamentId, executionId);
+        return tournamentService.enroll(getUser(principal).getId(), tournamentId);
     }
 
     @GetMapping("/executions/{executionId}/tournaments")
@@ -57,45 +49,46 @@ public class TournamentController {
     @GetMapping("/executions/{executionId}/tournaments/ongoing")
     @PreAuthorize("hasPermission(#executionId, 'EXECUTION.ACCESS')")
     public List<TournamentDto> getExecutionInProgressNonFinishedTournaments(Principal principal, @PathVariable int executionId) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-        return tournamentService.getExecutionInProgressNonFinishedTournaments(executionId, user.getId());
+        return tournamentService.getExecutionInProgressNonFinishedTournaments(executionId, getUser(principal).getId());
     }
 
     @GetMapping("/executions/{executionId}/tournaments/{tournamentId}/quiz/begin")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
     public TournamentQuizDto beginQuiz(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-        if (tournamentService.findTournamentCourseExecution(tournamentId).getCourseExecutionId() != executionId) {
-            throw new TutorException(NO_TOURNAMENT_IN_EXECUTION, tournamentId);
-        }
-        return tournamentService.beginQuiz(tournamentId, user.getId());
+        checkPathCoherence(tournamentId, executionId);
+        return tournamentService.beginQuiz(tournamentId, getUser(principal).getId());
     }
 
     @PostMapping("/executions/{executionId}/tournaments/{tournamentId}/quiz/answer")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
     public void selectQuestionOption(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId, @Valid @RequestBody StatementAnswerDto answer) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-        if (tournamentService.findTournamentCourseExecution(tournamentId).getCourseExecutionId() != executionId) {
-            throw new TutorException(NO_TOURNAMENT_IN_EXECUTION, tournamentId);
-        }
-        tournamentService.selectQuestionOption(tournamentId, user.getId(), answer);
+        checkPathCoherence(tournamentId, executionId);
+        tournamentService.selectQuestionOption(tournamentId, getUser(principal).getId(), answer);
     }
 
     @GetMapping("/executions/{executionId}/tournaments/{tournamentId}/quiz/finish")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
     public List<CorrectAnswerDto> finishQuiz(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId) {
+        checkPathCoherence(tournamentId, executionId);
+        return tournamentService.finishQuiz(tournamentId, getUser(principal).getId());
+    }
+
+    @DeleteMapping("/executions/{executionId}/tournaments/{tournamentId}/cancel")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS') and hasPermission(#tournamentId, 'TOURNAMENT.ACCESS')")
+    public void removeTournament(Principal principal, @PathVariable int tournamentId, @PathVariable int executionId) {
+        checkPathCoherence(tournamentId, executionId);
+        tournamentService.removeTournament(tournamentId, getUser(principal).getId());
+    }
+
+    private User getUser(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
+        return user;
+    }
 
+    private void checkPathCoherence(int tournamentId, int executionId) {
         if (tournamentService.findTournamentCourseExecution(tournamentId).getCourseExecutionId() != executionId) {
             throw new TutorException(NO_TOURNAMENT_IN_EXECUTION, tournamentId);
         }
-        return tournamentService.finishQuiz(tournamentId, user.getId());
     }
 }

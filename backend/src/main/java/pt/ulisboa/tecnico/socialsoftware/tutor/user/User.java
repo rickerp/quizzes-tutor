@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
@@ -458,7 +459,7 @@ public class User implements UserDetails, DomainEntity {
                 .flatMap(quizAnswer -> quizAnswer.getQuestionAnswers().stream())
                 .filter(questionAnswer -> availableQuestions.contains(questionAnswer.getQuestion()))
                 .filter(questionAnswer -> questionAnswer.getTimeTaken() != null && questionAnswer.getTimeTaken() != 0)
-                .map(questionAnswer -> questionAnswer.getQuestion())
+                .map(QuestionAnswer::getQuestion)
                 .collect(Collectors.toList());
 
         List<Question> notAnsweredQuestions = availableQuestions.stream()

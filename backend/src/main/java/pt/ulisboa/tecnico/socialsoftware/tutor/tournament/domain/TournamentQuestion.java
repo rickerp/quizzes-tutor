@@ -66,4 +66,10 @@ public class TournamentQuestion {
     public boolean isQuestionOption(Option option) {
         return question.getOptions().stream().anyMatch(opt -> opt.getId().equals(option.getId()));
     }
+
+    public void remove() {
+        this.questionAnswers.forEach(QuestionAnswer::remove);
+        this.question.getTournamentQuestions().remove(this);
+        this.question = null;
+    }
 }

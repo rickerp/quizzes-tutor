@@ -11,7 +11,10 @@
         <i class="fas fa-clock"></i>
         <span v-if="showTime">{{ quizTimer }}</span>
       </span>
-      <span class="end-quiz" @click="confirmDialog = true" data-cy="FinishQuizTdP"
+      <span
+        class="end-quiz"
+        @click="confirmDialog = true"
+        data-cy="FinishQuizTdP"
         ><i class="fas fa-flag-checkered" />Finish</span
       >
     </header>
@@ -140,7 +143,7 @@ export default class QuizTournamentView extends Vue {
 
   async goBack() {
     StatementTournamentQuiz.newInstance();
-    await this.$router.push({ name: 'tournaments-ongoing' });
+    await this.$router.push({ name: 'tournaments-inprogress' });
   }
 
   async gotoResults() {

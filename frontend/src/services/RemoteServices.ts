@@ -113,7 +113,7 @@ export default class RemoteServices {
       });
   }
 
-  static async getOngoingTournaments(): Promise<Tournament[]> {
+  static async getInProgressTournaments(): Promise<Tournament[]> {
     return httpClient
       .get(
         `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/ongoing`

@@ -66,7 +66,7 @@ public class TournamentAnswer {
 
     public void setTournament(Tournament tournament) { this.tournament = tournament; }
 
-    public Set<QuestionAnswer> getQuestionsAnswers() { return questionAnswers; }
+    public Set<QuestionAnswer> getQuestionAnswers() { return questionAnswers; }
 
     public void addQuestionAnswer(QuestionAnswer questionAnswer) {
         questionAnswers.add(questionAnswer);
@@ -88,5 +88,11 @@ public class TournamentAnswer {
         return obj instanceof TournamentAnswer &&
                 user.getId().equals(((TournamentAnswer) obj).getUser().getId()) &&
                 tournament.getId().equals(((TournamentAnswer) obj).getTournament().getId());
+    }
+
+    public void remove() {
+        this.questionAnswers.forEach(QuestionAnswer::remove);
+        this.user.getTournamentAnswers().remove(this);
+        this.user = null;
     }
 }

@@ -54,7 +54,7 @@ export default class TournamentSolutionView extends Vue {
 
   async goBack() {
     StatementTournamentQuiz.newInstance();
-    await this.$router.push({ name: 'tournaments-ongoing' });
+    await this.$router.push({ name: 'tournaments-inprogress' });
   }
 
   getQuestionClass(idx: number): String[] {

@@ -10,8 +10,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -34,7 +33,7 @@ public class Tournament {
     @Column(nullable = false, name = "name")
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @Column(nullable = false, name = "topics")
     private Set<Topic> topics;
 
@@ -161,6 +160,10 @@ public class Tournament {
         new TournamentAnswer(this, player);
     }
 
+    public List<TournamentQuestion> getTournamentQuestions() {
+        return quizIsGenerated() ? quiz.getTournamentQuestions() : new ArrayList<>();
+    }
+
     public Set<TournamentAnswer> getTournamentAnswers() { return tournamentAnswers; }
 
     public void addTournamentAnswer(TournamentAnswer tournamentAnswer) {
@@ -174,5 +177,11 @@ public class Tournament {
                 .filter(tournamentAnswer -> tournamentAnswer.getUser().getId().equals(userId))
                 .findAny()
                 .orElse(null);
+    }
+
+    public void remove() {
+        if (!isOpened()) { throw new TutorException(TOURNAMENT_NOT_OPENED); }
+        tournamentAnswers.forEach(TournamentAnswer::remove);
+        if (quizIsGenerated()) quiz.remove();
     }
 }

@@ -1,4 +1,5 @@
 /* To Run Tournament Quizzes Tests:
+  - Run `npm install`
   - Set `tutordb` 'user' & 'password' at 'tests/e2e/plugins/index.js'
  */
 describe('Tournament Quizzes Tests', () => {

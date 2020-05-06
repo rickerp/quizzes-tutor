@@ -201,7 +201,7 @@ class QuizAnsweringTest extends Specification {
 
         then: "Check DB Data"
         tournament.getTournamentAnswers().size() == 2
-        Set<QuestionAnswer> answers = tournament.getTournamentAnswer(user.getId()).getQuestionsAnswers()
+        Set<QuestionAnswer> answers = tournament.getTournamentAnswer(user.getId()).getQuestionAnswers()
         answers.size() == 1
         Option o = answers[0].getOption()
         o != null

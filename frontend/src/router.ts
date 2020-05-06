@@ -22,7 +22,7 @@ import ClarificationList from '@/views/common/clarification/ClarificationList.vu
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
 import CalendarView from '@/views/student/tournaments/CalendarView.vue';
-import OngoingView from '@/views/student/tournaments/OngoingView.vue';
+import InProgressView from '@/views/student/tournaments/InProgressView.vue';
 import QuizTournamentView from '@/views/student/tournaments/QuizTournamentView.vue';
 import TournamentSolutionView from '@/views/student/tournaments/TournamentSolutionView.vue';
 
@@ -169,7 +169,7 @@ let router = new Router({
         {
           path: 'tournaments/inprogress',
           name: 'tournaments-inprogress',
-          component: OngoingView,
+          component: InProgressView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Tournaments Ongoing',
             requiredAuth: 'Student'
