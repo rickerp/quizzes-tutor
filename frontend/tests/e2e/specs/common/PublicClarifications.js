@@ -50,6 +50,13 @@ describe('Public Clarification walkthrough', () => {
     cy.contains(CLARIFICATION_CONTENT).should('not.exist');
   });
 
+  it('Make Public Clarification Visible To Student', () => {
+    cy.demoTeacherLogin();
+    cy.get('.bttnManagement').click();
+    cy.goToQuestionPublicClarification(QUESTION);
+    cy.changeAvailabilityPClarification(CLARIFICATION_CONTENT, 'VISIBLE');
+  });
+
   it('Make Public Clarification Private', () => {
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
