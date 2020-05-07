@@ -732,6 +732,21 @@ export default class RemoteServices {
       });
   }
 
+  static async changeDashboardState(
+    state: string
+  ): Promise<ClarificationStats> {
+    return httpClient
+      .post(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications/clarificationsStats/${state}`
+      )
+      .then(response => {
+        return new ClarificationStats(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getPublicClarificationsStats(): Promise<ClarificationStats[]> {
     return httpClient
       .get(

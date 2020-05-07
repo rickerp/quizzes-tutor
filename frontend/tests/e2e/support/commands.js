@@ -235,14 +235,17 @@ Cypress.Commands.add('showClarificationsTeacher', () => {
 
 Cypress.Commands.add('showClarificationsStats', () => {
   cy.contains('Dashboard').click();
-  cy.wait(500);
-  cy.get('.bttnClr').click();
+  cy.contains('Total Clarifications').click();
+});
+
+Cypress.Commands.add('changeClarificationsDashState', (state) => {
+  cy.contains('Dashboard').click();
+  cy.contains(state).click();
 });
 
 Cypress.Commands.add('showPublicClarificationsStats', () => {
-  cy.contains('Public Dashboards').click();
-  cy.wait(500);
-  cy.get('.bttnClr').click();
+  cy.contains('Public Statistics').click();
+  cy.contains('Demo Student').click();
 });
 
 Cypress.Commands.add('changeState', (clrfContent, oldState, newState) => {

@@ -61,8 +61,16 @@ describe('Clarification Requests walkthrough', () => {
     cy.showClarificationsStats();
   });
 
+  it('Change Clarifications Dashboard State', () => {
+    cy.get('.bttnClr').click();
+    cy.changeClarificationsDashState('Public');
+  });
+
   it('Show Public Clarification Stats', () => {
+    cy.get('.bttnClr').click();
+    cy.changeClarificationsDashState('Private');
     cy.get('.bttnClr').click();
     cy.showPublicClarificationsStats();
   });
+
 });
