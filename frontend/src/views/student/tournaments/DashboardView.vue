@@ -9,6 +9,7 @@
           :hide-details="true"
           :dense="true"
           @change="changeDashboardState()"
+          data-cy="dashPrivacy"
         >
           <template v-slot:label
             ><h2 style="color:#2c3e50;">Public</h2></template
@@ -80,11 +81,12 @@
             label="Search"
             class="mx-2"
           />
+          <v-spacer />
         </v-card-title>
       </template>
 
-      <template v-slot:item.name="{ item }">
-        <span v-text="item.tournamentName" data-cy="tournamentName"></span>
+      <template v-slot:item.name="{ item }" data-cy="nameTdP"
+        >{{ item.tournamentName }}
       </template>
 
       <template v-slot:item.topicsName="{ item }">

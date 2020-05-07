@@ -336,7 +336,7 @@ Cypress.Commands.add('doTournamentQuiz', options => {
 
 Cypress.Commands.add('seeTournamentQuizSolution', nrQuestions => {
   let i = nrQuestions;
-  cy.wrap(Array.from({length: nrQuestions})).each(() => {
+  cy.wrap(Array.from({ length: nrQuestions })).each(() => {
     cy.wait(500);
     if (--i > 0) cy.get('[data-cy="NextQuestionTdP"]').click();
   });

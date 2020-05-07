@@ -21,7 +21,7 @@ import ClarificationList from '@/views/common/clarification/ClarificationList.vu
 
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
-import CalendarView from '@/views/student/tournaments/CalendarView.vue';
+import TournamentCalendarView from '@/views/student/tournaments/CalendarView.vue';
 import TournamentInProgressView from '@/views/student/tournaments/InProgressView.vue';
 import QuizTournamentView from '@/views/student/tournaments/QuizTournamentView.vue';
 import TournamentSolutionView from '@/views/student/tournaments/TournamentSolutionView.vue';
@@ -161,7 +161,7 @@ let router = new Router({
         {
           path: 'tournaments/calendar',
           name: 'tournaments-calendar',
-          component: CalendarView,
+          component: TournamentCalendarView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Tournaments Calendar',
             requiredAuth: 'Student'
@@ -172,7 +172,7 @@ let router = new Router({
           name: 'tournaments-inprogress',
           component: TournamentInProgressView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Tournaments In progress',
+            title: process.env.VUE_APP_NAME + ' - Tournaments in Progress',
             requiredAuth: 'Student'
           }
         },

@@ -2,7 +2,7 @@
   - Run `npm install`
   - Set `tutordb` 'user' & 'password' at 'tests/e2e/plugins/index.js'
  */
-describe('Tournament Quizzes Tests', () => {
+describe('Tournament Quizzes and Dashboard Tests', () => {
   beforeEach(() => {
     /* Login */
     cy.demoStudentLogin();
@@ -27,6 +27,7 @@ describe('Tournament Quizzes Tests', () => {
       });
       /* Enroll Creator in Tournament (Generating the Quiz for Tournament) */
       cy.clickRowButton('Demo-Tournament-Quiz', 'enrollTdP');
+      cy.assertRowField('Demo-Tournament-Quiz', 'enrollmentsTdP', '2');
       /* Opened Tournament > In Progress Tournament */
       cy.task('query', {
         sql:
@@ -35,22 +36,34 @@ describe('Tournament Quizzes Tests', () => {
       });
     });
     cy.contains('Tournaments').click();
-    cy.wait(500);
     cy.contains('In progress').click();
   });
 
   afterEach(() => {
+    /* Check Dashboard */
+    cy.contains('Tournaments').click();
+    cy.contains('Dashboard').click();
+    cy.wait(1000);
+    cy.get('[data-cy="dashPrivacy"]')
+      .parent()
+      .click();
+    cy.contains('Demo-Tournament-Quiz')
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 4);
+    cy.wait(1000);
     cy.contains('Logout').click();
   });
 
-  it('Complete a Tournament Quiz & See Results', () => {
+  it('Complete a Tournament Quiz & See Results & Check Dashboard', () => {
     cy.clickRowButton('Demo-Tournament-Quiz', 'playTdP');
     cy.wait(500);
     cy.doTournamentQuiz(['1', '2', '1', '2', '1']);
     cy.seeTournamentQuizSolution(5);
   });
 
-  it('End Tournament Quiz (Without Answering) & See Results', () => {
+  it('End Tournament Quiz (Without Answering) & See Results & Check Dashboard', () => {
     cy.clickRowButton('Demo-Tournament-Quiz', 'playTdP');
     cy.wait(500);
     cy.get('[data-cy="FinishQuizTdP"]').click();
