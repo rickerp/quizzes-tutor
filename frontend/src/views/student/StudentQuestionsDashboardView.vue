@@ -50,6 +50,10 @@ export default class StudentQuestionsDashboardView extends Vue {
     await this.$store.dispatch('loading');
     try {
       this.visibility = await RemoteServices.setDashboardVisibilitry(newValue);
+      this.dashboards = await RemoteServices.getAllStudentQuestionsDashBoard();
+      this.dashboards.forEach((x: any) => {
+        x.rate = x.accepted / x.total;
+      });
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
