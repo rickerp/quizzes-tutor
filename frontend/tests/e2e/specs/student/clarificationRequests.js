@@ -11,9 +11,8 @@ describe('Clarification Requests walkthrough', () => {
     cy.respondQuiz(QUIZ_TITLE);
   });
 
-  beforeEach( () => {
+  beforeEach(() => {
     cy.demoStudentLogin();
-    cy.get('.quizzesButton').click();
   });
 
   afterEach(() => {
@@ -21,33 +20,44 @@ describe('Clarification Requests walkthrough', () => {
   });
 
   it('Create a invalid clarification request', () => {
+    cy.get('.quizzesButton').click();
     cy.goToMyClarifications(QUIZ_TITLE);
     cy.createInvalidClarificationRequest();
   });
 
   it('Creates a clarification request', () => {
+    cy.get('.quizzesButton').click();
     cy.goToMyClarifications(QUIZ_TITLE);
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
   });
 
   it('Change ClarificationState', () => {
-    cy.showClarifications();
-    cy.changeState(CLARIFICATION_CONTENT,'Unresolved', 'RESOLVED');
-    cy.changeState(CLARIFICATION_CONTENT,'Resolved', 'UNRESOLVED');
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
+    cy.changeState(CLARIFICATION_CONTENT, 'Unresolved', 'RESOLVED');
+    cy.changeState(CLARIFICATION_CONTENT, 'Resolved', 'UNRESOLVED');
   });
 
   it('Show Question of a clarification request submitted', () => {
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.showQuestionClarification(CLARIFICATION_CONTENT);
   });
 
   it('Show Clarification of a Clarification request submitted', () => {
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.showClarification(CLARIFICATION_CONTENT);
   });
 
   it('Delete a Clarification', () => {
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.deleteClarification(CLARIFICATION_CONTENT);
+  });
+
+  it('Show Clarification Stats', () => {
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStats();
   });
 });

@@ -61,7 +61,10 @@
           </v-hover>
         </span>
       </span>
-      <hr v-if="request.id !== requests[requests.length - 1].id" class="rounded mt-10 mb-10" />
+      <hr
+        v-if="request.id !== requests[requests.length - 1].id"
+        class="rounded mt-10 mb-10"
+      />
     </div>
   </v-card>
 </template>

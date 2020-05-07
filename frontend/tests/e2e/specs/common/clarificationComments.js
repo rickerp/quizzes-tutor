@@ -16,8 +16,7 @@ describe('Clarification Comments Walkthrough', () => {
     cy.createClarificationRequest(CLARIFICATION_CONTENT2);
   });
 
-  beforeEach(() => {
-  });
+  beforeEach(() => {});
 
   afterEach(() => {
     cy.contains('Logout').click();
@@ -26,14 +25,14 @@ describe('Clarification Comments Walkthrough', () => {
   it('Teacher Creates a invalid Clarification Comment', () => {
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
-    cy.showClarifications();
+    cy.showClarificationsTeacher();
     cy.createInvalidClarificationComment(CLARIFICATION_CONTENT);
   });
 
   it('Teacher Creates Clarification Comment in Action', () => {
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
-    cy.showClarifications();
+    cy.showClarificationsTeacher();
     cy.createClarificationCommentAct(
       CLARIFICATION_CONTENT,
       COMMENT_CONTENT + ' TEACHER'
@@ -43,7 +42,7 @@ describe('Clarification Comments Walkthrough', () => {
   it('Teacher Creates Create Clarification Comment in Chat View', () => {
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
-    cy.showClarifications();
+    cy.showClarificationsTeacher();
     cy.createClarificationCommentChat(
       CLARIFICATION_CONTENT2,
       COMMENT_CONTENT + ' TEACHER'
@@ -52,15 +51,15 @@ describe('Clarification Comments Walkthrough', () => {
 
   it('Student Creates a invalid Clarification Comment', () => {
     cy.demoStudentLogin();
-    cy.get('.quizzesButton').click();
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.createInvalidClarificationComment(CLARIFICATION_CONTENT);
   });
 
   it('Student Creates Clarification Comment in Action', () => {
     cy.demoStudentLogin();
-    cy.get('.quizzesButton').click();
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.createClarificationCommentAct(
       CLARIFICATION_CONTENT,
       COMMENT_CONTENT + ' STUDENT'
@@ -69,8 +68,8 @@ describe('Clarification Comments Walkthrough', () => {
 
   it('Student Creates Clarification Comment in Chat View', () => {
     cy.demoStudentLogin();
-    cy.get('.quizzesButton').click();
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.createClarificationCommentChat(
       CLARIFICATION_CONTENT2,
       COMMENT_CONTENT + ' STUDENT'

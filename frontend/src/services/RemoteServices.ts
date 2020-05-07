@@ -19,6 +19,7 @@ import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
 import { PublicClarification } from '@/models/management/PublicClarification';
+import { ClarificationStats } from '@/models/management/ClarificationStats';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -712,6 +713,19 @@ export default class RemoteServices {
       )
       .then(response => {
         return new ClarificationComment(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getClarificationsStats(): Promise<ClarificationStats> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications/clarificationsStats`
+      )
+      .then(response => {
+        return new ClarificationStats(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

@@ -225,8 +225,18 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('showClarifications', () => {
+Cypress.Commands.add('showClarificationsStudent', () => {
+  cy.contains('My Clarifications').click();
+});
+
+Cypress.Commands.add('showClarificationsTeacher', () => {
   cy.contains('Clarifications').click();
+});
+
+Cypress.Commands.add('showClarificationsStats', () => {
+  cy.contains('Dashboard').click();
+  cy.wait(500);
+  cy.get('.bttnClr').click();
 });
 
 Cypress.Commands.add('changeState', (clrfContent, oldState, newState) => {

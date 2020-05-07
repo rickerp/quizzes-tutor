@@ -18,6 +18,7 @@ import SolvedQuizzesView from '@/views/student/SolvedQuizzesView.vue';
 import QuizView from '@/views/student/quiz/QuizView.vue';
 import ResultsView from '@/views/student/quiz/ResultsView.vue';
 import ClarificationList from '@/views/common/clarification/ClarificationList.vue';
+import ClarificationDashboardView from '@/views/student/clarification/ClarificationDashboardView.vue';
 
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
@@ -178,6 +179,15 @@ let router = new Router({
           component: ClarificationList,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Clarifications',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'clarifications/dashboard',
+          name: 'clarifications-dashboard',
+          component: ClarificationDashboardView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Dashboard',
             requiredAuth: 'Student'
           }
         },

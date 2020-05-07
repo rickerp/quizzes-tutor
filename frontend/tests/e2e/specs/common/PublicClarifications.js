@@ -13,7 +13,7 @@ describe('Public Clarification walkthrough', () => {
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
-    cy.showClarifications();
+    cy.showClarificationsTeacher();
     cy.changeState(CLARIFICATION_CONTENT,'Unresolved', 'RESOLVED');
   });
 
@@ -24,7 +24,7 @@ describe('Public Clarification walkthrough', () => {
   it('Create a Public Clarification', () => {
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
-    cy.showClarifications();
+    cy.showClarificationsTeacher();
     cy.changeType(CLARIFICATION_CONTENT, 'PRIVATE', 'PUBLIC');
   });
 
@@ -53,7 +53,7 @@ describe('Public Clarification walkthrough', () => {
   it('Make Public Clarification Private', () => {
     cy.demoTeacherLogin();
     cy.get('.bttnManagement').click();
-    cy.showClarifications();
+    cy.showClarificationsTeacher();
     cy.changeType(CLARIFICATION_CONTENT, 'PUBLIC', 'PRIVATE');
   });
 });
