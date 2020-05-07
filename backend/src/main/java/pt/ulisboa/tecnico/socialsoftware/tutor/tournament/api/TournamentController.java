@@ -8,9 +8,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.CorrectAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto.StatementAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentQuizDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDashboardDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.validation.Valid;
@@ -81,10 +81,10 @@ public class TournamentController {
         tournamentService.removeTournament(tournamentId, getUser(principal).getId());
     }
 
-     @GetMapping("/executions/{executionId}/tournaments/answers")
+     @GetMapping("/executions/{executionId}/tournaments/dashboard")
      @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
-     public List<TournamentAnswerDto> getStudentTournamentAnswers(Principal principal, @PathVariable int executionId) {
-         return tournamentService.getStudentTournamentAnswers(getUser(principal).getId(), executionId);
+     public TournamentDashboardDto getTournamentDashboard(Principal principal, @PathVariable int executionId) {
+         return tournamentService.getTournamentDashboard(getUser(principal).getId(), executionId);
      }
 
     @PostMapping("/executions/tournaments/privacy")

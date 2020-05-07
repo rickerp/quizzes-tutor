@@ -22,9 +22,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto.StatementAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentQuizDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDashboardDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentQuizRepository;
@@ -253,16 +253,12 @@ public class TournamentService {
              value = { SQLException.class },
              backoff = @Backoff(delay = 5000))
      @Transactional(isolation = Isolation.REPEATABLE_READ)
-     public List<TournamentAnswerDto> getStudentTournamentAnswers(int userId, int executionId) {
+     public TournamentDashboardDto getTournamentDashboard(int userId, int executionId) {
 
          User user = userRepository.findById(userId)
                  .orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
-         return user.getTournamentAnswers().stream()
-                 .filter(tA -> tA.getTournament().getCourseExecution().getId() == executionId && tA.isFinished())
-                 .sorted((tCA, tCB) -> tCB.getFinishTime().compareTo(tCA.getFinishTime()))
-                 .map(TournamentAnswerDto::new)
-                 .collect(Collectors.toList());
+         return new TournamentDashboardDto(user, executionId);
      }
 
     @Retryable(

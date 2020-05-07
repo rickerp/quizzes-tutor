@@ -9,25 +9,25 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class TournamentAnswerDto implements Serializable {
+
     private int tournamentId;
     private String tournamentName;
     private String[] topicsName;
     private int nrQuestions;
-    private int nrQuestionsAnswered;
     private int nrCorrectAnswers;
     private String finishTime;
 
     public TournamentAnswerDto() {}
 
     public TournamentAnswerDto(TournamentAnswer tournamentAnswer) {
-        Tournament tournament = tournamentAnswer.getTournament();
-        setTournamentId(tournament.getId());
-        setTournamentName(tournament.getName());
-        setNrQuestions(tournament.getNrQuestions());
-        setTopicsName(tournament.getTopics().stream().map(Topic::getName).sorted().toArray(String[]::new));
+
+        Tournament t = tournamentAnswer.getTournament();
+        setTournamentId(t.getId());
+        setTournamentName(t.getName());
+        setTopicsName(t.getTopics().stream().map(Topic::getName).sorted().toArray(String[]::new));
+        setNrQuestions(t.getNrQuestions());
         setFinishTime(tournamentAnswer.getFinishTime());
         setNrCorrectAnswers(tournamentAnswer.getNrCorrectAnswers());
-        setNrQuestionsAnswered(tournamentAnswer.getNrQuestionsAnswered());
     }
 
     public int getTournamentId() {
@@ -54,29 +54,19 @@ public class TournamentAnswerDto implements Serializable {
         this.topicsName = topicsName;
     }
 
-    public int getNrQuestions() {
+    public Integer getNrQuestions() {
         return nrQuestions;
     }
 
-    public void setNrQuestions(int nrQuestions) {
+    public void setNrQuestions(Integer nrQuestions) {
         this.nrQuestions = nrQuestions;
     }
 
-    public int getNrQuestionsAnswered() {
-        return nrQuestionsAnswered;
-    }
-
-    public void setNrQuestionsAnswered(int nrQuestionsAnswered) {
-        this.nrQuestionsAnswered = nrQuestionsAnswered;
-    }
-
-    public int getNrCorrectAnswers() {
+    public Integer getNrCorrectAnswers() {
         return nrCorrectAnswers;
     }
 
-    public void setNrCorrectAnswers(int nrCorrectAnswers) {
-        this.nrCorrectAnswers = nrCorrectAnswers;
-    }
+    public void setNrCorrectAnswers(Integer nrCorrectAnswers) { this.nrCorrectAnswers = nrCorrectAnswers; }
 
     public String getFinishTime() { return finishTime; }
 

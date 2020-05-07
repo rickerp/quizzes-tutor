@@ -54,6 +54,10 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
 
+    private Integer nrTournamentQuestions = 0;
+    private Integer nrTournamentAnswers = 0;
+    private Integer nrTournamentCorrectAnswers = 0;
+
     @Column(name = "public_tournament_dashboard" ,columnDefinition = "boolean default false")
     private boolean publicTournamentDashboard = false;
 
@@ -402,6 +406,27 @@ public class User implements UserDetails, DomainEntity {
                 break;
         }
     }
+
+    public void addNrTournamentQuestions(Integer nrTournamentQuestions) {
+        if (this.nrTournamentQuestions == null) this.nrTournamentQuestions = 0;
+        this.nrTournamentQuestions += nrTournamentQuestions;
+    }
+
+    public void addNrTournamentAnswers(Integer nrTournamentAnswers) {
+        if (this.nrTournamentAnswers == null) this.nrTournamentAnswers = 0;
+        this.nrTournamentAnswers += nrTournamentAnswers;
+    }
+
+    public void addNrTournamentCorrectAnswers(Integer nrTournamentCorrectAnswers) {
+        if (this.nrTournamentCorrectAnswers == null) this.nrTournamentCorrectAnswers = 0;
+        this.nrTournamentCorrectAnswers += nrTournamentCorrectAnswers;
+    }
+
+    public Integer getNrTournamentQuestions() { return nrTournamentQuestions; }
+
+    public Integer getNrTournamentAnswers() { return nrTournamentAnswers; }
+
+    public Integer getNrTournamentCorrectAnswers() { return nrTournamentCorrectAnswers; }
 
     public void addQuizAnswer(QuizAnswer quizAnswer) {
         this.quizAnswers.add(quizAnswer);

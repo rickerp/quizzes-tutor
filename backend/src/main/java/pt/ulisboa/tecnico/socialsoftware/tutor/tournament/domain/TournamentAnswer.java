@@ -28,7 +28,6 @@ public class TournamentAnswer {
     @Column(name = "finish_time")
     private LocalDateTime finishTime;
 
-    private Integer nrQuestionsAnswered;
     private Integer nrCorrectAnswers;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tournamentAnswer", fetch = FetchType.LAZY, orphanRemoval = true)
@@ -81,17 +80,14 @@ public class TournamentAnswer {
 
     public void finish() {
         this.finishTime = DateHandler.now();
-        this.nrQuestionsAnswered = (int)questionAnswers.stream().filter(qA -> qA.getOption() != null).count();
+        Integer nrAnswers = (int)questionAnswers.stream().filter(qA -> qA.getOption() != null).count();
         this.nrCorrectAnswers = (int)questionAnswers.stream().filter(QuestionAnswer::isCorrect).count();
+        this.user.addNrTournamentQuestions(getTournament().getNrQuestions());
+        this.user.addNrTournamentAnswers(nrAnswers);
+        this.user.addNrTournamentCorrectAnswers(this.nrCorrectAnswers);
     }
 
-    public Integer getNrQuestionsAnswered() { return nrQuestionsAnswered; }
-
-    public void setNrQuestionsAnswered(Integer nrQuestionsAnswered) { this.nrQuestionsAnswered = nrQuestionsAnswered; }
-
     public Integer getNrCorrectAnswers() { return nrCorrectAnswers; }
-
-    public void setNrCorrectAnswers(Integer nrCorrectAnswers) { this.nrCorrectAnswers = nrCorrectAnswers; }
 
     @Override
     public int hashCode() {
