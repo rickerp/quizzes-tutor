@@ -42,8 +42,8 @@
         <stringProp name="checkQuery"></stringProp>
         <stringProp name="dbUrl">jdbc:postgresql://localhost:5432/tutordb?autoReconnect=true</stringProp>
         <stringProp name="driver">org.postgresql.Driver</stringProp>
-        <stringProp name="username"></stringProp>
-        <stringProp name="password"></stringProp>
+        <stringProp name="username">afonso</stringProp>
+        <stringProp name="password">123</stringProp>
         <stringProp name="connectionProperties"></stringProp>
       </JDBCDataSource>
       <hashTree/>
@@ -198,7 +198,7 @@ INSERT INTO evaluations(accepted, justification, student_question_id) values (&a
             </JSONPathAssertion>
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert approved" enabled="true">
-              <stringProp name="JSON_PATH">$.approved</stringProp>
+              <stringProp name="JSON_PATH">$.accepted</stringProp>
               <stringProp name="EXPECTED_VALUE">1</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
