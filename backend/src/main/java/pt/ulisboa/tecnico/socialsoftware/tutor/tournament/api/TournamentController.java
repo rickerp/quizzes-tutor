@@ -87,6 +87,12 @@ public class TournamentController {
          return tournamentService.getStudentTournamentAnswers(getUser(principal).getId(), executionId);
      }
 
+    @PostMapping("/executions/tournaments/privacy")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public Boolean setDashboardPrivacy(Principal principal, @Valid @RequestBody Boolean isPublic){
+        return tournamentService.setDashboardPrivacy(getUser(principal).getId(), isPublic);
+    }
+
     private User getUser(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
         if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }

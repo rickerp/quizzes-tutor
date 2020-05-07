@@ -266,6 +266,19 @@ public class TournamentService {
      }
 
     @Retryable(
+        value = { SQLException.class },
+        backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Boolean setDashboardPrivacy(int userId, Boolean isPublic) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+        user.setTournamentDashboardPrivacy(isPublic);
+        return user.isTournamentDashboardPublic();
+    }
+
+    @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)

@@ -54,6 +54,9 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean publicTournamentDashboard = false;
+
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
@@ -453,6 +456,10 @@ public class User implements UserDetails, DomainEntity {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean isTournamentDashboardPublic() { return publicTournamentDashboard; }
+
+    public void setTournamentDashboardPrivacy(Boolean isPublic) { publicTournamentDashboard = isPublic; }
 
     public List<Question> filterQuestionsByStudentModel(Integer numberOfQuestions, List<Question> availableQuestions) {
         List<Question> studentAnsweredQuestions = getQuizAnswers().stream()
