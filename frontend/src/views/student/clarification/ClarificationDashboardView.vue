@@ -1,20 +1,16 @@
 <template>
   <div>
     <div>
-      <p></p>
-      <v-spacer></v-spacer>
-      <v-card justify-center color="#333333" class="ml-12 mr-12">
-        <v-layout row wrap justify-center>
-          <v-spacer></v-spacer>
-          <h1 style="color: ghostwhite; padding-left:170px; padding-top: 6px;">
+      <v-card justify-center color="#333333" class="ml-12 mr-12 mt-4">
+        <v-layout>
+          <v-toolbar-title class="mt-1" style="color: ghostwhite;margin-left: 42%; font-size: xx-large">
             Clarifications Statistics
-          </h1>
-          <v-spacer></v-spacer>
+          </v-toolbar-title>
+          <v-spacer ></v-spacer>
           <v-switch
-            class="ml-12 pr-12"
-            flat
+            class="mr-9"
             color="info"
-            :dense="false"
+            :dense="true"
             v-model="isPublic"
             @change="changeDashboardState()"
           >

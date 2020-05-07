@@ -175,8 +175,8 @@ let router = new Router({
           }
         },
         {
-          path: 'clarifications',
-          name: 'clarifications-quizzes',
+          path: 'clarifications/myClarifications',
+          name: 'clarifications-myClarifications',
           component: ClarificationList,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Clarifications',

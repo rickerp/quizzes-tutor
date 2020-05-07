@@ -186,7 +186,7 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item to="/student/clarifications">
+            <v-list-item to="/student/clarifications/myClarifications">
               <v-list-item-action>
                 <v-icon>assignment</v-icon>
               </v-list-item-action>
