@@ -81,21 +81,23 @@ public class TournamentController {
         tournamentService.removeTournament(tournamentId, getUser(principal).getId());
     }
 
-     @GetMapping("/executions/{executionId}/tournaments/dashboard")
-     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
-     public TournamentDashboardDto getTournamentDashboard(Principal principal, @PathVariable int executionId) {
-         return tournamentService.getTournamentDashboard(getUser(principal).getId(), executionId);
-     }
+    @GetMapping("/executions/{executionId}/tournaments/dashboard")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    public TournamentDashboardDto getTournamentDashboard(Principal principal, @PathVariable int executionId) {
+        return tournamentService.getTournamentDashboard(getUser(principal).getId(), executionId);
+    }
 
-    @PostMapping("/executions/tournaments/privacy")
+    @PostMapping("/tournaments/privacy")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public Boolean setDashboardPrivacy(Principal principal, @Valid @RequestBody Boolean isPublic){
+    public Boolean setDashboardPrivacy(Principal principal, @Valid @RequestBody Boolean isPublic) {
         return tournamentService.setDashboardPrivacy(getUser(principal).getId(), isPublic);
     }
 
     private User getUser(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
-        if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
+        if (user == null) {
+            throw new TutorException(AUTHENTICATION_ERROR);
+        }
         return user;
     }
 

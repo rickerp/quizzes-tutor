@@ -168,6 +168,19 @@ export default class StatsView extends Vue {
     }
     await this.$store.dispatch('clearLoading');
   }
+
+  async changeDashboardState() {
+    if (this.dash == null) return;
+    await this.$store.dispatch('loading');
+    try {
+      this.dash.isPublic = await RemoteServices.setTournamentDashboardPrivacy(
+        this.dash.isPublic
+      );
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
+  }
 }
 </script>
 

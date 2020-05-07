@@ -47,12 +47,13 @@ describe('Tournament Quizzes and Dashboard Tests', () => {
     cy.get('[data-cy="dashPrivacy"]')
       .parent()
       .click();
+    cy.wait(500);
     cy.contains('Demo-Tournament-Quiz')
       .parent()
       .should('have.length', 1)
       .children()
       .should('have.length', 4);
-    cy.wait(1000);
+    cy.wait(500);
     cy.contains('Logout').click();
   });
 

@@ -206,6 +206,19 @@ export default class RemoteServices {
       });
   }
 
+  static async setTournamentDashboardPrivacy(
+    isPublic: boolean
+  ): Promise<boolean> {
+    return httpClient
+      .post('/tournaments/privacy', isPublic)
+      .then(response => {
+        return response.data;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getUserStats(): Promise<StudentStats> {
     return httpClient
       .get(
