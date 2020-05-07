@@ -60,4 +60,9 @@ describe('Clarification Requests walkthrough', () => {
     cy.get('.bttnClr').click();
     cy.showClarificationsStats();
   });
+
+  it('Show Public Clarification Stats', () => {
+    cy.get('.bttnClr').click();
+    cy.showPublicClarificationsStats();
+  });
 });

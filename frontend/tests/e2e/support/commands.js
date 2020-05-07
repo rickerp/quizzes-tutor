@@ -239,6 +239,12 @@ Cypress.Commands.add('showClarificationsStats', () => {
   cy.get('.bttnClr').click();
 });
 
+Cypress.Commands.add('showPublicClarificationsStats', () => {
+  cy.contains('Public Dashboards').click();
+  cy.wait(500);
+  cy.get('.bttnClr').click();
+});
+
 Cypress.Commands.add('changeState', (clrfContent, oldState, newState) => {
   cy.contains(clrfContent)
     .parent()

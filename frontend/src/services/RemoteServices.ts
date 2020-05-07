@@ -732,6 +732,21 @@ export default class RemoteServices {
       });
   }
 
+  static async getPublicClarificationsStats(): Promise<ClarificationStats[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications/publicClarificationsStats`
+      )
+      .then(response => {
+        return response.data.map((request: any) => {
+          return new ClarificationStats(request);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async createExternalCourse(course: Course): Promise<Course> {
     return httpClient
       .post('/courses/external', course)
