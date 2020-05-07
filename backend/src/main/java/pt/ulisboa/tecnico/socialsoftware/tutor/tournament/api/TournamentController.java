@@ -84,12 +84,8 @@ public class TournamentController {
      @GetMapping("/executions/{executionId}/tournaments/answers")
      @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
      public List<TournamentAnswerDto> getStudentTournamentAnswers(Principal principal, @PathVariable int executionId) {
-         User user = (User) ((Authentication) principal).getPrincipal();
-         if (user == null) { throw new TutorException(AUTHENTICATION_ERROR); }
-
-         return tournamentService.getStudentTournamentAnswers(user.getId(), executionId);
+         return tournamentService.getStudentTournamentAnswers(getUser(principal).getId(), executionId);
      }
-
 
     private User getUser(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();

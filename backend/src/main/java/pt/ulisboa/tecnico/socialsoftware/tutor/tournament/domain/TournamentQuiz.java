@@ -63,31 +63,32 @@ public class TournamentQuiz {
                 .map(topic -> new ArrayList<>(topic.getQuestions()))
                 .collect(Collectors.toList());
         topicsQuestions.forEach(Collections::shuffle);
-        Set<Question> questions = new HashSet<>();
+        Set<Question> quizQuestions = new HashSet<>();
 
-        Integer qRem = getTournament().getNrQuestions();
+        Integer remQuestions = getTournament().getNrQuestions();
         boolean hadQuestion;
         do {
             hadQuestion = false;
-            Iterator<List<Question>> topicIt = topicsQuestions.iterator();
-            while (qRem > 0 && topicIt.hasNext()) {
-                List<Question> topicQuestions = topicIt.next();
-                while (!topicQuestions.isEmpty()) {
-                    if (questions.add(topicQuestions.remove(0))) {
-                        qRem--;
-                        hadQuestion = true;
-                        break;
-                    }
-                }
-                if (topicQuestions.isEmpty()) topicIt.remove();
+            Iterator<List<Question>> it = topicsQuestions.iterator();
+            while (remQuestions > 0 && it.hasNext()) {
+                if (appendQuestion(quizQuestions, it.next())) {
+                    remQuestions--;
+                    hadQuestion = true;
+                } else it.remove();
             }
         } while (hadQuestion);
 
-        if (qRem > 0) { throw new TutorException(TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS); }
-        for (Question question: questions) { new TournamentQuestion(this, question); }
+        if (remQuestions > 0) { throw new TutorException(TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS); }
+        for (Question question: quizQuestions) { new TournamentQuestion(this, question); }
     }
 
-    public void remove() {
-        tournamentQuestions.forEach(TournamentQuestion::remove);
+    private boolean appendQuestion(Set<Question> quizQuestions, List<Question> topicQuestions) {
+
+        while (!topicQuestions.isEmpty()) {
+            if (quizQuestions.add(topicQuestions.remove(0))) return true;
+        }
+        return false;
     }
+
+    public void remove() { tournamentQuestions.forEach(TournamentQuestion::remove); }
 }

@@ -1,7 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
@@ -9,8 +7,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswe
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TournamentAnswerDto implements Serializable {
     private int tournamentId;
@@ -27,11 +23,11 @@ public class TournamentAnswerDto implements Serializable {
         Tournament tournament = tournamentAnswer.getTournament();
         setTournamentId(tournament.getId());
         setTournamentName(tournament.getName());
-        setTopicsName(tournament.getTopics().stream().map(Topic::getName).toArray(String[]::new));
         setNrQuestions(tournament.getNrQuestions());
-        setNrQuestionsAnswered(tournamentAnswer.getQuestionAnswers().stream().filter(qA -> qA.getOption() != null).toArray().length);
-        setNrCorrectAnswers(tournamentAnswer.getQuestionAnswers().stream().filter(QuestionAnswer::isCorrect).toArray().length);
+        setTopicsName(tournament.getTopics().stream().map(Topic::getName).sorted().toArray(String[]::new));
         setFinishTime(tournamentAnswer.getFinishTime());
+        setNrCorrectAnswers(tournamentAnswer.getNrCorrectAnswers());
+        setNrQuestionsAnswered(tournamentAnswer.getNrQuestionsAnswered());
     }
 
     public int getTournamentId() {

@@ -254,15 +254,16 @@ public class TournamentService {
              backoff = @Backoff(delay = 5000))
      @Transactional(isolation = Isolation.REPEATABLE_READ)
      public List<TournamentAnswerDto> getStudentTournamentAnswers(int userId, int executionId) {
-         User student = userRepository.findById(userId)
+
+         User user = userRepository.findById(userId)
                  .orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
-         return student.getTournamentAnswers().stream()
-                 .filter(tA -> tA.getTournament().getCourseExecution().getId() == executionId
-                         && tA.getFinishTime() != null)
-                 .map(TournamentAnswerDto::new).collect(Collectors.toList());
+         return user.getTournamentAnswers().stream()
+                 .filter(tA -> tA.getTournament().getCourseExecution().getId() == executionId && tA.isFinished())
+                 .sorted((tCA, tCB) -> tCB.getFinishTime().compareTo(tCA.getFinishTime()))
+                 .map(TournamentAnswerDto::new)
+                 .collect(Collectors.toList());
      }
-
 
     @Retryable(
             value = { SQLException.class },
