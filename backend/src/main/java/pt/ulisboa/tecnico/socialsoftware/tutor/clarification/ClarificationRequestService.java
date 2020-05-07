@@ -1,5 +1,4 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification;
-import io.jsonwebtoken.lang.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;

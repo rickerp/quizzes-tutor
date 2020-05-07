@@ -3,10 +3,13 @@
     <div>
       <v-card justify-center color="#333333" class="ml-12 mr-12 mt-4">
         <v-layout>
-          <v-toolbar-title class="mt-1" style="color: ghostwhite;margin-left: 42%; font-size: xx-large">
+          <v-toolbar-title
+            class="mt-1"
+            style="color: ghostwhite;margin-left: 42%; font-size: xx-large"
+          >
             Clarifications Statistics
           </v-toolbar-title>
-          <v-spacer ></v-spacer>
+          <v-spacer></v-spacer>
           <v-switch
             class="mr-9"
             color="info"
