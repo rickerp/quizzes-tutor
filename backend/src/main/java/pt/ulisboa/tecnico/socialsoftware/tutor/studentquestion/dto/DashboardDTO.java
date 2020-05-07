@@ -9,6 +9,7 @@ public class DashboardDTO implements Serializable {
     private int total;
 
     public DashboardDTO() {
+        /* empty constructor */
     }
 
     public String getName() {
