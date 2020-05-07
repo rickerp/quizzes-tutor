@@ -42,13 +42,13 @@
         <stringProp name="driver">org.postgresql.Driver</stringProp>
         <stringProp name="initQuery"></stringProp>
         <boolProp name="keepAlive">true</boolProp>
-        <stringProp name="password"></stringProp>
+        <stringProp name="password">1642</stringProp>
         <stringProp name="poolMax">0</stringProp>
         <boolProp name="preinit">false</boolProp>
         <stringProp name="timeout">10000</stringProp>
         <stringProp name="transactionIsolation">DEFAULT</stringProp>
         <stringProp name="trimInterval">60000</stringProp>
-        <stringProp name="username"></stringProp>
+        <stringProp name="username">psql</stringProp>
       </JDBCDataSource>
       <hashTree/>
       <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group" enabled="true">
@@ -85,11 +85,12 @@
             <stringProp name="dataSource">sampleReq</stringProp>
             <stringProp name="queryType">Update Statement</stringProp>
             <stringProp name="query">INSERT INTO tournaments(id, name, course_execution_id, creator_id, nr_questions, start_time, end_time) VALUES 
-	(100, &apos;Demo-Tournament&apos;, 11, 676, 10, &apos;3000-01-01T12:00:00Z&apos;, &apos;3000-01-01T12:30:00Z&apos;);
+	(100, &apos;Demo-Tournament&apos;, 11, 676, 3, &apos;3000-01-01T12:00:00Z&apos;, &apos;3000-01-01T12:30:00Z&apos;);
 
 INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
 	(100, 82),
 	(100, 84),
+	(100, 85),
 	(100, 86);
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
@@ -101,10 +102,36 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
             <stringProp name="resultSetHandler">Store as String</stringProp>
           </JDBCSampler>
           <hashTree/>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Answer a tournament" enabled="true">
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create a tournament quiz" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
             <stringProp name="queryType">Update Statement</stringProp>
-            <stringProp name="query">INSERT INTO tournament_answers(tournament_id, user_id, finish_time) VALUES (100, 676, CURRENT_TIMESTAMP);
+            <stringProp name="query">INSERT INTO tournament_quizzes(id, tournament_id) VALUES (200, 100);
+
+INSERT INTO tournament_questions(id, question_id, quiz_id) VALUES (301, 1332, 200);
+INSERT INTO tournament_questions(id, question_id, quiz_id) VALUES (302, 1377, 200);
+INSERT INTO tournament_questions(id, question_id, quiz_id) VALUES (303, 1325, 200);
+
+
+</stringProp>
+            <stringProp name="queryArguments"></stringProp>
+            <stringProp name="queryArgumentsTypes"></stringProp>
+            <stringProp name="variableNames"></stringProp>
+            <stringProp name="resultVariable"></stringProp>
+            <stringProp name="queryTimeout"></stringProp>
+            <stringProp name="resultSetMaxRows"></stringProp>
+            <stringProp name="resultSetHandler">Store as String</stringProp>
+          </JDBCSampler>
+          <hashTree/>
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Answer a tournament quiz" enabled="true">
+            <stringProp name="dataSource">sampleReq</stringProp>
+            <stringProp name="queryType">Update Statement</stringProp>
+            <stringProp name="query">INSERT INTO tournament_answers(id, tournament_id, user_id, finish_time) VALUES (1000, 100, 676, CURRENT_TIMESTAMP);
+
+INSERT INTO question_answers(id, option_id, tournament_answer_id, tournament_question_id) VALUES (100001, 7728, 1000, 301);
+INSERT INTO question_answers(id, option_id, tournament_answer_id, tournament_question_id) VALUES (100002, NULL, 1000, 302);
+INSERT INTO question_answers(id, option_id, tournament_answer_id, tournament_question_id) VALUES (100003, 5704, 1000, 303);
+
+
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
@@ -228,9 +255,36 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert Tournament in TournamentAnswer" enabled="true">
-              <stringProp name="JSON_PATH">$[0].tournament.id</stringProp>
+            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert tournament (id)" enabled="true">
+              <stringProp name="JSON_PATH">$[0].tournamentId</stringProp>
               <stringProp name="EXPECTED_VALUE">100</stringProp>
+              <boolProp name="JSONVALIDATION">true</boolProp>
+              <boolProp name="EXPECT_NULL">false</boolProp>
+              <boolProp name="INVERT">false</boolProp>
+              <boolProp name="ISREGEX">false</boolProp>
+            </JSONPathAssertion>
+            <hashTree/>
+            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert total questions" enabled="true">
+              <stringProp name="JSON_PATH">$[0].nrQuestions</stringProp>
+              <stringProp name="EXPECTED_VALUE">3</stringProp>
+              <boolProp name="JSONVALIDATION">true</boolProp>
+              <boolProp name="EXPECT_NULL">false</boolProp>
+              <boolProp name="INVERT">false</boolProp>
+              <boolProp name="ISREGEX">false</boolProp>
+            </JSONPathAssertion>
+            <hashTree/>
+            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert number of questions answered" enabled="true">
+              <stringProp name="JSON_PATH">$[0].nrQuestionsAnswered</stringProp>
+              <stringProp name="EXPECTED_VALUE">2</stringProp>
+              <boolProp name="JSONVALIDATION">true</boolProp>
+              <boolProp name="EXPECT_NULL">false</boolProp>
+              <boolProp name="INVERT">false</boolProp>
+              <boolProp name="ISREGEX">false</boolProp>
+            </JSONPathAssertion>
+            <hashTree/>
+            <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert number of correct answers" enabled="true">
+              <stringProp name="JSON_PATH">$[0].nrCorrectAnswers</stringProp>
+              <stringProp name="EXPECTED_VALUE">1</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
               <boolProp name="INVERT">false</boolProp>
@@ -330,10 +384,29 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="JDBC Requests" enabled="true"/>
         <hashTree>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Remove tournament answer" enabled="true">
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete Tournament Answer" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
-            <stringProp name="query">DELETE FROM tournament_answers WHERE tournament_id = 100;
-</stringProp>
+            <stringProp name="query">DELETE FROM question_answers 
+	WHERE id BETWEEN 100001 AND 100003 
+	AND tournament_answer_id = 1000 
+	AND tournament_question_id BETWEEN 301 AND 303;
+
+DELETE FROM tournament_answers WHERE id = 1000 AND tournament_id = 100 AND user_id = 676;</stringProp>
+            <stringProp name="queryArguments"></stringProp>
+            <stringProp name="queryArgumentsTypes"></stringProp>
+            <stringProp name="queryTimeout"></stringProp>
+            <stringProp name="queryType">Callable Statement</stringProp>
+            <stringProp name="resultSetHandler">Store as String</stringProp>
+            <stringProp name="resultSetMaxRows"></stringProp>
+            <stringProp name="resultVariable"></stringProp>
+            <stringProp name="variableNames"></stringProp>
+          </JDBCSampler>
+          <hashTree/>
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete Tournament Quiz" enabled="true">
+            <stringProp name="dataSource">sampleReq</stringProp>
+            <stringProp name="query">DELETE FROM tournament_questions WHERE id BETWEEN 301 AND 303 AND quiz_id = 200;
+	
+DELETE FROM tournament_quizzes WHERE id = 200 AND tournament_id = 100;</stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
             <stringProp name="queryTimeout"></stringProp>
@@ -347,7 +420,7 @@ INSERT INTO tournaments_topics(tournament_id, topics_id) VALUES
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete Created Tournament" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
             <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id = 100;
-DELETE FROM tournaments WHERE id = 100;
+DELETE FROM tournaments WHERE id = 100 AND name = &apos;Demo-Tournament&apos;;
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
