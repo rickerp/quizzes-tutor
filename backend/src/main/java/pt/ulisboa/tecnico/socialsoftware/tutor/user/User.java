@@ -54,7 +54,7 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column(name = "public_tournament_dashboard" ,columnDefinition = "boolean default false")
     private boolean publicTournamentDashboard = false;
 
     @Column(name = "creation_date")

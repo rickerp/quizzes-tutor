@@ -34,7 +34,7 @@ import java.time.LocalDateTime
 @DataJpaTest
 class QuizGenerationTest extends Specification {
     public static final String T_NAME = "Demo-Tournament"
-    public static final Integer NR_QUESTIONS = 20 // Has to be pair
+    public static final Integer NR_QUESTIONS = 20 // Has to be Pair
     public static final String NAME = "Name"
     public static final Integer KEY = 1
     public static final String USERNAME = "Username_" + KEY
@@ -125,14 +125,15 @@ class QuizGenerationTest extends Specification {
     }
 
     def "Create a Tournament Quiz"() {
-        given: "Associated topic has enough questions"
+
+        given: "Associated Topic has enough Questions"
         1.upto(NR_QUESTIONS/2, {
-            questions.toArray()[2*it-2].addTopic(topics.toArray()[it-1])
-            questions.toArray()[2*it-1].addTopic(topics.toArray()[it-1])
+            ((Question[])questions.toArray())[2*it-2].addTopic(topics.toArray()[it-1])
+            ((Question[])questions.toArray())[2*it-1].addTopic(topics.toArray()[it-1])
         })
 
         when:
-        tournamentService.generateQuiz(tournament.getId());
+        tournamentService.generateQuiz(tournament.getId())
 
         then: "Check if created correctly"
         TournamentQuiz quiz = tournament.getQuiz()
@@ -151,25 +152,25 @@ class QuizGenerationTest extends Specification {
         nrQuestionsPerTopic.each { nQ -> nQ >= 2 }
     }
 
-    def "Generate a Tournament Quiz whose topics don't have enough questions"() {
-        given: "Only half the questions that need to"
+    def "Generate a Tournament Quiz whose Topics don't have enough Questions"() {
+
+        given: "Only half the Questions that need to"
         1.upto(NR_QUESTIONS/2, {
-            questions.toArray()[it-1].addTopic(topics.toArray()[it-1])
+            ((Question[])questions.toArray())[it-1].addTopic(topics.toArray()[it-1])
         })
 
         when:
-        tournamentService.generateQuiz(tournament.getId());
+        tournamentService.generateQuiz(tournament.getId())
 
         then: "Check exception"
         def error = thrown(TutorException)
         error.getErrorMessage() == TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS
     }
 
-    def "Generate a Tournament Quiz whose topics have no questions"() {
-        given: "No questions"
+    def "Generate a Tournament Quiz whose Topics have no Questions"() {
 
         when:
-        tournamentService.generateQuiz(tournament.getId());
+        tournamentService.generateQuiz(tournament.getId())
 
         then: "Check exception"
         def error = thrown(TutorException)
