@@ -22,7 +22,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import Tournament from '@/models/management/Tournament';
 import RemoteServices from '@/services/RemoteServices';
 import EditTournamentDialog from '@/views/student/tournaments/EditTournamentDialog.vue';
-import TournamentsTable from '@/views/student/tournaments/TournamentsTable.vue';
+import TournamentsTable from '@/components/TournamentsTable.vue';
 
 @Component({
   components: {

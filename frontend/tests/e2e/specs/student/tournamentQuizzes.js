@@ -15,7 +15,7 @@ describe('Tournament Quizzes Tests', () => {
     /* Get Tournament Id */
     cy.task('query', {
       sql:
-        'SELECT id FROM tournaments WHERE name = \'Demo-Tournament-Quiz\' ' +
+        "SELECT id FROM tournaments WHERE name = 'Demo-Tournament-Quiz' " +
         'AND creator_id = 676'
     }).then(command => {
       let tid = command?.rows[command?.rows.length - 1].id;
@@ -30,12 +30,13 @@ describe('Tournament Quizzes Tests', () => {
       /* Opened Tournament > In Progress Tournament */
       cy.task('query', {
         sql:
-          'UPDATE tournaments SET start_time = \'2000-01-01T12:00:00Z\' WHERE id = $1',
+          "UPDATE tournaments SET start_time = '2000-01-01T12:00:00Z' WHERE id = $1",
         values: [tid]
       });
     });
     cy.contains('Tournaments').click();
-    cy.contains('In Progress').click();
+    cy.wait(500);
+    cy.contains('In progress').click();
   });
 
   afterEach(() => {

@@ -54,7 +54,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-for="name in item.topicsName" :key="name" link>
+          <v-list-item v-for="name in item.topicsName" :key="name">
             <v-list-item-title v-text="name"></v-list-item-title>
           </v-list-item>
         </v-list>

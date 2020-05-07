@@ -1,4 +1,4 @@
-import { TournamentQuiz } from '@/models/management/TournamentQuiz';
+import TournamentQuiz from '@/models/management/TournamentQuiz';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import StatementQuestion from '@/models/statement/StatementQuestion';
 import StatementCorrectAnswer from '@/models/statement/StatementCorrectAnswer';

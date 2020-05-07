@@ -2,6 +2,7 @@ describe('Tournaments Calendar Tests', () => {
   beforeEach(() => {
     cy.demoStudentLogin();
     cy.contains('Tournaments').click();
+    cy.wait(500);
     cy.contains('Calendar').click();
   });
 

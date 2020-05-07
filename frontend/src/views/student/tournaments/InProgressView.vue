@@ -12,7 +12,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Tournament from '@/models/management/Tournament';
 import RemoteServices from '@/services/RemoteServices';
-import TournamentsTable from '@/views/student/tournaments/TournamentsTable.vue';
+import TournamentsTable from '@/components/TournamentsTable.vue';
 import StatementTournamentQuiz from '@/models/statement/StatementTournamentQuiz';
 
 @Component({

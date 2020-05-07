@@ -1,7 +1,7 @@
 import StatementQuestion from '@/models/statement/StatementQuestion';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 
-export class TournamentQuiz {
+export default class TournamentQuiz {
   questions: StatementQuestion[] = [];
   answers: StatementAnswer[] = [];
   timeToEnd!: number;

@@ -18,7 +18,8 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
-import { TournamentQuiz } from '@/models/management/TournamentQuiz';
+import TournamentQuiz from '@/models/management/TournamentQuiz';
+import TournamentDashboard from '@/models/management/TournamentDashboard';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -186,6 +187,19 @@ export default class RemoteServices {
         return response.data.map((answer: any) => {
           return new StatementCorrectAnswer(answer);
         });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getTournamentDashboard(): Promise<TournamentDashboard> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/dashboard`
+      )
+      .then(response => {
+        return new TournamentDashboard(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

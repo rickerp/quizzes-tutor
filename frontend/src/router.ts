@@ -22,9 +22,10 @@ import ClarificationList from '@/views/common/clarification/ClarificationList.vu
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
 import CalendarView from '@/views/student/tournaments/CalendarView.vue';
-import InProgressView from '@/views/student/tournaments/InProgressView.vue';
+import TournamentInProgressView from '@/views/student/tournaments/InProgressView.vue';
 import QuizTournamentView from '@/views/student/tournaments/QuizTournamentView.vue';
 import TournamentSolutionView from '@/views/student/tournaments/TournamentSolutionView.vue';
+import TournamentDashboardView from '@/views/student/tournaments/DashboardView.vue';
 
 import AdminManagementView from '@/views/admin/AdminManagementView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
@@ -169,9 +170,9 @@ let router = new Router({
         {
           path: 'tournaments/inprogress',
           name: 'tournaments-inprogress',
-          component: InProgressView,
+          component: TournamentInProgressView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Tournaments Ongoing',
+            title: process.env.VUE_APP_NAME + ' - Tournaments In progress',
             requiredAuth: 'Student'
           }
         },
@@ -190,6 +191,15 @@ let router = new Router({
           component: TournamentSolutionView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Tournament Solution',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'tournaments/dashboard',
+          name: 'tournaments-dashboard',
+          component: TournamentDashboardView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournaments Dashboard',
             requiredAuth: 'Student'
           }
         },
