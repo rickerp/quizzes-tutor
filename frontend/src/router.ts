@@ -18,6 +18,8 @@ import SolvedQuizzesView from '@/views/student/SolvedQuizzesView.vue';
 import QuizView from '@/views/student/quiz/QuizView.vue';
 import ResultsView from '@/views/student/quiz/ResultsView.vue';
 import ClarificationList from '@/views/common/clarification/ClarificationList.vue';
+import ClarificationDashboardView from '@/views/student/clarification/ClarificationDashboardView.vue';
+import PublicClarificationsDashboardsView from '@/views/student/clarification/PublicClarificationsDashboardsView.vue';
 
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
@@ -34,6 +36,8 @@ import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import StudentQuestionsEvaluationView from '@/views/teacher/studentquestions/StudentQuestionsEvaluationView.vue';
+import StudentQuestionsDashboardView from '@/views/student/StudentQuestionsDashboardView.vue';
+import StudentQuestionStatsView from '@/views/student/StudentQuestionStatsView.vue';
 
 Vue.use(Router);
 
@@ -159,6 +163,26 @@ let router = new Router({
           }
         },
         {
+          path: 'question/dashboard',
+          name: 'student-dashboard',
+          component: StudentQuestionStatsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student Question Dashboard',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'question/public',
+          name: 'student-public',
+          component: StudentQuestionsDashboardView,
+          meta: {
+            title:
+              process.env.VUE_APP_NAME +
+              ' - Student Question Public Statistics',
+            requiredAuth: 'Student'
+          }
+        },
+        {
           path: 'tournaments/calendar',
           name: 'tournaments-calendar',
           component: TournamentCalendarView,
@@ -213,11 +237,29 @@ let router = new Router({
           }
         },
         {
-          path: 'clarifications',
-          name: 'clarifications-quizzes',
+          path: 'clarifications/myClarifications',
+          name: 'clarifications-myClarifications',
           component: ClarificationList,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Clarifications',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'clarifications/dashboard',
+          name: 'clarifications-dashboard',
+          component: ClarificationDashboardView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Dashboard',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'clarifications/publicDashboards',
+          name: 'clarifications-publicDashboards',
+          component: PublicClarificationsDashboardsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Public Dashboards',
             requiredAuth: 'Student'
           }
         },

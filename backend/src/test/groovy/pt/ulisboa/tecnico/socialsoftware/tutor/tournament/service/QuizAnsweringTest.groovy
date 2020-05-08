@@ -161,9 +161,7 @@ class QuizAnsweringTest extends Specification {
         quizDto.getTimeToEnd() >= ChronoUnit.MILLIS.between(DateHandler.now(), tournament.getEndTime())
         quizDto.getQuestions().size() == 1
         StatementQuestionDto q = quizDto.getQuestions().get(0)
-        questionAnswerRepository.findById(q.getQuestionAnswerId())
-                .orElseThrow({ -> new TutorException(QUESTION_ANSWER_NOT_FOUND, q.getQuestionAnswerId()) })
-                .getQuestion().getId() == question.getId()
+        q.getQuestionId() == question.getId()
         q.getOptions().size() == 1
         StatementOptionDto o = q.getOptions().get(0)
         optionRepository.findById(o.getOptionId())
@@ -171,7 +169,7 @@ class QuizAnsweringTest extends Specification {
                 .getId() == option.getId()
         quizDto.getAnswers().size() == 1
         StatementAnswerDto a = quizDto.getAnswers().get(0)
-        q.getQuestionAnswerId() == a.getQuestionAnswerId()
+        q.getSequence() == a.getSequence()
     }
 
     def "Start a Closed Tournament Quiz"() {

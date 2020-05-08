@@ -168,14 +168,6 @@
                 <v-list-item-title>Available</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/clarifications">
-              <v-list-item-action>
-                <v-icon>fas fa-comments</v-icon>
-              </v-list-item-action>
-              <v-list-item-action>
-                <v-list-item-title>Clarifications</v-list-item-title>
-              </v-list-item-action>
-            </v-list-item>
             <v-list-item to="/student/create">
               <v-list-item-action>
                 <v-icon>create</v-icon>
@@ -202,16 +194,75 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn to="/student/question" v-on="on" text dark>
+              Suggested Questions
+              <v-icon>fas fa-question</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/question" exact>
+              <v-list-item-action>
+                <v-icon>ballot</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>My Suggested</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/question/public" exact>
+              <v-list-item-action>
+                <v-icon>fas fa-columns</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Public Statistics</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/question/dashboard" exact>
+              <v-list-item-action>
+                <v-icon>fas fa-user</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Dashboard</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
-        <v-btn
-          to="/student/question"
-          v-if="isStudent && currentCourse"
-          text
-          dark
-        >
-          Suggested Questions
-          <v-icon>fas fa-question</v-icon>
-        </v-btn>
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn class="bttnClr" v-on="on" text dark>
+              Clarifications
+              <v-icon>fas fa-comments</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/clarifications/myClarifications">
+              <v-list-item-action>
+                <v-icon>assignment</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>My Clarifications</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/clarifications/dashboard">
+              <v-list-item-action>
+                <v-icon>fas fa-columns</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Dashboard</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/clarifications/publicDashboards">
+              <v-list-item-action>
+                <v-icon>fas fa-users</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Public Statistics</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats

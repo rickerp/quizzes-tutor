@@ -1,22 +1,37 @@
 <template>
   <div class="container">
-    <div class="dash-header d-flex justify-center pa-3">
-      <div class="dash-header-col"><h1>Tournament Statistics</h1></div>
-      <div class="dash-header-col">
+    <br />
+    <v-card
+      justify-center
+      color="rgba(255, 255, 255, 0.85)"
+      class="ml-12 mr-12 pa-2"
+    >
+      <v-layout class="dash-header">
+        <h1 style="color: #2c3e50; margin-left: 40%;">
+          Tournaments Statistics
+        </h1>
+        <v-spacer></v-spacer>
         <v-switch
           v-if="dash != null"
           v-model="dash.isPublic"
-          :hide-details="true"
+          class="mr-9"
+          color="#2c3e50"
           :dense="true"
-          @change="changeDashboardState()"
-          data-cy="dashPrivacy"
+          :hide-details="true"
+          :v-model="dash.isPublic"
+          @change="setTournamentDashboardPrivacy()"
+          data-cy="dashPrivacyTdP"
         >
-          <template v-slot:label
-            ><h2 style="color:#2c3e50;">Public</h2></template
-          >
+          <template v-slot:label>
+            <div>
+              <h2 style="color: #2c3e50;">
+                Public
+              </h2>
+            </div>
+          </template>
         </v-switch>
-      </div>
-    </div>
+      </v-layout>
+    </v-card>
     <br />
     <div v-if="dash != null" class="stats-container">
       <div class="items">
@@ -57,11 +72,16 @@
         </div>
       </div>
     </div>
-
     <br />
-    <div class="dash-header d-flex justify-center pa-3">
-      <div><h1>Participated Tournaments</h1></div>
-    </div>
+    <v-card
+      justify-center
+      color="rgba(255, 255, 255, 0.85)"
+      class="ml-12 mr-12 pa-2"
+    >
+      <h1 style="color: #2c3e50;">
+        Participated Tournaments
+      </h1>
+    </v-card>
     <br />
     <v-data-table
       v-if="dash != null"
@@ -169,7 +189,7 @@ export default class StatsView extends Vue {
     await this.$store.dispatch('clearLoading');
   }
 
-  async changeDashboardState() {
+  async setTournamentDashboardPrivacy() {
     if (this.dash == null) return;
     await this.$store.dispatch('loading');
     try {
@@ -185,16 +205,7 @@ export default class StatsView extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.dash-header {
-  background-color: rgba(255, 255, 255, 0.85);
-}
-
-.dash-header .dash-header-col {
-  margin: auto 20px;
-  color: #2c3e50;
-}
-
-.dash-header .dash-header-col * {
+.dash-header * {
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -239,6 +250,7 @@ export default class StatsView extends Vue {
 .project-name {
   align-self: start;
 }
+
 .project-name p {
   font-size: 24px;
   font-weight: bold;

@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -65,6 +66,9 @@ public class Question implements DomainEntity {
     @ManyToMany(mappedBy = "questions")
     private final Set<Topic> topics = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    private Set<PublicClarification> publicClarifications = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
@@ -101,7 +105,7 @@ public class Question implements DomainEntity {
         return key;
     }
 
-   public void setKey(Integer key) {
+    public void setKey(Integer key) {
         this.key = key;
     }
 
@@ -279,6 +283,20 @@ public class Question implements DomainEntity {
             numberOfCorrect++;
         }
     }
+
+    public Set<PublicClarification> getPublicClarifications() {
+        return publicClarifications;
+    }
+
+    public void setPublicClarifications(Set<PublicClarification> publicClarifications) {
+        this.publicClarifications = publicClarifications;
+    }
+
+    public void addPublicClarification(PublicClarification publicClarification) {
+        this.publicClarifications.add(publicClarification);
+    }
+
+
 
     public Integer getDifficulty() {
         if (numberOfAnswers == 0) {

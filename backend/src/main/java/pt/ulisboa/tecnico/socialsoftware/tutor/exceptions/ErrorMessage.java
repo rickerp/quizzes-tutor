@@ -93,22 +93,38 @@ public enum ErrorMessage {
     CLARIFICATION_INVALID_CONTENT("ClarificationRequest content invalid"),
     CLARIFICATION_INVALID_QUESTION_ANSWER("Question Answer associated to clarification is invalid"),
     CLARIFICATION_INVALID_STATE("ClarificationRequest state invalid"),
+    CLARIFICATION_ALREADY_IN_THIS_STATE("ClarificationRequest is already in this state: %s"),
+    CLARIFICATION_CANNOT_CHANGE_STATE("ClarificationRequest that is Public cannot change state"),
     CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER("User has no question answer with id %d"),
     CLARIFICATION_QUIZ_NOT_COMPLETED("Quiz must be completed to write a clarification"),
     CLARIFICATION_IS_EMPTY("ClarificationRequest is empty"),
     CLARIFICATION_NOT_FOUND("ClarificationRequest with id %d not found"),
+    CLARIFICATION_INVALID_TYPE("ClarificationRequest type invalid"),
+    CLARIFICATION_ALREADY_THIS_TYPE("ClarificationRequest is already of this type: %s"),
+    CLARIFICATION_CANNOT_MAKE_PUBLIC("ClarificationRequest must be marked as resolved"),
+    CLARIFICATION_IS_PUBLIC("Cannot Remove Clarification, because it's public"),
+    CLARIFICATION_HAS_COMMENTS("Cannot remove Clarification, already has Comments"),
+    PUBLIC_CLARIFICATION_INVALID_CLARIFICATION("ClarificationRequest type must be Public"),
+    PUBLIC_CLARIFICATION_NOT_FOUND("PublicClarification with id %d not found"),
+    EXECUTION_ALREADY_VISIBLE("Students with course execution with id %d, can already see this PublicClarification"),
+    EXECUTION_ALREADY_INVISIBLE("Students with course execution with id %d, already can't see this PublicClarification "),
+    CLARIFICATION_DASHBOARD_INVALID_STATE("Clarification Dashboard state invalid"),
 
     COMMENT_INVALID_CLARIFICATION("ClarificationRequest associated to comment is invalid"),
     COMMENT_INVALID_CONTENT("ClarificationComment content is invalid"),
     COMMENT_IS_EMPTY("ClarificationComment is empty"),
     COMMENT_INVALID_USER_COURSE("User is not associated with clarification course"),
-    COMMENT_INVALID_CLARIFICATION_STATE("ClarificationRequest state invalid for comment"),
+    COMMENT_INVALID_CLARIFICATION_TYPE("ClarificationRequest type invalid for comment"),
     COMMENT_INVALID_USER("User associated to comment is invalid"),
 
     QUESTION_IS_EMPTY("The question is empty"),
     STUDENT_QUESTION_IS_EMPTY("Student question is empty"),
     STUDENT_QUESTION_NOT_FOUND("Student question not in the database"),
-    JUSTIFICATION_NOT_FOUND("Justification not found");
+    STUDENT_QUESTION_NOT_ACCEPTED("Student question must be accepted in order to edit it"),
+    JUSTIFICATION_NOT_FOUND("Justification not found"),
+    STUDENT_QUESTION_ALREADY_ADDED("Question was already added to available pool."),
+    EVALUATION_NOT_ACCEPTED("Evaluation must be accepted");
+
 
     public final String label;
 

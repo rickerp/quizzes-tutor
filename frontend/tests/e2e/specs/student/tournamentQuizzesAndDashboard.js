@@ -44,9 +44,7 @@ describe('Tournament Quizzes and Dashboard Tests', () => {
     cy.contains('Tournaments').click();
     cy.contains('Dashboard').click();
     cy.wait(1000);
-    cy.get('[data-cy="dashPrivacy"]')
-      .parent()
-      .click();
+    cy.get('[data-cy="dashPrivacyTdP"]').parent().click();
     cy.wait(500);
     cy.contains('Demo-Tournament-Quiz')
       .parent()

@@ -27,6 +27,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DU
 @Table(name = "users")
 public class User implements UserDetails, DomainEntity {
     public enum Role {STUDENT, TEACHER, ADMIN, DEMO_ADMIN}
+    public enum DashBoardState {PRIVATE, PUBLIC}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +60,9 @@ public class User implements UserDetails, DomainEntity {
     private Integer nrTournamentCorrectAnswers = 0;
 
     @Column(name = "public_tournament_dashboard" ,columnDefinition = "boolean default false")
-    private boolean publicTournamentDashboard = false;
+    private Boolean publicTournamentDashboard = false;
+
+    private Boolean publicSuggestedQuestionsDashboard;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -82,6 +85,10 @@ public class User implements UserDetails, DomainEntity {
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
 
+    @Column(name = "clarification_dashboard_state")
+    @Enumerated(EnumType.STRING)
+    private DashBoardState clarificationDashState;
+
     public User() {
     }
 
@@ -100,6 +107,19 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+        this.nrTournamentQuestions = 0;
+        this.nrTournamentAnswers = 0;
+        this.nrTournamentCorrectAnswers = 0;
+        this.clarificationDashState = DashBoardState.PRIVATE;
+        publicTournamentDashboard = false;
+    }
+
+    public Boolean isPublicSuggestedQuestionsDashboard() {
+        return publicSuggestedQuestionsDashboard;
+    }
+
+    public void setPublicSuggestedQuestionsDashboard(Boolean publicSuggestedQuestionsDashboard) {
+        this.publicSuggestedQuestionsDashboard = publicSuggestedQuestionsDashboard;
     }
 
     @Override
@@ -336,6 +356,14 @@ public class User implements UserDetails, DomainEntity {
         this.clarificationComments = clarificationComments;
     }
 
+    public DashBoardState getClarificationDashState() {
+        return clarificationDashState;
+    }
+
+    public void setClarificationDashState(DashBoardState clarificationDashState) {
+        this.clarificationDashState = clarificationDashState;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -482,7 +510,7 @@ public class User implements UserDetails, DomainEntity {
         return true;
     }
 
-    public boolean isTournamentDashboardPublic() { return publicTournamentDashboard; }
+    public Boolean isTournamentDashboardPublic() { return publicTournamentDashboard; }
 
     public void setTournamentDashboardPrivacy(Boolean isPublic) { publicTournamentDashboard = isPublic; }
 

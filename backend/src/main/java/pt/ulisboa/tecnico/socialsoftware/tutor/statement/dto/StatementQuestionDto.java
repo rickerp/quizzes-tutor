@@ -9,19 +9,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StatementQuestionDto implements Serializable {
+
+    private int questionId;
     private String content;
     private List<StatementOptionDto> options;
     private ImageDto image;
     private Integer sequence;
-    private Integer questionAnswerId;
 
     public StatementQuestionDto(QuestionAnswer questionAnswer) {
 
-        this.questionAnswerId = questionAnswer.getId();
         this.sequence = questionAnswer.getSequence();
 
         Question question = questionAnswer.getQuestion();
 
+        this.questionId = question.getId();
         this.content = question.getContent();
 
         if (question.getImage() != null) this.image = new ImageDto(question.getImage());
@@ -63,12 +64,12 @@ public class StatementQuestionDto implements Serializable {
         this.sequence = sequence;
     }
 
-    public Integer getQuestionAnswerId() {
-        return questionAnswerId;
+    public int getQuestionId() {
+        return questionId;
     }
 
-    public void setQuestionAnswerId(Integer questionAnswerId) {
-        this.questionAnswerId = questionAnswerId;
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class StatementQuestionDto implements Serializable {
                 ", options=" + options +
                 ", image=" + image +
                 ", sequence=" + sequence +
-                ", questionAnswerId=" + questionAnswerId+
+                ", questionId=" + questionId+
                 '}';
     }
 }

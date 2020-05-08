@@ -50,7 +50,7 @@ public class ClarificationCommentService {
 
         User user = userRepository.findById(clarificationCommentDto.getUser().getId())
                 .orElseThrow(() -> new TutorException(ErrorMessage.COMMENT_INVALID_USER));
-        if (user.getRole() != User.Role.TEACHER) {
+        if (user.getRole() != User.Role.TEACHER && user.getRole() != User.Role.STUDENT) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER);
         }
 
@@ -60,8 +60,8 @@ public class ClarificationCommentService {
         ClarificationComment clarificationComment = new ClarificationComment(clarificationCommentDto, user, clarificationRequest);
         user.addClarificationComment(clarificationComment);
 
-        clarificationRequest.setClarificationComment(clarificationComment);
-        clarificationRequest.setState(ClarificationRequest.State.RESOLVED);
+        clarificationRequest.addClarificationComment(clarificationComment);
+        setClarificationState(user, clarificationRequest);
 
         this.entityManager.persist(clarificationComment);
         return new ClarificationCommentDto(clarificationComment);
@@ -78,9 +78,19 @@ public class ClarificationCommentService {
         ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationRequestId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.COMMENT_INVALID_CLARIFICATION));
 
-        if (clarificationRequest.getState() != ClarificationRequest.State.UNRESOLVED) {
-            throw new TutorException(ErrorMessage.COMMENT_INVALID_CLARIFICATION_STATE);
+        if (clarificationRequest.getType() != ClarificationRequest.Type.PRIVATE){
+            throw new TutorException(ErrorMessage.COMMENT_INVALID_CLARIFICATION_TYPE);
         }
         return clarificationRequest;
+    }
+
+    private void setClarificationState(User user, ClarificationRequest clarificationRequest) {
+        if (user.getRole() == User.Role.STUDENT &&
+                clarificationRequest.getState() == ClarificationRequest.State.RESOLVED) {
+            clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED);
+        } else if (user.getRole() == User.Role.TEACHER
+                && clarificationRequest.getState() == ClarificationRequest.State.UNRESOLVED) {
+            clarificationRequest.setState(ClarificationRequest.State.RESOLVED);
+        }
     }
 }

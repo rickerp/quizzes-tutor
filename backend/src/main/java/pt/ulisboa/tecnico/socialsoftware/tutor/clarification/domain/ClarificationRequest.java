@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.domain.Image;
@@ -9,13 +10,15 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Clarification_requests")
 public class ClarificationRequest {
 
     public enum State {UNRESOLVED, RESOLVED}
+    public enum Type {PUBLIC, PRIVATE}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +26,9 @@ public class ClarificationRequest {
 
     @Enumerated(EnumType.STRING)
     private ClarificationRequest.State state;
+
+    @Enumerated(EnumType.STRING)
+    private ClarificationRequest.Type type;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -39,27 +45,30 @@ public class ClarificationRequest {
     @OneToOne(cascade=CascadeType.ALL)
     private Image image;
 
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
+    private Set<ClarificationComment> clarificationComments = new HashSet<>();
+
     @OneToOne(cascade=CascadeType.ALL, mappedBy = "clarificationRequest")
-    private ClarificationComment clarificationComment;
+    private PublicClarification publicClarification;
 
     public ClarificationRequest() {}
 
     public ClarificationRequest(ClarificationRequestDto clarificationRequestDto, User user, QuestionAnswer questionAnswer) {
 
-        if (clarificationRequestDto.getContent() == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
-        this.content = clarificationRequestDto.getContent();
+        setContent(clarificationRequestDto.getContent());
+        this.type = Type.PRIVATE;
 
         if (clarificationRequestDto.getState() != State.UNRESOLVED)
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_STATE);
 
-        this.state = State.UNRESOLVED;
-        this.user = user;
-        this.questionAnswer = questionAnswer;
+        setState(State.UNRESOLVED);
+        setUser(user);
+        setQuestionAnswer(questionAnswer);
 
-        if (clarificationRequestDto.getImage() != null) this.image = new Image(clarificationRequestDto.getImage());
+        if (clarificationRequestDto.getImage() != null) setImage(new Image(clarificationRequestDto.getImage()));
 
-        this.creationDate = clarificationRequestDto.getCreationDate() == null ? LocalDateTime.now() : LocalDateTime.parse(clarificationRequestDto.getCreationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
+        if (clarificationRequestDto.getCreationDate() == null) { setCreationDate(DateHandler.now()); }
+        else { setCreationDate(DateHandler.toLocalDateTime(clarificationRequestDto.getCreationDate())); }
     }
 
     public Integer getId() {
@@ -75,6 +84,9 @@ public class ClarificationRequest {
     }
 
     public void setState(State state) {
+        if (this.state == state) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_ALREADY_IN_THIS_STATE, state.toString());
+        }
         this.state = state;
     }
 
@@ -83,6 +95,7 @@ public class ClarificationRequest {
     }
 
     public void setContent(String content) {
+        if (content == null) throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_CONTENT);
         this.content = content;
     }
 
@@ -116,11 +129,45 @@ public class ClarificationRequest {
         this.user = user;
     }
 
-    public ClarificationComment getClarificationComment() {
-        return clarificationComment;
+    public Type getType() {
+        return type;
     }
 
-    public void setClarificationComment(ClarificationComment clarificationComment) {
-        this.clarificationComment = clarificationComment;
+    public void setType(Type type) {
+        if (this.type == type) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_ALREADY_THIS_TYPE, type.toString());
+        }
+        if (type == Type.PUBLIC && this.state != State.RESOLVED) {
+            throw new TutorException(ErrorMessage.CLARIFICATION_CANNOT_MAKE_PUBLIC);
+        }
+        if (type == Type.PRIVATE) { this.publicClarification = null; }
+        this.type = type;
+    }
+
+    public void remove() {
+        if(!this.clarificationComments.isEmpty()) throw new TutorException(ErrorMessage.CLARIFICATION_HAS_COMMENTS);
+        if (this.type.equals(Type.PUBLIC)) throw new TutorException(ErrorMessage.CLARIFICATION_IS_PUBLIC);
+        this.user.getClarificationRequests().remove(this);
+        this.questionAnswer.getClarificationRequests().remove(this);
+    }
+
+    public PublicClarification getPublicClarification() {
+        return publicClarification;
+    }
+
+    public void setPublicClarification(PublicClarification publicClarification) {
+        this.publicClarification = publicClarification;
+    }
+
+    public Set<ClarificationComment> getClarificationComments() {
+        return clarificationComments;
+    }
+
+    public void addClarificationComment(ClarificationComment clarificationComment) {
+        this.clarificationComments.add(clarificationComment);
+    }
+
+    public void setClarificationComments(Set<ClarificationComment> clarificationComments) {
+        this.clarificationComments = clarificationComments;
     }
 }

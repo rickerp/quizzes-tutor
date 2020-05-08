@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-
-import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository
@@ -14,7 +13,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationReques
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
@@ -32,13 +31,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 
-import java.time.LocalDateTime
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import spock.lang.Specification
 import spock.lang.Unroll
 import spock.lang.Shared
-
-import java.time.format.DateTimeFormatter
 
 @DataJpaTest
 class SubmitClarificationRequestTest extends Specification {
@@ -73,7 +69,6 @@ class SubmitClarificationRequestTest extends Specification {
     @Autowired
     ClarificationRequestRepository clarificationRequestRepository
 
-    def DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     def quiz
     def question
     def clarificationRequestDto
@@ -109,7 +104,7 @@ class SubmitClarificationRequestTest extends Specification {
 
         clarificationRequestDto = new ClarificationRequestDto()
         clarificationRequestDto.setContent(CLARIFICATION_CONTENT)
-        clarificationRequestDto.setCreationDate(LocalDateTime.now().format(formatter))
+        clarificationRequestDto.setCreationDate(DateHandler.toISOString(DateHandler.now()))
         clarificationRequestDto.setState(ClarificationRequest.State.UNRESOLVED)
         clarificationRequestDto.setUser(new UserDto(user))
     }
@@ -124,7 +119,7 @@ class SubmitClarificationRequestTest extends Specification {
         def clarificationRequestCreated = clarificationRequestCreatedList[0]
         clarificationRequestCreated.getState() == clarificationRequestDto.getState()
         clarificationRequestCreated.getContent() == clarificationRequestDto.getContent()
-        clarificationRequestCreated.getCreationDate().format(formatter) == clarificationRequestDto.getCreationDate()
+        DateHandler.toISOString(clarificationRequestCreated.getCreationDate()) == clarificationRequestDto.getCreationDate()
         clarificationRequestCreated.getUser().getUsername() == clarificationRequestDto.getUser().getUsername()
     }
 
@@ -180,7 +175,7 @@ class SubmitClarificationRequestTest extends Specification {
 
     def "Submit an Empty clarification request"() {
         when:
-        clarificationRequestService.createClarificationRequest(questionAnswer.getId(),null);
+        clarificationRequestService.createClarificationRequest(questionAnswer.getId(),null)
 
         then:
         def error = thrown(TutorException)
@@ -204,7 +199,7 @@ class SubmitClarificationRequestTest extends Specification {
         given: "Another clarificationRequestDto"
         def clarificationRequestCreated = new ClarificationRequestDto()
         clarificationRequestCreated.setContent(content)
-        clarificationRequestCreated.setCreationDate(LocalDateTime.now().format(formatter))
+        clarificationRequestCreated.setCreationDate(DateHandler.toISOString(DateHandler.now()))
         clarificationRequestCreated.setState(state)
         clarificationRequestCreated.setUser(new UserDto(user))
 
@@ -283,6 +278,11 @@ class SubmitClarificationRequestTest extends Specification {
         @Bean
         ClarificationRequestService ClarificationRequestService() {
             return new ClarificationRequestService()
+        }
+
+        @Bean
+        PublicClarificationService PublicClarificationService() {
+            return new PublicClarificationService()
         }
     }
 }

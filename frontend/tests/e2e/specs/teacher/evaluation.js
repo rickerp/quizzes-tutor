@@ -20,7 +20,7 @@ describe('Teacher creating evaluation walktrough', () => {
   });
 
   it('Create Evaluation', () => {
-    cy.createEvaluation(data, 'Good Question');
+    cy.createEvaluation(data, 'Good Question', true);
   });
 
   it('Create invalid Evaluation', () => {
@@ -38,6 +38,20 @@ describe('Teacher creating evaluation walktrough', () => {
       .parent()
       .find('button')
       .click();
+  });
+
+  it('Publish student question', () => {
+    cy.createEvaluation(data, 'Good Question', true);
+    cy.contains(data.questionTitle)
+      .parent()
+      .contains('publish')
+      .parent()
+      .find('[data-cy="publish"]')
+      .click();
+
+    cy.contains('Management').click();
+    cy.contains('Questions').click();
+    cy.contains(data.questionTitle).click();
   });
 
   afterEach(() => {

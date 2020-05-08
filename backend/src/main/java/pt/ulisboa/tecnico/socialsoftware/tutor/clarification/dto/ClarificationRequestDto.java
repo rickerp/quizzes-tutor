@@ -2,41 +2,49 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
-import java.time.format.DateTimeFormatter;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClarificationRequestDto {
 
     private int id;
     private ClarificationRequest.State state;
+    private ClarificationRequest.Type type;
     private String content;
     private String creationDate;
     private UserDto user;
     private QuestionAnswerDto questionAnswer;
-    private ClarificationCommentDto clarificationComment;
+    private List<ClarificationCommentDto> clarificationComments;
     private ImageDto image;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public ClarificationRequestDto() {
     }
 
     public ClarificationRequestDto(ClarificationRequest clarificationRequest) {
+        this.setId(clarificationRequest.getId());
+        this.setState(clarificationRequest.getState());
+        this.setType(clarificationRequest.getType());
+        this.setContent(clarificationRequest.getContent());
 
-        this.id = clarificationRequest.getId();
-        this.state = clarificationRequest.getState();
-        this.content = clarificationRequest.getContent();
         if (clarificationRequest.getCreationDate() != null) {
-            this.creationDate = clarificationRequest.getCreationDate().format(formatter);
+            this.setCreationDate(DateHandler.toISOString(clarificationRequest.getCreationDate()));
         }
-        this.user = new UserDto(clarificationRequest.getUser());
-        this.questionAnswer = new QuestionAnswerDto(clarificationRequest.getQuestionAnswer());
-        if (clarificationRequest.getClarificationComment() != null) {
-            this.clarificationComment = new ClarificationCommentDto(clarificationRequest.getClarificationComment());
+        this.setUser(new UserDto(clarificationRequest.getUser()));
+
+        if (clarificationRequest.getQuestionAnswer() != null)
+            this.setQuestionAnswer(new QuestionAnswerDto(clarificationRequest.getQuestionAnswer()));
+
+        if (clarificationRequest.getClarificationComments() != null) {
+            setClarificationComments(clarificationRequest.getClarificationComments().stream()
+                    .map(ClarificationCommentDto::new)
+                    .collect(Collectors.toList()));
         }
 
-        if (clarificationRequest.getImage() != null) {
-            this.image = new ImageDto(clarificationRequest.getImage());
-        }
+        if (clarificationRequest.getImage() != null) { this.setImage(new ImageDto(clarificationRequest.getImage())); }
     }
 
     public int getId() {
@@ -53,6 +61,14 @@ public class ClarificationRequestDto {
 
     public void setState(ClarificationRequest.State state) {
         this.state = state;
+    }
+
+    public ClarificationRequest.Type getType() {
+        return type;
+    }
+
+    public void setType(ClarificationRequest.Type type) {
+        this.type = type;
     }
 
     public String getContent() {
@@ -83,12 +99,14 @@ public class ClarificationRequestDto {
         this.image = image;
     }
 
-    public ClarificationCommentDto getClarificationComment() {
-        return clarificationComment;
+    public List<ClarificationCommentDto> getClarificationComments() {
+        return this.clarificationComments;
     }
 
-    public void setClarificationComment(ClarificationCommentDto clarificationComment) {
-        this.clarificationComment = clarificationComment;
+    public void setClarificationComments(List<ClarificationCommentDto> clarificationComments) {
+        this.clarificationComments = clarificationComments.stream()
+                .sorted(Comparator.comparing(ClarificationCommentDto::getCreationDate))
+                .collect(Collectors.toList());
     }
 
     public QuestionAnswerDto getQuestionAnswer() {

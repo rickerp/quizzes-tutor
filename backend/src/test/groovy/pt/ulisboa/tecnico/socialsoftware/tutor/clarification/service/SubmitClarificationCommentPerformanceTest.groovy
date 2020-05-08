@@ -2,13 +2,13 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 import spock.lang.Specification
-import java.time.LocalDateTime
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
@@ -133,6 +133,7 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         1.upto(1, {
             clarificationRequest = new ClarificationRequest()
             clarificationRequest.setState(ClarificationRequest.State.UNRESOLVED)
+            clarificationRequest.setType(ClarificationRequest.Type.PRIVATE)
             clarificationRequest.setContent(CLARIFICATION_CONTENT)
             clarificationRequest.setUser(student)
             clarificationRequest.setQuestionAnswer(questionAnswer)
@@ -161,6 +162,11 @@ class SubmitClarificationCommentPerformanceTest extends Specification {
         @Bean
         ClarificationCommentService ClarificationCommentService() {
             return new ClarificationCommentService()
+        }
+
+        @Bean
+        PublicClarificationService PublicClarificationService() {
+            return new PublicClarificationService()
         }
     }
 }

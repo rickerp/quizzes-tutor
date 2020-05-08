@@ -14,11 +14,12 @@
       >
     </v-card-title>
     <v-card-text>
-      <v-text-field v-model="quiz.title" label="*Title" />
+      <v-text-field v-model="quiz.title" data-cy="QuizTitle" label="*Title" />
       <v-container fluid>
         <v-row>
           <v-col>
             <VueCtkDateTimePicker
+              data-cy="availableDate"
               label="*Available Date"
               id="availableDateInput"
               v-model="quiz.availableDate"
@@ -102,7 +103,12 @@
           <v-container fluid>
             <v-row>
               <v-col>
-                <v-text-field v-model="search" label="Search" class="mx-4" />
+                <v-text-field
+                  v-model="search"
+                  data-cy="bttnSearch"
+                  label="Search"
+                  class="mx-4"
+                />
               </v-col>
               <v-col>
                 <v-btn
@@ -149,7 +155,13 @@
           </v-tooltip>
           <v-tooltip bottom v-if="!item.sequence">
             <template v-slot:activator="{ on }">
-              <v-icon large class="mr-2" v-on="on" @click="addToQuiz(item)">
+              <v-icon
+                data-cy="ActAddQuestion"
+                large
+                class="mr-2"
+                v-on="on"
+                @click="addToQuiz(item)"
+              >
                 add</v-icon
               >
             </template>
