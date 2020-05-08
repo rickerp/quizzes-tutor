@@ -4,5 +4,10 @@
   "integrationFolder": "tests/e2e/specs",
   "pluginsFile": "tests/e2e/plugins/index.js",
   "supportFile": "tests/e2e/support/index.js",
-  "projectId": "mychf2"
+  "projectId": "mychf2",
+  "requestTimeout" : 30000,
+  "numTestsKeptInMemory": 0,
+  "responseTimeout" : 50000,
+  "pageLoadTimeout": 10000
 }
+
