@@ -463,4 +463,4 @@ export default class ClarificationList extends Vue {
 }
 </script>
 
-<style></style>
+<style scoped></style>

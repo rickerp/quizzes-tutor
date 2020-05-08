@@ -89,7 +89,7 @@ export default class ChatComponent extends Vue {
   }
 }
 </script>
-<style>
+<style scoped>
 hr.rounded {
   border-top: 4px dotted #333333;
 }

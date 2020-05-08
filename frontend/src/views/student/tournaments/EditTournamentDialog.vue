@@ -216,7 +216,7 @@ export default class EditTournamentDialog extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 .v-dialog {
   overflow: visible !important;
 }
