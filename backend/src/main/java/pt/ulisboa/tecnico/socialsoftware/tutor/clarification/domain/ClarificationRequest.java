@@ -145,7 +145,7 @@ public class ClarificationRequest {
     }
 
     public void remove() {
-        if(this.clarificationComments.size() != 0) throw new TutorException(ErrorMessage.CLARIFICATION_HAS_COMMENTS);
+        if(!this.clarificationComments.isEmpty()) throw new TutorException(ErrorMessage.CLARIFICATION_HAS_COMMENTS);
         if (this.type.equals(Type.PUBLIC)) throw new TutorException(ErrorMessage.CLARIFICATION_IS_PUBLIC);
         this.user.getClarificationRequests().remove(this);
         this.questionAnswer.getClarificationRequests().remove(this);

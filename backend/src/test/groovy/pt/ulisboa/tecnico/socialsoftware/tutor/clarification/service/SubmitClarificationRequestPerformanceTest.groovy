@@ -27,7 +27,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 
-import java.time.LocalDateTime
 import spock.lang.Specification
 
 @DataJpaTest

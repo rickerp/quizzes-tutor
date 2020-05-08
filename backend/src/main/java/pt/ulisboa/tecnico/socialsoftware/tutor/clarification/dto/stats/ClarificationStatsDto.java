@@ -10,8 +10,6 @@ public class ClarificationStatsDto {
     private Integer publicClarificationRequests;
     private float percentageOfPublicClarifications;
 
-    public ClarificationStatsDto(){}
-
     public String getUsername() {
         return username;
     }
