@@ -18,6 +18,7 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
+import StudentQuestionDashboard from '@/models/studentquestion/StudentQuestionDashboard';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -684,6 +685,19 @@ export default class RemoteServices {
     }
   }
 
+  static async publishStudentQuestion(
+    studentQuestion: StudentQuestion
+  ): Promise<StudentQuestion> {
+    return httpClient
+      .post(`/studentquestions/${studentQuestion.id}/publish`)
+      .then(response => {
+        return new StudentQuestion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async submitStudentQuestion(
     studentQuestion: StudentQuestion
   ): Promise<StudentQuestion> {
@@ -692,6 +706,35 @@ export default class RemoteServices {
         `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestion`,
         studentQuestion
       )
+      .then(response => {
+        return new StudentQuestion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async editQuestion(
+    studentQuestion: StudentQuestion
+  ): Promise<StudentQuestion> {
+    return httpClient
+      .put(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/editstudentquestion`,
+        studentQuestion
+      )
+      .then(response => {
+        return new StudentQuestion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async reSubmitQuestion(
+    studentQuestion: StudentQuestion
+  ): Promise<StudentQuestion> {
+    return httpClient
+      .put(`/studentquestions/${studentQuestion.id}/resubmit`, studentQuestion)
       .then(response => {
         return new StudentQuestion(response.data);
       })
@@ -738,6 +781,60 @@ export default class RemoteServices {
       .post(`/studentquestions/${id}/evaluation`, evaluation)
       .then(response => {
         return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getAllStudentQuestionsDashBoard(): Promise<
+    StudentQuestionDashboard[]
+  > {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestionsdashboard/all`
+      )
+      .then(response => {
+        return response.data.map((course: any) => {
+          return new StudentQuestionDashboard(course);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getDashboardVisibilitry(): Promise<boolean> {
+    return httpClient
+      .get('/studentquestionsdashboard/visibility')
+      .then(response => {
+        return !!response.data;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async setDashboardVisibilitry(isPublic: boolean): Promise<boolean> {
+    return httpClient
+      .post('/studentquestionsdashboard/visibility', isPublic)
+      .then(response => {
+        return !!response.data;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getStudentQuestionDashBoard(): Promise<
+    StudentQuestionDashboard
+  > {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/studentquestionsdashboard`
+      )
+      .then(response => {
+        return new StudentQuestionDashboard(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));
