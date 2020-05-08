@@ -10,7 +10,7 @@
         <v-card-title>
           <v-switch
             class="ma-4"
-            label="Participate in public dashboard"
+            label="Participate with my statistics"
             v-model="visibility"
             @change="setVisibility"
           />

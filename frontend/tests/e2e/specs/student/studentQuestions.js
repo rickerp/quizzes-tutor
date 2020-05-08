@@ -15,8 +15,8 @@ describe('Student suggested question workflow', () => {
 
   it('Public dashboard screen', () => {
     cy.contains('Suggested Question').click();
-    cy.contains('Dashboard').click();
-    cy.contains('Participate in public dashboard').click();
+    cy.contains('Public Statistics').click();
+    cy.contains('Participate with my statistics').click();
   });
 
   it('Create question suggestion', () => {
@@ -41,7 +41,7 @@ describe('Student suggested question workflow', () => {
 
   it('Private stats screen', () => {
     cy.contains('Suggested Question').click();
-    cy.contains('Statistics').click();
+    cy.contains('Dashboard').click();
     cy.contains('Total').click();
   });
 

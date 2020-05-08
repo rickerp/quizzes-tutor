@@ -209,20 +209,20 @@
                 <v-list-item-title>My Suggested</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/question/dashboard" exact>
+            <v-list-item to="/student/question/public" exact>
               <v-list-item-action>
                 <v-icon>fas fa-columns</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Dashboard</v-list-item-title>
+                <v-list-item-title>Public Statistics</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/question/stats" exact>
+            <v-list-item to="/student/question/dashboard" exact>
               <v-list-item-action>
                 <v-icon>fas fa-user</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Statistics</v-list-item-title>
+                <v-list-item-title>Dashboard</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>

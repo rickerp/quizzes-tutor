@@ -157,20 +157,22 @@ let router = new Router({
           }
         },
         {
-          path: 'question/stats',
-          name: 'student-stats',
+          path: 'question/dashboard',
+          name: 'student-dashboard',
           component: StudentQuestionStatsView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Student Question Stats',
+            title: process.env.VUE_APP_NAME + ' - Student Question Dashboard',
             requiredAuth: 'Student'
           }
         },
         {
-          path: 'question/dashboard',
-          name: 'student-dashboard',
+          path: 'question/public',
+          name: 'student-public',
           component: StudentQuestionsDashboardView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Student Question Dashboard',
+            title:
+              process.env.VUE_APP_NAME +
+              ' - Student Question Public Statistics',
             requiredAuth: 'Student'
           }
         },
