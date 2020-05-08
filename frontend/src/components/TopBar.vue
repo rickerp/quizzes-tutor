@@ -180,13 +180,7 @@
         </v-menu>
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn
-              class="quizzesButton"
-              to="/student/question"
-              v-on="on"
-              text
-              dark
-            >
+            <v-btn to="/student/question" v-on="on" text dark>
               Suggested Questions
               <v-icon>fas fa-question</v-icon>
             </v-btn>
