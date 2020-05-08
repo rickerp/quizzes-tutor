@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
@@ -34,6 +35,7 @@ public class ClarificationCommentDto {
         clarificationRequest.setType(clarification.getType());
         clarificationRequest.setContent(clarification.getContent());
         clarificationRequest.setUser(new UserDto(clarification.getUser()));
+        clarificationRequest.setQuestionAnswer(new QuestionAnswerDto(clarification.getQuestionAnswer()));
         if (clarification.getCreationDate() != null) {
             clarificationRequest.setCreationDate(DateHandler.toISOString(clarification.getCreationDate()));
         }

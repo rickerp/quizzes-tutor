@@ -51,6 +51,8 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
 
+    private Boolean publicSuggestedQuestionsDashboard;
+
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
@@ -95,6 +97,14 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
         this.clarificationDashState = DashBoardState.PRIVATE;
+    }
+
+    public Boolean isPublicSuggestedQuestionsDashboard() {
+        return publicSuggestedQuestionsDashboard;
+    }
+
+    public void setPublicSuggestedQuestionsDashboard(Boolean publicSuggestedQuestionsDashboard) {
+        this.publicSuggestedQuestionsDashboard = publicSuggestedQuestionsDashboard;
     }
 
     @Override

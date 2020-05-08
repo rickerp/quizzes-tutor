@@ -10,48 +10,32 @@ function generateData() {
 
 let data;
 
-describe('Teacher creating evaluation walktrough', () => {
+describe('Teacher editing question walktrough', () => {
   beforeEach(() => {
     cy.demoStudentLogin();
     data = generateData();
     cy.createStudentSuggestion(data);
     cy.contains('Logout').click();
     cy.demoTeacherLogin();
-  });
-
-  it('Create Evaluation', () => {
     cy.createEvaluation(data, 'Good Question', true);
   });
 
-  it('Create invalid Evaluation', () => {
+  it('Edit question', () => {
     cy.contains('Management').click();
     cy.contains('Student Questions').click();
-    cy.contains('Title').click();
-    cy.contains(data.questionContent)
-      .parent()
-      .parent()
-      .children()
-      .find('[data-cy="evaluationBtn"]')
-      .click();
-    cy.contains('Save').click();
-    cy.contains('Rejected student questions must have a justification')
-      .parent()
-      .find('button')
-      .click();
-  });
-
-  it('Publish student question', () => {
-    cy.createEvaluation(data, 'Good Question', true);
     cy.contains(data.questionTitle)
       .parent()
-      .contains('publish')
+      .contains('edit')
       .parent()
-      .find('[data-cy="publish"]')
+      .find('[data-cy="edit"]')
       .click();
-
-    cy.contains('Management').click();
-    cy.contains('Questions').click();
-    cy.contains(data.questionTitle).click();
+    cy.get('[data-cy="questionContent"]').type('TESTE');
+    cy.get('[data-cy="option1"]').type('TESTE1');
+    cy.get('[data-cy="option2"]').type('TESTE2');
+    cy.get('[data-cy="option3"]').type('TESTE3');
+    cy.get('[data-cy="option4"]').type('TESTE4');
+    cy.get('[data-cy="saveQuestionBtn"]').click();
+    cy.wait(100);
   });
 
   afterEach(() => {
