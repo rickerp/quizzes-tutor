@@ -21,6 +21,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -129,6 +130,20 @@ class DashboardStudentQuestionTest extends Specification {
         then:
         dashboardDtos != null
         dashboardDtos.size() == 0
+    }
+
+    @Unroll("Visibility to #value")
+    def "set user dashboard visibility"() {
+        when:
+        def res = studentQuestionService.setDashboardVisibility(user.getId(), (Boolean) expected)
+        then:
+        res != null
+        res == actual
+        user.isPublicSuggestedQuestionsDashboard() == actual
+        where:
+        expected || actual
+        true     || true
+        false    || false
     }
 
     @TestConfiguration
