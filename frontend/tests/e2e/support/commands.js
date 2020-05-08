@@ -238,9 +238,10 @@ Cypress.Commands.add('showClarificationsStats', () => {
   cy.contains('Total Clarifications').click();
 });
 
-Cypress.Commands.add('changeClarificationsDashState', (state) => {
+Cypress.Commands.add('changeClarificationsDashState', (oldState, newState) => {
   cy.contains('Dashboard').click();
-  cy.contains(state).click();
+  cy.contains(oldState).click();
+  cy.contains(newState);
 });
 
 Cypress.Commands.add('showPublicClarificationsStats', () => {

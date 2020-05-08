@@ -63,14 +63,14 @@ describe('Clarification Requests walkthrough', () => {
 
   it('Change Clarifications Dashboard State', () => {
     cy.get('.bttnClr').click();
-    cy.changeClarificationsDashState('Public');
+    cy.changeClarificationsDashState('Private', 'Public');
   });
 
   it('Show Public Clarification Stats', () => {
     cy.get('.bttnClr').click();
-    cy.changeClarificationsDashState('Private');
-    cy.get('.bttnClr').click();
     cy.showPublicClarificationsStats();
+    cy.get('.bttnClr').click();
+    cy.changeClarificationsDashState('Public', 'Private');
   });
 
 });
