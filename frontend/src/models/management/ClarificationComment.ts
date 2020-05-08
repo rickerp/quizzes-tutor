@@ -1,5 +1,6 @@
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import User from '@/models/user/User';
+import { ISOtoString } from '@/services/ConvertDateService';
 
 export class ClarificationComment {
   id!: number;
@@ -14,7 +15,7 @@ export class ClarificationComment {
       this.id = jsonObj.id;
       this.state = jsonObj.state;
       this.content = jsonObj.content;
-      this.creationDate = jsonObj.creationDate;
+      this.creationDate = ISOtoString(jsonObj.creationDate);
       this.user = new User(jsonObj.user);
       this.clarificationRequest = new ClarificationRequest(
         jsonObj.clarificationRequest

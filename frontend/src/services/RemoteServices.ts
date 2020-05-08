@@ -18,6 +18,8 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
+import { PublicClarification } from '@/models/management/PublicClarification';
+import { ClarificationStats } from '@/models/management/ClarificationStats';
 import StudentQuestionDashboard from '@/models/studentquestion/StudentQuestionDashboard';
 
 const httpClient = axios.create();
@@ -417,6 +419,14 @@ export default class RemoteServices {
     });
   }
 
+  static async deleteClarification(clarificationId: number) {
+    return httpClient
+      .delete(`/clarifications/${clarificationId}/remove`)
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getQuiz(quizId: number): Promise<Quiz> {
     return httpClient
       .get(`/quizzes/${quizId}`)
@@ -597,12 +607,94 @@ export default class RemoteServices {
       });
   }
 
+  static async getPublicClarifications(
+    questionId: number
+  ): Promise<PublicClarification[]> {
+    const execId = Store.getters.getCurrentCourse.courseExecutionId;
+    return httpClient
+      .get(`/questions/${questionId}/publicClarifications/executions/${execId}`)
+      .then(response => {
+        return response.data.map((request: any) => {
+          return new PublicClarification(request);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async addCourseExecutionToPublicClarification(
+    publicClarificationId: number,
+    questionId: number
+  ): Promise<PublicClarification> {
+    const execId = Store.getters.getCurrentCourse.courseExecutionId;
+    return httpClient
+      .post(
+        `/questions/${questionId}/publicClarifications/` +
+          `${publicClarificationId}/add`,
+        execId
+      )
+      .then(response => {
+        return new PublicClarification(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async removeCourseExecutionToPublicClarification(
+    publicClarificationId: number,
+    questionId: number
+  ): Promise<PublicClarification> {
+    const execId = Store.getters.getCurrentCourse.courseExecutionId;
+    return httpClient
+      .post(
+        `/questions/${questionId}/publicClarifications/` +
+          `${publicClarificationId}/remove`,
+        execId
+      )
+      .then(response => {
+        return new PublicClarification(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async createClarification(
     questionAnswerId: number,
     request: ClarificationRequest
   ): Promise<ClarificationRequest> {
     return httpClient
       .post(`/questionAnswers/${questionAnswerId}/clarifications`, request)
+      .then(response => {
+        return new ClarificationRequest(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async changeClarificationState(
+    clrfReqId: number,
+    state: string
+  ): Promise<ClarificationRequest> {
+    return httpClient
+      .post(`/clarifications/${clrfReqId}/set-state`, state)
+      .then(response => {
+        return new ClarificationRequest(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async changeClarificationType(
+    clrfReqId: number,
+    type: string
+  ): Promise<ClarificationRequest> {
+    return httpClient
+      .post(`/clarifications/${clrfReqId}/set-type`, type)
       .then(response => {
         return new ClarificationRequest(response.data);
       })
@@ -622,6 +714,49 @@ export default class RemoteServices {
       )
       .then(response => {
         return new ClarificationComment(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getClarificationsStats(): Promise<ClarificationStats> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications/clarificationsStats`
+      )
+      .then(response => {
+        return new ClarificationStats(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async changeDashboardState(
+    state: string
+  ): Promise<ClarificationStats> {
+    return httpClient
+      .post(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications/clarificationsStats/${state}`
+      )
+      .then(response => {
+        return new ClarificationStats(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getPublicClarificationsStats(): Promise<ClarificationStats[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/clarifications/publicClarificationsStats`
+      )
+      .then(response => {
+        return response.data.map((request: any) => {
+          return new ClarificationStats(request);
+        });
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.repository.ClarificationRequestRepository
@@ -27,7 +27,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto
 
-import java.time.LocalDateTime
 import spock.lang.Specification
 
 @DataJpaTest
@@ -113,6 +112,11 @@ class SubmitClarificationRequestPerformanceTest extends Specification {
         @Bean
         ClarificationRequestService ClarificationRequestService() {
             return new ClarificationRequestService()
+        }
+
+        @Bean
+        PublicClarificationService PublicClarificationService() {
+            return new PublicClarificationService()
         }
     }
 }

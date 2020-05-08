@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,7 +27,7 @@ public class StatementAnswerDto implements Serializable {
             this.optionId = questionAnswer.getOption().getId();
         }
         this.clarificationRequests = questionAnswer.getClarificationRequests().stream()
-                .map(ClarificationRequestDto::new)
+                .map(this::createClarificationDto)
                 .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate)
                         .reversed()).collect(Collectors.toList());
     }
@@ -71,6 +70,12 @@ public class StatementAnswerDto implements Serializable {
 
     public void setClarificationRequests(List<ClarificationRequestDto> clarificationRequests) {
         this.clarificationRequests = clarificationRequests;
+    }
+
+    private ClarificationRequestDto createClarificationDto(ClarificationRequest clarification) {
+        ClarificationRequestDto clarificationDto = new ClarificationRequestDto(clarification);
+        clarificationDto.setQuestionAnswer(null);
+        return clarificationDto;
     }
 
     @Override

@@ -1,14 +1,11 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto;
 
-
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuestionAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.image.dto.ImageDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ClarificationCommentDto {
 
@@ -17,15 +14,17 @@ public class ClarificationCommentDto {
     private UserDto user;
     private String creationDate;
     private ClarificationRequestDto clarificationRequest;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public ClarificationCommentDto() {}
 
     public ClarificationCommentDto(ClarificationComment clarificationComment) {
-        this.id = clarificationComment.getId();
-        this.content = clarificationComment.getContent();
-        this.user = new UserDto(clarificationComment.getUser());
-        this.creationDate = clarificationComment.getCreationDate().format(formatter);
+        this.setId(clarificationComment.getId());
+        this.setContent(clarificationComment.getContent());
+        this.setUser(new UserDto(clarificationComment.getUser()));
+
+        if (clarificationComment.getCreationDate() != null) {
+            this.setCreationDate(DateHandler.toISOString(clarificationComment.getCreationDate()));
+        }
         this.clarificationRequest = new ClarificationRequestDto();
         setClarificationDto(clarificationComment.getClarificationRequest());
 
@@ -33,12 +32,13 @@ public class ClarificationCommentDto {
     private void setClarificationDto(ClarificationRequest clarification){
         clarificationRequest.setId(clarification.getId());
         clarificationRequest.setState(clarification.getState());
+        clarificationRequest.setType(clarification.getType());
         clarificationRequest.setContent(clarification.getContent());
         clarificationRequest.setUser(new UserDto(clarification.getUser()));
-        if (clarification.getCreationDate() != null) {
-            clarificationRequest.setCreationDate(clarification.getCreationDate().format(formatter));
-        }
         clarificationRequest.setQuestionAnswer(new QuestionAnswerDto(clarification.getQuestionAnswer()));
+        if (clarification.getCreationDate() != null) {
+            clarificationRequest.setCreationDate(DateHandler.toISOString(clarification.getCreationDate()));
+        }
         if (clarification.getImage() != null) {
             clarificationRequest.setImage(new ImageDto(clarification.getImage()));
         }

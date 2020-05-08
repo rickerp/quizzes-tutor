@@ -153,10 +153,9 @@ public class AnswerService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public QuizAnswerDto findQuizAnswer(int questionAnswerId) {
+    public QuizAnswer findQuizAnswer(int questionAnswerId) {
         return this.questionAnswerRepository.findById(questionAnswerId)
                 .map(QuestionAnswer::getQuizAnswer)
-                .map(QuizAnswerDto::new)
                 .orElseThrow(() -> new TutorException(QUESTION_ANSWER_NOT_FOUND, questionAnswerId));
     }
 

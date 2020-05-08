@@ -121,22 +121,11 @@ Cypress.Commands.add('createQuiz', (title, question) => {
     .parent()
     .should('have.length', 1)
     .children()
-    .should('have.length', 7)
+    .should('have.length', 5)
     .find('[data-cy="ActAddQuestion"]')
     .click();
   cy.get('[data-cy="availableDate"]').click();
-  cy.get('.v-date-picker-header')
-    .children()
-    .first()
-    .click();
-  cy.wait(500);
-  cy.get('.v-date-picker-table')
-    .children()
-    .contains('28')
-    .click();
-  cy.get('.green--text').click();
-  cy.get('[data-cy="type"]').click();
-  cy.contains('PROPOSED').click();
+  cy.contains('Now').click();
   cy.contains('Save').click();
   cy.wait(100);
 });
@@ -149,10 +138,30 @@ Cypress.Commands.add('respondQuiz', quiz_title => {
   cy.get('.quizzesButton').click();
 });
 
-Cypress.Commands.add('goToClarification', quiz_title => {
+Cypress.Commands.add('goToMyClarifications', quiz_title => {
   cy.contains('Solved').click();
   cy.contains(quiz_title).click();
-  cy.contains('Show Clarifications').click();
+  cy.contains('My Clarifications').click();
+});
+
+Cypress.Commands.add('goToPublicClarifications', quiz_title => {
+  cy.contains('Solved').click();
+  cy.contains(quiz_title).click();
+  cy.contains('Public Clarifications').click();
+});
+
+Cypress.Commands.add('goToQuestionPublicClarification', question => {
+  cy.contains('Questions').click();
+  cy.get('[data-cy="bttnSearch"]').type(question);
+  cy.contains(question)
+    .parent()
+    .should('have.length', 1)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 10)
+    .find('[data-cy="ShowPClarifications"]')
+    .click();
 });
 
 Cypress.Commands.add('createInvalidClarificationRequest', () => {
@@ -172,7 +181,7 @@ Cypress.Commands.add('createInvalidClarificationComment', crlfContent => {
   cy.contains(crlfContent)
     .parent()
     .children()
-    .should('have.length', 6)
+    .should('have.length', 7)
     .find('[data-cy="showClrf"]')
     .click();
   cy.get('[data-cy="bttnAddComment"]').click();
@@ -186,7 +195,7 @@ Cypress.Commands.add(
     cy.contains(clrfContent)
       .parent()
       .children()
-      .should('have.length', 6)
+      .should('have.length', 7)
       .find('[data-cy="addCmt"]')
       .click();
     cy.get('[data-cy="cmtContent"]').type(cmtContent);
@@ -194,7 +203,7 @@ Cypress.Commands.add(
     cy.contains(clrfContent)
       .parent()
       .children()
-      .should('have.length', 6)
+      .should('have.length', 7)
       .contains('RESOLVED')
       .click();
   }
@@ -206,7 +215,7 @@ Cypress.Commands.add(
     cy.contains(clrfContent)
       .parent()
       .children()
-      .should('have.length', 6)
+      .should('have.length', 7)
       .find('[data-cy="showClrf"]')
       .click();
     cy.get('[data-cy="bttnAddComment"]').click();
@@ -216,16 +225,92 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('showClarifications', () => {
+Cypress.Commands.add('showClarificationsStudent', () => {
+  cy.contains('My Clarifications').click();
+});
+
+Cypress.Commands.add('showClarificationsTeacher', () => {
   cy.contains('Clarifications').click();
 });
+
+Cypress.Commands.add('showClarificationsStats', () => {
+  cy.contains('Dashboard').click();
+  cy.contains('Total Clarifications').click();
+});
+
+Cypress.Commands.add('changeClarificationsDashState', (oldState, newState) => {
+  cy.contains('Dashboard').click();
+  cy.contains(oldState).click();
+  cy.contains(newState);
+});
+
+Cypress.Commands.add('showPublicClarificationsStats', () => {
+  cy.contains('Public Statistics').click();
+  cy.contains('Demo Student').click();
+});
+
+Cypress.Commands.add('changeState', (clrfContent, oldState, newState) => {
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="showClrf"]')
+    .click();
+  cy.contains(oldState).click();
+  cy.get('[data-cy="bttnClose"]').click();
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .contains(newState)
+    .click();
+});
+
+Cypress.Commands.add('changeType', (clrfContent, oldType, newType) => {
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .contains(oldType);
+
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="changeType"]')
+    .click();
+
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .contains(newType);
+});
+
+Cypress.Commands.add(
+  'changeAvailabilityPClarification',
+  (clrfContent, newAvailability) => {
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 5)
+      .find('[data-cy="changeVisibility"]')
+      .click();
+
+    cy.contains(clrfContent)
+      .parent()
+      .children()
+      .should('have.length', 5)
+      .contains(newAvailability);
+  }
+);
 
 Cypress.Commands.add('showQuestionClarification', clrfContent => {
   cy.contains(clrfContent)
     .parent()
     .should('have.length', 1)
     .children()
-    .should('have.length', 6)
+    .should('have.length', 7)
     .find('[data-cy="showQuestion"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();
@@ -235,10 +320,20 @@ Cypress.Commands.add('showClarification', clrfContent => {
   cy.contains(clrfContent)
     .parent()
     .children()
-    .should('have.length', 6)
+    .should('have.length', 7)
     .find('[data-cy="showClrf"]')
     .click();
   cy.get('[data-cy="bttnClose"]').click();
+});
+
+Cypress.Commands.add('deleteClarification', clrfContent => {
+  cy.on('window:confirm', () => true);
+  cy.contains(clrfContent)
+    .parent()
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="deleteClrf"]')
+    .click();
 });
 
 Cypress.Commands.add('clickRowButton', (elem, button) => {

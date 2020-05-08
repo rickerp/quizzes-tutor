@@ -4,6 +4,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.beans.factory.annotation.Autowired
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationCommentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationRequestService
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.PublicClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationRequestDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
@@ -203,6 +204,11 @@ class GetClarificationRequestsTest extends Specification {
         @Bean
         ClarificationCommentService clarificationCommentService() {
             return new ClarificationCommentService()
+        }
+
+        @Bean
+        PublicClarificationService PublicClarificationService() {
+            return new PublicClarificationService()
         }
     }
 }

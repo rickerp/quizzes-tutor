@@ -1,8 +1,8 @@
 const QUIZ_TITLE = 'My Quiz Test';
 const CLARIFICATION_CONTENT = 'THIS IS A CLARIFICATION REQUEST TEST';
-const QUESTION = 'A utility tree';
+const QUESTION = 'UtilityTree';
 
-describe('Clarification Request walkthrough', () => {
+describe('Clarification Requests walkthrough', () => {
   before(() => {
     cy.demoTeacherLogin();
     cy.createQuiz(QUIZ_TITLE, QUESTION);
@@ -13,7 +13,6 @@ describe('Clarification Request walkthrough', () => {
 
   beforeEach(() => {
     cy.demoStudentLogin();
-    cy.get('.quizzesButton').click();
   });
 
   afterEach(() => {
@@ -21,22 +20,57 @@ describe('Clarification Request walkthrough', () => {
   });
 
   it('Create a invalid clarification request', () => {
-    cy.goToClarification(QUIZ_TITLE);
+    cy.get('.quizzesButton').click();
+    cy.goToMyClarifications(QUIZ_TITLE);
     cy.createInvalidClarificationRequest();
   });
 
   it('Creates a clarification request', () => {
-    cy.goToClarification(QUIZ_TITLE);
+    cy.get('.quizzesButton').click();
+    cy.goToMyClarifications(QUIZ_TITLE);
     cy.createClarificationRequest(CLARIFICATION_CONTENT);
   });
 
+  it('Change ClarificationState', () => {
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
+    cy.changeState(CLARIFICATION_CONTENT, 'Unresolved', 'RESOLVED');
+    cy.changeState(CLARIFICATION_CONTENT, 'Resolved', 'UNRESOLVED');
+  });
+
   it('Show Question of a clarification request submitted', () => {
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.showQuestionClarification(CLARIFICATION_CONTENT);
   });
 
   it('Show Clarification of a Clarification request submitted', () => {
-    cy.showClarifications();
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
     cy.showClarification(CLARIFICATION_CONTENT);
   });
+
+  it('Delete a Clarification', () => {
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStudent();
+    cy.deleteClarification(CLARIFICATION_CONTENT);
+  });
+
+  it('Show Clarification Stats', () => {
+    cy.get('.bttnClr').click();
+    cy.showClarificationsStats();
+  });
+
+  it('Change Clarifications Dashboard State', () => {
+    cy.get('.bttnClr').click();
+    cy.changeClarificationsDashState('Private', 'Public');
+  });
+
+  it('Show Public Clarification Stats', () => {
+    cy.get('.bttnClr').click();
+    cy.showPublicClarificationsStats();
+    cy.get('.bttnClr').click();
+    cy.changeClarificationsDashState('Public', 'Private');
+  });
+
 });

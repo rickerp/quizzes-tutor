@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 public class User implements UserDetails, DomainEntity {
     public enum Role {STUDENT, TEACHER, ADMIN, DEMO_ADMIN}
+    public enum DashBoardState {PRIVATE, PUBLIC}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,6 +74,10 @@ public class User implements UserDetails, DomainEntity {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "players")
     private Set<Tournament> tournaments = new HashSet<>();
 
+    @Column(name = "clarification_dashboard_state")
+    @Enumerated(EnumType.STRING)
+    private DashBoardState clarificationDashState;
+
     public User() {
     }
 
@@ -91,6 +96,7 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+        this.clarificationDashState = DashBoardState.PRIVATE;
     }
 
     public Boolean isPublicSuggestedQuestionsDashboard() {
@@ -331,6 +337,14 @@ public class User implements UserDetails, DomainEntity {
 
     public void setClarificationComments(Set<ClarificationComment> clarificationComments) {
         this.clarificationComments = clarificationComments;
+    }
+
+    public DashBoardState getClarificationDashState() {
+        return clarificationDashState;
+    }
+
+    public void setClarificationDashState(DashBoardState clarificationDashState) {
+        this.clarificationDashState = clarificationDashState;
     }
 
     @Override

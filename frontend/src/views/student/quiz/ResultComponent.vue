@@ -12,26 +12,49 @@
   >
     <v-toolbar class="pb-3 mb-3" color="#333333" dark>
       <v-icon style="padding-right: 20px">
-        {{ showClarifications ? 'fas fa-comments' : 'fas fa-file-alt' }}
+        {{ resultStage > 0 ? 'fas fa-comments' : 'fas fa-file-alt' }}
       </v-icon>
       <v-toolbar-title>
-        {{ showClarifications ? 'Clarifications' : 'Question' }}
+        {{ showTitle() }}
       </v-toolbar-title>
       <v-spacer />
       <v-btn
         color="primary"
         class="mr-3"
-        v-if="showClarifications"
+        v-if="resultStage === 1"
         dark
         @click="showClarificationDialog"
       >
-        Create
+        <strong>Create</strong>
       </v-btn>
-      <v-btn color="primary" dark @click="changeMode">
-        {{ showClarifications ? 'Show Questions' : 'Show Clarifications' }}
+      <v-btn
+        v-if="resultStage !== 2"
+        class="mr-3"
+        color="primary"
+        dark
+        @click="changeMode(2)"
+      >
+        <strong>Public Clarifications</strong>
+      </v-btn>
+      <v-btn
+        v-if="resultStage !== 1"
+        :class="{ 'mr-3': resultStage !== 0 }"
+        color="primary"
+        dark
+        @click="changeMode(1)"
+      >
+        <strong>My Clarifications</strong>
+      </v-btn>
+      <v-btn
+        v-if="resultStage !== 0"
+        color="primary"
+        dark
+        @click="changeMode(0)"
+      >
+        <strong>Question</strong>
       </v-btn>
     </v-toolbar>
-    <div v-if="!showClarifications">
+    <div v-if="resultStage === 0">
       <div class="question">
         <span
           @click="decreaseOrder"
@@ -84,11 +107,16 @@
       </ul>
     </div>
     <chat-component
-      v-if="showClarifications"
+      v-if="resultStage === 1"
       :requests="answer.clarificationRequests"
       :show-toolbar="false"
     >
     </chat-component>
+    <chat-component
+      v-if="resultStage === 2"
+      :requests="Pclarifications"
+      :show-toolbar="false"
+    ></chat-component>
     <new-clarification-dialog
       v-if="create"
       v-model="newClarificationDialog"
@@ -100,7 +128,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Model, Emit } from 'vue-property-decorator';
+import {
+  Component,
+  Vue,
+  Prop,
+  Model,
+  Emit,
+  Watch
+} from 'vue-property-decorator';
 import { convertMarkDown } from '@/services/ConvertMarkdownService';
 import StatementQuestion from '@/models/statement/StatementQuestion';
 import StatementAnswer from '@/models/statement/StatementAnswer';
@@ -109,6 +144,7 @@ import Image from '@/models/management/Image';
 import ChatComponent from '@/views/common/clarification/ChatComponent.vue';
 import NewClarificationRequestDialog from '@/views/student/quiz/NewClarificationRequestDialog.vue';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
+import RemoteServices from '@/services/RemoteServices';
 
 @Component({
   components: {
@@ -123,7 +159,9 @@ export default class ResultComponent extends Vue {
   @Prop(StatementAnswer) readonly answer!: StatementAnswer;
   @Prop() readonly questionNumber!: number;
   hover: boolean = false;
-  showClarifications: boolean = false;
+  resultStage: number = 0;
+  changeInAnswer: boolean = true;
+  Pclarifications: ClarificationRequest[] = [];
   create: boolean = false;
   newClarificationDialog: boolean = false;
   newClarification: ClarificationRequest | undefined;
@@ -139,8 +177,12 @@ export default class ResultComponent extends Vue {
     return 1;
   }
 
-  async changeMode() {
-    this.showClarifications = !this.showClarifications;
+  async changeMode(resultStage: number) {
+    if (resultStage == 2 && this.changeInAnswer) {
+      this.changeInAnswer = false;
+      await this.getPublicClarifications();
+    }
+    this.resultStage = resultStage;
   }
   convertMarkDown(text: string, image: Image | null = null): string {
     return convertMarkDown(text, image);
@@ -157,6 +199,39 @@ export default class ResultComponent extends Vue {
     this.newClarificationDialog = false;
     this.create = false;
     this.answer.clarificationRequests.unshift(request);
+  }
+
+  showTitle() {
+    if (this.resultStage == 0) return 'Question';
+    if (this.resultStage == 1) return 'My Clarifications';
+    if (this.resultStage == 2) return 'Public Clarifications';
+  }
+
+  @Watch('answer')
+  setAChangeInAnswer() {
+    if (this.resultStage === 2) {
+      this.getPublicClarifications();
+    } else {
+      this.changeInAnswer = true;
+    }
+  }
+
+  async getPublicClarifications() {
+    await this.$store.dispatch('loading');
+    const questionId = this.getQuestionId();
+    if (questionId) {
+      try {
+        const result = await RemoteServices.getPublicClarifications(questionId);
+        this.Pclarifications = result.map(pClr => pClr.clarificationRequest);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+      await this.$store.dispatch('clearLoading');
+    }
+  }
+
+  getQuestionId() {
+    return this.question.questionId;
   }
 }
 </script>
