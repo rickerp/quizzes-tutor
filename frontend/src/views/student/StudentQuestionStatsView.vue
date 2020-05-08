@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import StudentStats from '@/models/statement/StudentStats';
 import RemoteServices from '@/services/RemoteServices';
 import AnimatedNumber from '@/components/AnimatedNumber.vue';
 import StudentQuestionDashboard from '@/models/studentquestion/StudentQuestionDashboard';

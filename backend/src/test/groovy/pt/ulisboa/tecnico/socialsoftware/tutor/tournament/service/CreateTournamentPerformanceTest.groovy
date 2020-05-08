@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
@@ -15,7 +16,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
@@ -26,8 +26,7 @@ class CreateTournamentPerformanceTest extends Specification {
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
-    public static final LocalDateTime NOW = LocalDateTime.now()
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository
@@ -72,8 +71,8 @@ class CreateTournamentPerformanceTest extends Specification {
         dto.setCourseExecutionId(courseExecution.getId())
         dto.setCreatorId(creator.getId())
         dto.setNrQuestions(10)
-        dto.setStartTime(NOW.plusMinutes(10).format(formatter))
-        dto.setEndTime(NOW.plusMinutes(20).format(formatter))
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
         dto.setTopicsId(topics.stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()))
 

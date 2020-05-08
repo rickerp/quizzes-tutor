@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.QuizService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.StudentQuestionService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 @Component
 public class TutorPermissionEvaluator implements PermissionEvaluator {
+
     @Autowired
     private CourseService courseService;
 
@@ -48,6 +50,9 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
 
     @Autowired
     private StudentQuestionService studentQuestionService;
+
+    @Autowired
+    private TournamentService tournamentService;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -91,6 +96,8 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                     return userRespondedToThisQuestionAnswer(userId, id);
                 case "CLARIFICATION.ACCESS":
                     return userHasThisExecution(userId, clarificationRequestService.findClarificationCourseExecution(id).getCourseExecutionId());
+                case "TOURNAMENT.ACCESS":
+                    return tournamentService.isEnrolled(id, userId);
                 default: return false;
             }
         }
@@ -108,7 +115,7 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean userRespondedToThisQuestionAnswer(int userId, int questionAnswerId) {
-        return answerService.findQuizAnswer(questionAnswerId).getUser().getId().equals(userId);
+        return answerService.isFromUser(questionAnswerId, userId);
     }
 
     private boolean executionHasTopics(int executionId, Set<Integer> topicsId) {

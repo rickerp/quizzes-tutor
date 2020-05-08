@@ -27,8 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Model } from 'vue-property-decorator';
-import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
+import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import StudentQuestionDashboard from '../../models/studentquestion/StudentQuestionDashboard';
 

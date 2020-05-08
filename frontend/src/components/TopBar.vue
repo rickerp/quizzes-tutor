@@ -120,18 +120,34 @@
         </v-menu>
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark to="/student/calendar">
+            <v-btn v-on="on" text dark>
               Tournaments
               <v-icon>fas fa-trophy</v-icon>
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item to="/student/calendar">
+            <v-list-item to="/student/tournaments/calendar">
               <v-list-item-action>
                 <v-icon>fas fa-calendar-alt</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Calendar</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/tournaments/inprogress">
+              <v-list-item-action>
+                <v-icon>fas fa-hourglass-half</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>In progress</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/tournaments/dashboard">
+              <v-list-item-action>
+                <v-icon>fas fa-columns</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Dashboard</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
@@ -24,7 +25,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.dto.ClarificationCommentDto;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 
 @Service
@@ -68,7 +68,7 @@ public class ClarificationCommentService {
     }
 
     private void verifyCourse(User user, ClarificationRequest clarificationRequest) {
-        CourseExecution clarificationCourseExecution = clarificationRequest.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution();
+        CourseExecution clarificationCourseExecution = clarificationRequest.getQuestionAnswer().getCourseExecution();
         if (!user.getCourseExecutions().contains(clarificationCourseExecution)) {
             throw new TutorException(ErrorMessage.COMMENT_INVALID_USER_COURSE);
         }

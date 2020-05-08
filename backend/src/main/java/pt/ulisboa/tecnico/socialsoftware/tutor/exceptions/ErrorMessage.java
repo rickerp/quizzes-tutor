@@ -84,6 +84,10 @@ public enum ErrorMessage {
     TOURNAMENT_END_TIME_INVALID("The tournament end time should be greater than it's start time. Given: %s"),
     TOPIC_NOT_AVAILABLE("The topic %d not available"),
     COURSE_EXECUTION_NOT_ACTIVE("The course execution with id %d is not active"),
+    TOURNAMENT_NOT_ACCEPTING_RESPONSES("The Tournament with id %d is not accepting responses"),
+    TOURNAMENT_ALREADY_FINISHED("The Tournament with id %d is already finished by the user with id %d"),
+    TOURNAMENT_TOPICS_INSUFFICIENT_QUESTIONS("The questions associated with the tournament topics are insufficient for the number of questions in the tournament"),
+    INVALID_TOURNAMENT_CREATOR("The Student with id %d is not the Creator of the Tournament with id %d"),
 
     CLARIFICATION_INVALID_USER("User associated to clarification is invalid"),
     CLARIFICATION_INVALID_CONTENT("ClarificationRequest content invalid"),

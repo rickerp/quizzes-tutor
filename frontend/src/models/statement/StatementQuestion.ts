@@ -3,17 +3,16 @@ import Image from '@/models/management/Image';
 import { _ } from 'vue-underscore';
 
 export default class StatementQuestion {
+  sequence!: number;
   questionId!: number;
-  quizQuestionId!: number;
   content!: string;
   image: Image | null = null;
-
   options: StatementOption[] = [];
 
   constructor(jsonObj?: StatementQuestion) {
     if (jsonObj) {
+      this.sequence = jsonObj.sequence;
       this.questionId = jsonObj.questionId;
-      this.quizQuestionId = jsonObj.quizQuestionId;
       this.content = jsonObj.content;
       this.image = jsonObj.image;
 

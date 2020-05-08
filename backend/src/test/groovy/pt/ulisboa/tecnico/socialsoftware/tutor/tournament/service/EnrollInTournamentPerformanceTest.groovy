@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
@@ -16,7 +17,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 
 import java.time.LocalDateTime
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 
 @DataJpaTest
@@ -25,7 +25,7 @@ class EnrollInTournamentPerformanceTest extends Specification {
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
-    public static final LocalDateTime NOW = LocalDateTime.now()
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository
@@ -74,14 +74,15 @@ class EnrollInTournamentPerformanceTest extends Specification {
 
         given: "Create 1000 Tournaments"
         1.upto(1, {
-            def tournament = new Tournament(T_NAME, creator, topics, courseExecution, 10, NOW.plusMinutes(10), NOW.plusMinutes(20))
+            def tournament = new Tournament(T_NAME, creator, topics, courseExecution, 10,
+                    NOW.plusMinutes(10), NOW.plusMinutes(20))
             tournamentRepository.save(tournament)
             tournamentsIds.add(tournament.getId())
         })
 
         and: "Create 1000 Users"
         1.upto(1, {
-            def user = new User(NAME, USERNAME+it, KEY+it, STUDENT)
+            def user = new User(NAME, USERNAME + it, KEY + it, STUDENT)
             user.addCourse(courseExecution)
             userRepository.save(user)
             usersIds.add(user.getId())
@@ -90,7 +91,7 @@ class EnrollInTournamentPerformanceTest extends Specification {
         when: "Each User Enrolls in all Tournaments"
         for (Integer uId : usersIds) {
             for (Integer tId : tournamentsIds) {
-                tournamentService.enrollPlayer(uId, tId)
+                tournamentService.enroll(uId, tId)
             }
         }
 

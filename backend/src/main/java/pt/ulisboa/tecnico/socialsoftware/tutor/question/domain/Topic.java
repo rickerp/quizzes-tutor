@@ -128,6 +128,5 @@ public class Topic implements DomainEntity {
         getQuestions().clear();
 
         this.topicConjunctions.forEach(topicConjunction -> topicConjunction.getTopics().remove(this));
-
     }
 }

@@ -18,6 +18,8 @@ import Evaluation from '@/models/studentquestion/Evaluation';
 import Tournament from '@/models/management/Tournament';
 import { ClarificationRequest } from '@/models/management/ClarificationRequest';
 import { ClarificationComment } from '@/models/management/ClarificationComment';
+import TournamentQuiz from '@/models/management/TournamentQuiz';
+import TournamentDashboard from '@/models/management/TournamentDashboard';
 import { PublicClarification } from '@/models/management/PublicClarification';
 import { ClarificationStats } from '@/models/management/ClarificationStats';
 import StudentQuestionDashboard from '@/models/studentquestion/StudentQuestionDashboard';
@@ -86,7 +88,21 @@ export default class RemoteServices {
       });
   }
 
-  static async getTournaments(): Promise<Tournament[]> {
+  static async createTournament(tournament: Tournament): Promise<Tournament> {
+    return httpClient
+      .post(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments`,
+        tournament
+      )
+      .then(response => {
+        return new Tournament(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getOpenedTournaments(): Promise<Tournament[]> {
     return httpClient
       .get(
         `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments`
@@ -101,7 +117,22 @@ export default class RemoteServices {
       });
   }
 
-  static async playerEnroll(id: number): Promise<Tournament> {
+  static async getInProgressTournaments(): Promise<Tournament[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/ongoing`
+      )
+      .then(response => {
+        return response.data.map((tournament: any) => {
+          return new Tournament(tournament);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async enrollPlayer(id: number): Promise<Tournament> {
     return httpClient
       .put(
         `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}`
@@ -114,14 +145,77 @@ export default class RemoteServices {
       });
   }
 
-  static async createTournament(tournament: Tournament): Promise<Tournament> {
+  static async removeTournament(id: number) {
     return httpClient
-      .post(
-        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments`,
-        tournament
+      .delete(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}/cancel`
+      )
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async startTournamentQuiz(id: number): Promise<TournamentQuiz> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}/quiz/begin`
       )
       .then(response => {
-        return new Tournament(response.data);
+        return new TournamentQuiz(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async selectQuestionOption(id: number, answer: StatementAnswer) {
+    return httpClient
+      .post(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}/quiz/answer`,
+        answer
+      )
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async finishTournamentQuiz(
+    id: number
+  ): Promise<StatementCorrectAnswer[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/${id}/quiz/finish`
+      )
+      .then(response => {
+        return response.data.map((answer: any) => {
+          return new StatementCorrectAnswer(answer);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getTournamentDashboard(): Promise<TournamentDashboard> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/tournaments/dashboard`
+      )
+      .then(response => {
+        return new TournamentDashboard(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async setTournamentDashboardPrivacy(
+    isPublic: boolean
+  ): Promise<boolean> {
+    return httpClient
+      .post('/tournaments/privacy', isPublic)
+      .then(response => {
+        return response.data;
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

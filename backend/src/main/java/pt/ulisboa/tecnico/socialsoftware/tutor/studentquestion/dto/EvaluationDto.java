@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.domain.Evaluation;
+
+
 import java.io.Serializable;
 
 public class EvaluationDto implements Serializable {
@@ -40,5 +42,4 @@ public class EvaluationDto implements Serializable {
     public void setJustification(String justification) {
         this.justification = justification;
     }
-
 }

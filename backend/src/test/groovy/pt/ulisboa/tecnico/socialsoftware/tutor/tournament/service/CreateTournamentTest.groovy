@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
@@ -18,11 +19,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
-
 import java.time.LocalDateTime
 
 @DataJpaTest
@@ -32,8 +30,7 @@ class CreateTournamentTest extends Specification {
     public static final String NAME_2 = "Name_2"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
-    public static final LocalDateTime NOW = LocalDateTime.now()
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository
@@ -80,8 +77,8 @@ class CreateTournamentTest extends Specification {
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1).format(formatter))
-        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"
@@ -92,8 +89,10 @@ class CreateTournamentTest extends Specification {
         tournament != null
         tournament.getCreator().getId() == dto.getCreatorId()
         tournament.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament.getStartTime().format(formatter) == dto.getStartTime()
-        tournament.getEndTime().format(formatter) == dto.getEndTime()
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
+        DateHandler.toISOString(tournament.getStartTime()) == dto.getStartTime()
+        DateHandler.toISOString(tournament.getEndTime()) == dto.getEndTime()
         tournament.getNrQuestions() == dto.getNrQuestions()
         tournament.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -113,8 +112,8 @@ class CreateTournamentTest extends Specification {
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(StartTime.format(formatter))
-        dto.setEndTime(EndTime.format(formatter))
+        dto.setStartTime(DateHandler.toISOString(StartTime))
+        dto.setEndTime(DateHandler.toISOString(EndTime))
         dto.setNrQuestions(nQuestions)
 
         when: "given a tournament dto to the service"
@@ -161,8 +160,8 @@ class CreateTournamentTest extends Specification {
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1).format(formatter))
-        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"
@@ -174,8 +173,8 @@ class CreateTournamentTest extends Specification {
         tournament_1 != null
         tournament_1.getCreator().getId() == dto.getCreatorId()
         tournament_1.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament_1.getStartTime().format(formatter) == dto.getStartTime()
-        tournament_1.getEndTime().format(formatter) == dto.getEndTime()
+        DateHandler.toISOString(tournament_1.getStartTime()) == dto.getStartTime()
+        DateHandler.toISOString(tournament_1.getEndTime()) == dto.getEndTime()
         tournament_1.getNrQuestions() == dto.getNrQuestions()
         tournament_1.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -183,8 +182,8 @@ class CreateTournamentTest extends Specification {
         tournament_2 != null
         tournament_2.getCreator().getId() == dto.getCreatorId()
         tournament_2.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament_2.getStartTime().format(formatter) == dto.getStartTime()
-        tournament_2.getEndTime().format(formatter) == dto.getEndTime()
+        DateHandler.toISOString(tournament_2.getStartTime()) == dto.getStartTime()
+        DateHandler.toISOString(tournament_2.getEndTime()) == dto.getEndTime()
         tournament_2.getNrQuestions() == dto.getNrQuestions()
         tournament_2.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -199,8 +198,8 @@ class CreateTournamentTest extends Specification {
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1).format(formatter))
-        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
         dto.setNrQuestions(5)
 
         when: "given a dto with no topic to tournament service"
@@ -226,8 +225,8 @@ class CreateTournamentTest extends Specification {
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1).format(formatter))
-        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"
@@ -238,8 +237,8 @@ class CreateTournamentTest extends Specification {
         tournament != null
         tournament.getCreator().getId() == dto.getCreatorId()
         tournament.getCourseExecution().getId() == dto.getCourseExecutionId()
-        tournament.getStartTime().format(formatter) == dto.getStartTime()
-        tournament.getEndTime().format(formatter) == dto.getEndTime()
+        DateHandler.toISOString(tournament.getStartTime()) == dto.getStartTime()
+        DateHandler.toISOString(tournament.getEndTime()) == dto.getEndTime()
         tournament.getNrQuestions() == dto.getNrQuestions()
         tournament.getTopics().stream().map({ topic -> topic.getId() })
                 .collect(Collectors.toSet()) == dto.getTopicsId()
@@ -257,8 +256,8 @@ class CreateTournamentTest extends Specification {
         dto.setCreatorId(creator.getId())
         dto.setTopicsId(topicsId)
         dto.setCourseExecutionId(courseExecution.getId())
-        dto.setStartTime(NOW.plusHours(1).format(formatter))
-        dto.setEndTime(NOW.plusHours(1).plusMinutes(5).format(formatter))
+        dto.setStartTime(DateHandler.toISOString(NOW.plusHours(1)))
+        dto.setEndTime(DateHandler.toISOString(NOW.plusHours(1).plusMinutes(5)))
         dto.setNrQuestions(5)
 
         when: "given a dto to tournament service"

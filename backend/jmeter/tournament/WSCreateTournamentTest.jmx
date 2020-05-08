@@ -185,8 +185,8 @@
 	&quot;name&quot;: &quot;Demo-Tournament&quot;,&#xd;
 	&quot;topicsId&quot;: [82,83,84,85,86],&#xd;
 	&quot;nrQuestions&quot;: 10,&#xd;
-	&quot;startTime&quot;: &quot;3000-01-01 12:00&quot;,&#xd;
-	&quot;endTime&quot;: &quot;3000-01-01 12:30&quot;&#xd;
+	&quot;startTime&quot;: &quot;3000-01-01T12:00:00Z&quot;,&#xd;
+	&quot;endTime&quot;: &quot;3000-01-01T12:30:00Z&quot;&#xd;
 }&#xd;
 </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -255,7 +255,7 @@
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert Start Time" enabled="true">
               <stringProp name="JSON_PATH">$.startTime</stringProp>
-              <stringProp name="EXPECTED_VALUE">3000-01-01 12:00</stringProp>
+              <stringProp name="EXPECTED_VALUE">3000-01-01T12:00:00Z</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
               <boolProp name="INVERT">false</boolProp>
@@ -264,7 +264,7 @@
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert End Time" enabled="true">
               <stringProp name="JSON_PATH">$.endTime</stringProp>
-              <stringProp name="EXPECTED_VALUE">3000-01-01 12:30</stringProp>
+              <stringProp name="EXPECTED_VALUE">3000-01-01T12:30:00Z</stringProp>
               <boolProp name="JSONVALIDATION">true</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
               <boolProp name="INVERT">false</boolProp>
@@ -366,8 +366,8 @@
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete created tournaments" enabled="true">
             <stringProp name="dataSource">sampleReq</stringProp>
-            <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id IN (SELECT id FROM tournaments WHERE start_time &gt; &apos;3000/01/01 00:00&apos;);
-DELETE FROM tournaments WHERE start_time &gt; &apos;3000/01/01 00:00&apos;;
+            <stringProp name="query">DELETE FROM tournaments_topics WHERE tournament_id IN (SELECT id FROM tournaments WHERE start_time &gt; &apos;3000-01-01T00:00:00Z&apos;);
+DELETE FROM tournaments WHERE start_time &gt; &apos;3000-01-01T00:00:00Z&apos;;
 </stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>

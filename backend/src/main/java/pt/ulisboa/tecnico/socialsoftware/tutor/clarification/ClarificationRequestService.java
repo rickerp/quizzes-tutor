@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.PublicClarification;
@@ -24,10 +23,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
+
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -68,12 +67,12 @@ public class ClarificationRequestService {
         QuestionAnswer questionAnswer = questionAnswerRepository.findById(questionAnswerId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_INVALID_QUESTION_ANSWER));
 
-        if (!questionAnswer.getQuizAnswer().isCompleted())
+        if (!questionAnswer.isCompleted())
             throw new TutorException(ErrorMessage.CLARIFICATION_QUIZ_NOT_COMPLETED);
 
         ClarificationRequest clarificationRequest = new ClarificationRequest(clarificationRequestDto, user, questionAnswer);
 
-        if (!user.getQuizAnswers().contains(clarificationRequest.getQuestionAnswer().getQuizAnswer()))
+        if (!clarificationRequest.getQuestionAnswer().getUser().getId().equals(user.getId()))
             throw new TutorException(ErrorMessage.CLARIFICATION_QUESTION_ANSWER_NOT_IN_USER, clarificationRequest.getQuestionAnswer().getId());
 
         user.addClarification(clarificationRequest);
@@ -129,12 +128,9 @@ public class ClarificationRequestService {
         ClarificationRequest clarificationRequest = clarificationRequestRepository.findById(clarificationId)
                 .orElseThrow(() -> new TutorException(ErrorMessage.CLARIFICATION_NOT_FOUND));
 
-        CourseExecution courseExecution = clarificationRequest.getQuestionAnswer()
-                .getQuizAnswer()
-                .getQuiz()
-                .getCourseExecution();
+        CourseExecution courseExecution = clarificationRequest.getQuestionAnswer().getCourseExecution();
 
-        Question question = clarificationRequest.getQuestionAnswer().getQuizQuestion().getQuestion();
+        Question question = clarificationRequest.getQuestionAnswer().getQuestion();
 
         type = type.toUpperCase();
         switch (type) {
@@ -168,7 +164,7 @@ public class ClarificationRequestService {
                 .orElseThrow(() -> new TutorException(ErrorMessage.COURSE_EXECUTION_NOT_FOUND, executionId));
 
         List<ClarificationRequest> execClarifications =  user.getClarificationRequests().stream()
-                .filter(entry -> entry.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution().getId().equals(courseExec.getId()))
+                .filter(entry -> entry.getQuestionAnswer().getCourseExecution().getId().equals(courseExec.getId()))
                 .collect(Collectors.toList());
 
         int totalClarifications = execClarifications.size();
@@ -242,8 +238,8 @@ public class ClarificationRequestService {
     }
 
     private List<ClarificationRequestDto> filterClarifications(Stream<ClarificationRequest> clarificationRequests, int executionId) {
-        return clarificationRequests.filter(clarification -> clarification.getQuestionAnswer().getQuizAnswer().getQuiz()
-                .getCourseExecution().getId() == executionId)
+        return clarificationRequests
+                .filter(clarification -> clarification.getQuestionAnswer().getCourseExecution().getId() == executionId)
                 .map(ClarificationRequestDto::new)
                 .sorted(Comparator.comparing(ClarificationRequestDto::getCreationDate).reversed())
                 .collect(Collectors.toList());
@@ -256,9 +252,7 @@ public class ClarificationRequestService {
     public CourseDto findClarificationCourseExecution(int clarificationRequestId) {
         return new CourseDto(clarificationRequestRepository.findById(clarificationRequestId)
                 .map(ClarificationRequest::getQuestionAnswer)
-                .map(QuestionAnswer::getQuizAnswer)
-                .map(QuizAnswer::getQuiz)
-                .map(Quiz::getCourseExecution)
+                .map(QuestionAnswer::getCourseExecution)
                 .orElseThrow(() -> new TutorException((ErrorMessage.CLARIFICATION_NOT_FOUND))));
     }
 

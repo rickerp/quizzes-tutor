@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
@@ -16,7 +17,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 
 import java.time.LocalDateTime
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.user.User.Role.STUDENT
 
 @DataJpaTest
@@ -25,7 +25,7 @@ class ListTournamentServiceTest extends Specification {
     public static final String NAME = "Name"
     public static final String USERNAME = "Username"
     public static final Integer KEY = 1
-    public static final LocalDateTime NOW = LocalDateTime.now()
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository
@@ -70,8 +70,8 @@ class ListTournamentServiceTest extends Specification {
         opened_t = new Tournament()
         opened_t.setName(T_NAME)
         opened_t.setCreator(creator)
-        opened_t.setNrQuestions(10)
         opened_t.setTopics(topics)
+        opened_t.setNrQuestions(10)
         opened_t.setCourseExecution(courseExecution)
         opened_t.setStartTime(NOW.plusMinutes(10))
         opened_t.setEndTime(NOW.plusMinutes(20))
@@ -80,8 +80,8 @@ class ListTournamentServiceTest extends Specification {
         in_progress_t = new Tournament()
         in_progress_t.setName(T_NAME)
         in_progress_t.setCreator(creator)
-        in_progress_t.setNrQuestions(10)
         in_progress_t.setTopics(topics)
+        in_progress_t.setNrQuestions(10)
         in_progress_t.setCourseExecution(courseExecution)
         in_progress_t.setStartTime(NOW.plusMinutes(-10))
         in_progress_t.setEndTime(NOW.plusMinutes(10))
@@ -90,8 +90,8 @@ class ListTournamentServiceTest extends Specification {
         closed_t = new Tournament()
         closed_t.setName(T_NAME)
         closed_t.setCreator(creator)
-        closed_t.setNrQuestions(10)
         closed_t.setTopics(topics)
+        closed_t.setNrQuestions(10)
         closed_t.setCourseExecution(courseExecution)
         closed_t.setStartTime(NOW.plusMinutes(-20))
         closed_t.setEndTime(NOW.plusMinutes(-10))
@@ -114,8 +114,8 @@ class ListTournamentServiceTest extends Specification {
         def opened_t_2 = new Tournament()
         opened_t_2.setName(T_NAME)
         opened_t_2.setCreator(creator)
-        opened_t_2.setNrQuestions(10)
         opened_t_2.setTopics(topics)
+        opened_t_2.setNrQuestions(10)
         opened_t_2.setCourseExecution(courseExecution)
         opened_t_2.setStartTime(NOW.plusMinutes(20))
         opened_t_2.setEndTime(NOW.plusMinutes(30))
@@ -154,8 +154,8 @@ class ListTournamentServiceTest extends Specification {
         def opened_t_2 = new Tournament()
         opened_t_2.setName(T_NAME)
         opened_t_2.setCreator(creator)
-        opened_t_2.setNrQuestions(10)
         opened_t_2.setTopics(topics)
+        opened_t_2.setNrQuestions(10)
         opened_t_2.setCourseExecution(courseExecution_2)
         opened_t_2.setStartTime(NOW.plusMinutes(20))
         opened_t_2.setEndTime(NOW.plusMinutes(30))

@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -59,6 +60,9 @@ public class Question implements DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
     private final Set<QuizQuestion> quizQuestions = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    private final Set<TournamentQuestion> tournamentQuestions = new HashSet<>();
+
     @ManyToMany(mappedBy = "questions")
     private final Set<Topic> topics = new HashSet<>();
 
@@ -101,7 +105,7 @@ public class Question implements DomainEntity {
         return key;
     }
 
-   public void setKey(Integer key) {
+    public void setKey(Integer key) {
         this.key = key;
     }
 
@@ -208,6 +212,12 @@ public class Question implements DomainEntity {
     public void addQuizQuestion(QuizQuestion quizQuestion) {
         quizQuestions.add(quizQuestion);
     }
+
+    public Set<TournamentQuestion> getTournamentQuestions() {
+        return tournamentQuestions;
+    }
+
+    public void addTournamentQuestion(TournamentQuestion tournamentQuestion) { tournamentQuestions.add(tournamentQuestion); }
 
     public Set<Topic> getTopics() {
         return topics;

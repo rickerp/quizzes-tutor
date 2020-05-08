@@ -138,7 +138,7 @@ public class AnswerService {
                         .orElseThrow(() -> new TutorException(OPTION_NOT_FOUND, answer.getOptionId()));
 
                 if (isNotQuestionOption(questionAnswer.getQuizQuestion(), option)) {
-                    throw new TutorException(QUESTION_OPTION_MISMATCH, questionAnswer.getQuizQuestion().getQuestion().getId(), option.getId());
+                    throw new TutorException(QUESTION_OPTION_MISMATCH, questionAnswer.getQuestion().getId(), option.getId());
                 }
 
                 if (questionAnswer.getOption() != null) {
@@ -150,13 +150,6 @@ public class AnswerService {
                 quizAnswer.setAnswerDate(DateHandler.now());
             }
         }
-    }
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public QuizAnswer findQuizAnswer(int questionAnswerId) {
-        return this.questionAnswerRepository.findById(questionAnswerId)
-                .map(QuestionAnswer::getQuizAnswer)
-                .orElseThrow(() -> new TutorException(QUESTION_ANSWER_NOT_FOUND, questionAnswerId));
     }
 
     private boolean isNotQuestionOption(QuizQuestion quizQuestion, Option option) {
@@ -198,5 +191,11 @@ public class AnswerService {
         });
         quizAnswer.remove();
         quizAnswerRepository.delete(quizAnswer);
+    }
+
+    public boolean isFromUser(int questionAnswerId, int userId) {
+        return this.questionAnswerRepository.findById(questionAnswerId)
+                .orElseThrow(() -> new TutorException(QUESTION_ANSWER_NOT_FOUND, questionAnswerId))
+                .getUser().getId().equals(userId);
     }
 }

@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.studentquestion.api;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -92,5 +91,4 @@ public class StudentQuestionController {
         User user = (User) ((Authentication) principal).getPrincipal();
         return studentQuestionService.setDashboardVisibility(user.getId(), publicDashboard);
     }
-
 }

@@ -3,21 +3,25 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationComment;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DUPLICATE_TOURNAMENT_ENROLL;
 
 @Entity
 @Table(name = "users")
@@ -51,6 +55,13 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
 
+    private Integer nrTournamentQuestions = 0;
+    private Integer nrTournamentAnswers = 0;
+    private Integer nrTournamentCorrectAnswers = 0;
+
+    @Column(name = "public_tournament_dashboard" ,columnDefinition = "boolean default false")
+    private Boolean publicTournamentDashboard = false;
+
     private Boolean publicSuggestedQuestionsDashboard;
 
     @Column(name = "creation_date")
@@ -62,6 +73,9 @@ public class User implements UserDetails, DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
+    private Set<TournamentAnswer> tournamentAnswers = new HashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private Set<ClarificationRequest> clarificationRequests = new HashSet<>();
 
@@ -70,9 +84,6 @@ public class User implements UserDetails, DomainEntity {
 
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "players")
-    private Set<Tournament> tournaments = new HashSet<>();
 
     @Column(name = "clarification_dashboard_state")
     @Enumerated(EnumType.STRING)
@@ -96,7 +107,11 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+        this.nrTournamentQuestions = 0;
+        this.nrTournamentAnswers = 0;
+        this.nrTournamentCorrectAnswers = 0;
         this.clarificationDashState = DashBoardState.PRIVATE;
+        publicTournamentDashboard = false;
     }
 
     public Boolean isPublicSuggestedQuestionsDashboard() {
@@ -176,6 +191,8 @@ public class User implements UserDetails, DomainEntity {
     public Set<QuizAnswer> getQuizAnswers() {
         return quizAnswers;
     }
+
+    public Set<TournamentAnswer> getTournamentAnswers() { return tournamentAnswers; }
 
     public Set<CourseExecution> getCourseExecutions() {
         return courseExecutions;
@@ -418,16 +435,39 @@ public class User implements UserDetails, DomainEntity {
         }
     }
 
+    public void addNrTournamentQuestions(Integer nrTournamentQuestions) {
+        if (this.nrTournamentQuestions == null) this.nrTournamentQuestions = 0;
+        this.nrTournamentQuestions += nrTournamentQuestions;
+    }
+
+    public void addNrTournamentAnswers(Integer nrTournamentAnswers) {
+        if (this.nrTournamentAnswers == null) this.nrTournamentAnswers = 0;
+        this.nrTournamentAnswers += nrTournamentAnswers;
+    }
+
+    public void addNrTournamentCorrectAnswers(Integer nrTournamentCorrectAnswers) {
+        if (this.nrTournamentCorrectAnswers == null) this.nrTournamentCorrectAnswers = 0;
+        this.nrTournamentCorrectAnswers += nrTournamentCorrectAnswers;
+    }
+
+    public Integer getNrTournamentQuestions() { return nrTournamentQuestions; }
+
+    public Integer getNrTournamentAnswers() { return nrTournamentAnswers; }
+
+    public Integer getNrTournamentCorrectAnswers() { return nrTournamentCorrectAnswers; }
+
     public void addQuizAnswer(QuizAnswer quizAnswer) {
         this.quizAnswers.add(quizAnswer);
     }
 
-    public void addCourse(CourseExecution course) {
-        this.courseExecutions.add(course);
+    public void addTournamentAnswer(TournamentAnswer tournamentAnswer) {
+        if (!this.tournamentAnswers.add(tournamentAnswer)) {
+            throw new TutorException(DUPLICATE_TOURNAMENT_ENROLL);
+        }
     }
 
-    public Set<Tournament> getTournaments() {
-        return this.tournaments;
+    public void addCourse(CourseExecution course) {
+        this.courseExecutions.add(course);
     }
 
     public void addClarification(ClarificationRequest clarificationRequest) { this.clarificationRequests.add(clarificationRequest); }
@@ -470,12 +510,16 @@ public class User implements UserDetails, DomainEntity {
         return true;
     }
 
+    public Boolean isTournamentDashboardPublic() { return publicTournamentDashboard; }
+
+    public void setTournamentDashboardPrivacy(Boolean isPublic) { publicTournamentDashboard = isPublic; }
+
     public List<Question> filterQuestionsByStudentModel(Integer numberOfQuestions, List<Question> availableQuestions) {
         List<Question> studentAnsweredQuestions = getQuizAnswers().stream()
                 .flatMap(quizAnswer -> quizAnswer.getQuestionAnswers().stream())
-                .filter(questionAnswer -> availableQuestions.contains(questionAnswer.getQuizQuestion().getQuestion()))
+                .filter(questionAnswer -> availableQuestions.contains(questionAnswer.getQuestion()))
                 .filter(questionAnswer -> questionAnswer.getTimeTaken() != null && questionAnswer.getTimeTaken() != 0)
-                .map(questionAnswer -> questionAnswer.getQuizQuestion().getQuestion())
+                .map(QuestionAnswer::getQuestion)
                 .collect(Collectors.toList());
 
         List<Question> notAnsweredQuestions = availableQuestions.stream()

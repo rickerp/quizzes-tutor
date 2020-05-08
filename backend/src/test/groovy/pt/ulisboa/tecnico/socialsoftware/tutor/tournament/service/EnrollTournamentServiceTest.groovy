@@ -4,9 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.OptionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.repository.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
@@ -16,7 +25,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.time.LocalDateTime
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.TOURNAMENT_NOT_OPENED
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USER_NOT_STUDENT
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DUPLICATE_TOURNAMENT_ENROLL
@@ -30,10 +38,22 @@ class EnrollTournamentServiceTest extends Specification {
     public static final String USERNAME_2 = "Username_2"
     public static final Integer KEY_1 = 1
     public static final Integer KEY_2 = 2
-    public static final LocalDateTime NOW = LocalDateTime.now()
+    public static final LocalDateTime NOW = DateHandler.now()
 
     @Autowired
     UserRepository userRepository
+
+    @Autowired
+    OptionRepository optionRepository
+
+    @Autowired
+    QuestionRepository questionRepository
+
+    @Autowired
+    TopicRepository topicRepository
+
+    @Autowired
+    CourseRepository courseRepository
 
     @Autowired
     CourseExecutionRepository courseExecutionRepository
@@ -44,11 +64,15 @@ class EnrollTournamentServiceTest extends Specification {
     @Autowired
     TournamentService tournamentService
 
-    def player
     def courseExecution
+    def player
+    def topics
     def tournament
 
     def setup() {
+        "Create a Course"
+        Course course = new Course(NAME, Course.Type.TECNICO)
+        courseRepository.save(course)
         "Create a Course Execution"
         courseExecution = new CourseExecution()
         courseExecution.setStatus(CourseExecution.Status.ACTIVE)
@@ -57,10 +81,37 @@ class EnrollTournamentServiceTest extends Specification {
         player = new User(NAME, USERNAME_1, KEY_1, STUDENT)
         player.addCourse(courseExecution)
         userRepository.save(player)
+        "Create 5 Topics, each with 2 questions"
+        topics = new HashSet<Topic>()
+        1.upto(5, {
+            Topic topic = new Topic()
+            topic.setName(NAME + it)
+            topicRepository.save(topic)
+
+            1.upto(2, {
+                Option option = new Option()
+                option.setSequence(topic.getId() * 5 + it)
+                option.setCorrect(true)
+                option.setContent(NAME + it)
+                optionRepository.save(option)
+
+                Question question = new Question()
+                question.setKey(topic.getId() * 5 + it)
+                question.setCourse(course)
+                question.setTitle(NAME + it)
+                questionRepository.save(question)
+                option.setQuestion(question)
+
+                question.addTopic(topic)
+            })
+
+            topics.add(topic)
+        })
         "Create a Tournament"
         tournament = new Tournament()
         tournament.setName(T_NAME)
         tournament.setCreator(player)
+        tournament.setTopics(topics)
         tournament.setNrQuestions(10)
         tournament.setCourseExecution(courseExecution)
         tournament.setStartTime(NOW.plusMinutes(10))
@@ -79,7 +130,7 @@ class EnrollTournamentServiceTest extends Specification {
         tournament.setEndTime(EndTime)
 
         when: "Enroll Players in Tournaments"
-        tournamentService.enrollPlayer(player.getId(), tournament.getId())
+        tournamentService.enroll(player.getId(), tournament.getId())
 
         then: "Check Exception"
         def error = thrown(TutorException)
@@ -98,12 +149,9 @@ class EnrollTournamentServiceTest extends Specification {
     def "Enroll a Student in an Opened Tournament" () {
 
         when: "Enroll Players in Tournaments"
-        def tournamentDto = tournamentService.enrollPlayer(player.getId(), tournament.getId())
+        def tournamentDto = tournamentService.enroll(player.getId(), tournament.getId())
 
-        then: "Get DB data"
-        def tournamentSet = player.getTournaments()
-        and: "Check DB data"
-        tournamentSet.contains(tournament)
+        then: "Check DB data"
         tournamentDto.getPlayersId().contains(player.getId())
     }
 
@@ -113,6 +161,7 @@ class EnrollTournamentServiceTest extends Specification {
         def tournament_2 = new Tournament()
         tournament_2.setName(T_NAME)
         tournament_2.setCreator(player)
+        tournament_2.setTopics(topics)
         tournament_2.setNrQuestions(10)
         tournament_2.setCourseExecution(courseExecution)
         tournament_2.setStartTime(NOW.plusMinutes(10))
@@ -121,14 +170,10 @@ class EnrollTournamentServiceTest extends Specification {
         tournamentRepository.save(tournament_2)
 
         when: "Enroll Players in Tournaments"
-        def tournamentDto_1 = tournamentService.enrollPlayer(player.getId(), tournament.getId())
-        def tournamentDto_2 = tournamentService.enrollPlayer(player.getId(), tournament_2.getId())
+        def tournamentDto_1 = tournamentService.enroll(player.getId(), tournament.getId())
+        def tournamentDto_2 = tournamentService.enroll(player.getId(), tournament_2.getId())
 
-        then: "Get DB data"
-        def tournamentSet = player.getTournaments()
-        and: "Check DB data"
-        tournamentSet.contains(tournament)
-        tournamentSet.contains(tournament_2)
+        then: "Check DB data"
         tournamentDto_1.getPlayersId().contains(player.getId())
         tournamentDto_2.getPlayersId().contains(player.getId())
     }
@@ -136,8 +181,8 @@ class EnrollTournamentServiceTest extends Specification {
     def "Enroll a Student twice in the same Opened Tournament" () {
 
         when: "Enroll Players in Tournaments"
-        tournamentService.enrollPlayer(player.getId(), tournament.getId())
-        tournamentService.enrollPlayer(player.getId(), tournament.getId())
+        tournamentService.enroll(player.getId(), tournament.getId())
+        tournamentService.enroll(player.getId(), tournament.getId())
 
         then: "Check Exception"
         def error = thrown(TutorException)
@@ -153,15 +198,10 @@ class EnrollTournamentServiceTest extends Specification {
         userRepository.save(player_2)
 
         when: "Enroll Players in Tournaments"
-        def tournamentDto_1 = tournamentService.enrollPlayer(player.getId(), tournament.getId())
-        def tournamentDto_2 = tournamentService.enrollPlayer(player_2.getId(), tournament.getId())
+        def tournamentDto_1 = tournamentService.enroll(player.getId(), tournament.getId())
+        def tournamentDto_2 = tournamentService.enroll(player_2.getId(), tournament.getId())
 
         then: "Check DB data"
-        def tournamentSet_1 = player.getTournaments()
-        def tournamentSet_2 = player_2.getTournaments()
-        and: "Check DB data"
-        tournamentSet_1.contains(tournament)
-        tournamentSet_2.contains(tournament)
         tournamentDto_1.getPlayersId().contains(player.getId())
         tournamentDto_2.getPlayersId().contains(player_2.getId())
     }

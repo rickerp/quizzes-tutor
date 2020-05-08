@@ -1,12 +1,11 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.dto;
 
-import org.springframework.data.annotation.Transient;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,26 +24,26 @@ public class TournamentDto implements Serializable {
     private String startTime;
     private String endTime;
 
-    @Transient
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     public TournamentDto() {}
 
     public TournamentDto(Tournament tournament) {
-        this.id = tournament.getId();
-        this.name = tournament.getName();
-        this.creatorId = tournament.getCreator().getId();
-        this.creatorName = tournament.getCreator().getUsername();
+
+        setId(tournament.getId());
+        setName(tournament.getName());
+        setCreatorId(tournament.getCreator().getId());
+        setCreatorName(tournament.getCreator().getName());
+        setCourseExecutionId(tournament.getCourseExecution().getId());
+        setNrQuestions(tournament.getNrQuestions());
         this.topicsId = tournament.getTopics().stream().map(Topic::getId).collect(Collectors.toSet());
         this.topicsName = tournament.getTopics().stream().map(Topic::getName).sorted().collect(Collectors.toList());
         this.playersId = tournament.getPlayers().stream().map(User::getId).collect(Collectors.toSet());
-        this.courseExecutionId = tournament.getCourseExecution().getId();
-        this.nrQuestions = tournament.getNrQuestions();
 
-        if (tournament.getStartTime() != null)
-            this.startTime = tournament.getStartTime().format(formatter);
-        if (tournament.getEndTime() != null)
-            this.endTime = tournament.getEndTime().format(formatter);
+        if (tournament.getStartTime() != null) {
+            this.startTime = DateHandler.toISOString(tournament.getStartTime());
+        }
+        if (tournament.getEndTime() != null) {
+            this.endTime = DateHandler.toISOString(tournament.getEndTime());
+        }
     }
 
     public int getId() { return id; }
@@ -60,6 +59,8 @@ public class TournamentDto implements Serializable {
     public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
 
     public String getCreatorName() { return creatorName; }
+
+    public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
 
     public Set<Integer> getTopicsId() { return topicsId; }
 

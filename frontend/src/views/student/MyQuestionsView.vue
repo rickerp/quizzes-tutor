@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Model } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
 import RemoteServices from '@/services/RemoteServices';
 import StudentQuestion from '@/models/studentquestion/StudentQuestion';

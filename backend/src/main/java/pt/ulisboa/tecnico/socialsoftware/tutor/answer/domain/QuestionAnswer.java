@@ -1,11 +1,16 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.domain.ClarificationRequest;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.TournamentQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -32,12 +37,20 @@ public class QuestionAnswer implements DomainEntity {
     private QuizAnswer quizAnswer;
 
     @ManyToOne
+    @JoinColumn(name = "tournament_question_id")
+    private TournamentQuestion tournamentQuestion;
+
+    @ManyToOne
+    @JoinColumn(name = "tournament_answer_id")
+    private TournamentAnswer tournamentAnswer;
+
+    @ManyToOne
     @JoinColumn(name = "option_id")
     private Option option;
 
     private Integer sequence;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch=FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer",fetch = FetchType.LAZY)
     private Set<ClarificationRequest> clarificationRequests = new HashSet<>();
 
     public QuestionAnswer() {
@@ -57,6 +70,14 @@ public class QuestionAnswer implements DomainEntity {
         setSequence(sequence);
     }
 
+    public QuestionAnswer(TournamentAnswer tournamentAnswer, TournamentQuestion tournamentQuestion, int sequence) {
+        setTournamentAnswer(tournamentAnswer);
+        setTournamentQuestion(tournamentQuestion);
+        setSequence(sequence);
+    }
+
+    public boolean isFromTournament() { return tournamentQuestion != null && tournamentAnswer != null; }
+
     @Override
     public void accept(Visitor visitor) {
         visitor.visitQuestionAnswer(this);
@@ -72,6 +93,30 @@ public class QuestionAnswer implements DomainEntity {
 
     public void setTimeTaken(Integer timeTaken) {
         this.timeTaken = timeTaken;
+    }
+
+    public Question getQuestion() {
+        return isFromTournament() ?
+                tournamentQuestion.getQuestion() :
+                quizQuestion.getQuestion();
+    }
+
+    public CourseExecution getCourseExecution() {
+        return isFromTournament() ?
+                tournamentQuestion.getQuiz().getTournament().getCourseExecution() :
+                quizQuestion.getQuiz().getCourseExecution();
+    }
+
+    public User getUser() {
+        return isFromTournament() ?
+                tournamentAnswer.getUser() :
+                quizAnswer.getUser();
+    }
+
+    public boolean isCompleted() {
+        return isFromTournament() ?
+                tournamentAnswer.isFinished() :
+                quizAnswer.isCompleted();
     }
 
     public QuizQuestion getQuizQuestion() {
@@ -90,6 +135,24 @@ public class QuestionAnswer implements DomainEntity {
     public void setQuizAnswer(QuizAnswer quizAnswer) {
         this.quizAnswer = quizAnswer;
         quizAnswer.addQuestionAnswer(this);
+    }
+
+    public TournamentQuestion getTournamentQuestion() {
+        return tournamentQuestion;
+    }
+
+    public void setTournamentQuestion(TournamentQuestion tournamentQuestion) {
+        this.tournamentQuestion = tournamentQuestion;
+        tournamentQuestion.addQuestionAnswer(this);
+    }
+
+    public TournamentAnswer getTournamentAnswer() {
+        return tournamentAnswer;
+    }
+
+    public void setTournamentAnswer(TournamentAnswer tournamentAnswer) {
+        this.tournamentAnswer = tournamentAnswer;
+        tournamentAnswer.addQuestionAnswer(this);
     }
 
     public Option getOption() {
@@ -134,12 +197,13 @@ public class QuestionAnswer implements DomainEntity {
     }
 
     public void remove() {
-        quizAnswer.getQuestionAnswers().remove(this);
-        quizAnswer = null;
+        if (!isFromTournament()) {
+            quizAnswer.getQuestionAnswers().remove(this);
+            quizAnswer = null;
 
-        quizQuestion.getQuestionAnswers().remove(this);
-        quizQuestion = null;
-
+            quizQuestion.getQuestionAnswers().remove(this);
+            quizQuestion = null;
+        }
         if (option != null) {
             option.getQuestionAnswers().remove(this);
             option = null;

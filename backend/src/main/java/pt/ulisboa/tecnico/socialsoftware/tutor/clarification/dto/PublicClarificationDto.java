@@ -10,8 +10,6 @@ public class PublicClarificationDto {
     private ClarificationRequestDto clarificationRequest;
     private Availability availability;
 
-    public PublicClarificationDto() {}
-
     public PublicClarificationDto(PublicClarification publicClarification, CourseExecution courseExecution) {
         setId(publicClarification.getId());
         if (publicClarification.getCourseExecutions().contains(courseExecution)) {

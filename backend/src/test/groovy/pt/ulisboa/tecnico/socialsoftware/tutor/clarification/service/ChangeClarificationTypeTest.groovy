@@ -144,9 +144,9 @@ class ChangeClarificationTypeTest extends Specification {
         clarificationRequestCreated.getType() == PUBLIC
         clarificationReqDto.getType() == PUBLIC
         clarificationRequestCreated.getPublicClarification().getQuestion() ==
-                clarificationRequestCreated.getQuestionAnswer().getQuizQuestion().getQuestion();
+                clarificationRequestCreated.getQuestionAnswer().getQuestion()
         clarificationRequestCreated.getPublicClarification().getCourseExecutions()[0] ==
-                clarificationRequestCreated.getQuestionAnswer().getQuizAnswer().getQuiz().getCourseExecution();
+                clarificationRequestCreated.getQuestionAnswer().getCourseExecution()
     }
 
     def "Make clarification request that is PRIVATE, and UNRESOLVED, PUBLIC"() {
@@ -172,10 +172,9 @@ class ChangeClarificationTypeTest extends Specification {
         clarificationRequestCreated.getType() == PRIVATE
         clarificationReqDto.getType() == PRIVATE
         clarificationRequestCreated.getPublicClarification() == null
-        clarificationRequestCreated.getQuestionAnswer().getQuizQuestion().getQuestion()
+        clarificationRequestCreated.getQuestionAnswer().getQuestion()
                 .getPublicClarifications().size() == 0
-        clarificationRequestCreated.getQuestionAnswer().getQuizAnswer().getQuiz()
-                .getCourseExecution().getPublicClarifications().size() == 0
+        clarificationRequestCreated.getQuestionAnswer().getCourseExecution().getPublicClarifications().size() == 0
     }
 
     def "Change a Clarification Request type to an invalid type"() {

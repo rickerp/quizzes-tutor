@@ -23,7 +23,11 @@ import PublicClarificationsDashboardsView from '@/views/student/clarification/Pu
 
 import StatsView from '@/views/student/StatsView.vue';
 import ScanView from '@/views/student/ScanView.vue';
-import TournamentsView from '@/views/student/tournaments/TournamentsView.vue';
+import TournamentCalendarView from '@/views/student/tournaments/CalendarView.vue';
+import TournamentInProgressView from '@/views/student/tournaments/InProgressView.vue';
+import QuizTournamentView from '@/views/student/tournaments/QuizTournamentView.vue';
+import TournamentSolutionView from '@/views/student/tournaments/TournamentSolutionView.vue';
+import TournamentDashboardView from '@/views/student/tournaments/DashboardView.vue';
 
 import AdminManagementView from '@/views/admin/AdminManagementView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
@@ -179,11 +183,47 @@ let router = new Router({
           }
         },
         {
-          path: 'calendar',
+          path: 'tournaments/calendar',
           name: 'tournaments-calendar',
-          component: TournamentsView,
+          component: TournamentCalendarView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Tournaments Calendar',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'tournaments/inprogress',
+          name: 'tournaments-inprogress',
+          component: TournamentInProgressView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournaments in Progress',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'tournaments/quiz',
+          name: 'tournament-quiz',
+          component: QuizTournamentView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournament Quiz',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'tournaments/solution',
+          name: 'tournament-solution',
+          component: TournamentSolutionView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournament Solution',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'tournaments/dashboard',
+          name: 'tournaments-dashboard',
+          component: TournamentDashboardView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Tournaments Dashboard',
             requiredAuth: 'Student'
           }
         },

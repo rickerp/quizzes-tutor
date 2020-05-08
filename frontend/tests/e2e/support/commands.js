@@ -33,7 +33,7 @@ Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="saveButton"]').click();
 });
 
-Cypress.Commands.add('closeErrorMessage', (name, acronym, academicTerm) => {
+Cypress.Commands.add('closeErrorMessage', () => {
   cy.contains('Error')
     .parent()
     .find('button')
@@ -357,32 +357,82 @@ Cypress.Commands.add('assertRowField', (elem, field, value) => {
     .should('have.text', value);
 });
 
-Cypress.Commands.add('createTournament', (name, day, nrQuestions) => {
-  cy.get('[data-cy="newTdPButton"]').click();
-  cy.get('[data-cy="newTdPName"]').type(name);
-  cy.get('[data-cy="newTdPStartDateMenu"]').click();
+Cypress.Commands.add(
+  'createTournament',
+  (name, startDay, endDay, nrQuestions) => {
+    cy.get('[data-cy="newTdPButton"]').click();
+    cy.wait(500);
+    cy.get('[data-cy="newTdPName"]').type(name);
+    cy.setDay('newTdPStartTime', 'startDateInput', startDay);
+    cy.setDay('newTdPEndTime', 'endDateInput', endDay);
+    cy.get('[data-cy="newTdPNrQuestions"]')
+      .clear()
+      .type(nrQuestions.toString());
+    cy.get('[data-cy="newTdPTopicsMenu"]').click();
+    cy.wait(500);
+    cy.get('[data-cy="newTdPTopic"]')
+      .first()
+      .click();
+    cy.get('[data-cy="newTdPTopic"]')
+      .last()
+      .click();
+    cy.get('[data-cy="newTdPSave"]').click();
+    cy.wait(500);
+  }
+);
+
+Cypress.Commands.add('setDay', (button, id, day) => {
+  cy.get('[data-cy="' + button + '"]').click();
   cy.wait(500);
-  cy.get('.v-date-picker-header')
-    .children()
-    .last()
-    .click();
+  cy.get(
+    '#' +
+      id +
+      '-picker-container-DatePicker' +
+      '> .calendar' +
+      '> .datepicker-controls' +
+      '> .text-right' +
+      '> .datepicker-button'
+  ).click();
   cy.wait(500);
-  cy.get('.v-date-picker-table')
-    .children()
-    .contains(day.toString())
-    .click();
+  cy.get(
+    '#' +
+      id +
+      '-picker-container-DatePicker' +
+      '> .calendar' +
+      '> .month-container' +
+      '> :nth-child(1)' +
+      '> .datepicker-days' +
+      '> :nth-child(' +
+      day +
+      ')'
+  ).click();
+  cy.get(
+    '#' +
+      id +
+      '-wrapper' +
+      '> .datetimepicker' +
+      '> .datepicker' +
+      '> .datepicker-buttons-container' +
+      '> .validate'
+  ).click({ force: true });
   cy.wait(500);
-  cy.get('[data-cy="newTdPNrQuestions"]')
-    .clear()
-    .type(nrQuestions.toString());
-  cy.get('[data-cy="newTdPTopicsMenu"]').click();
-  cy.wait(500);
-  cy.get('[data-cy="newTdPTopic"]')
-    .first()
-    .click();
-  cy.get('[data-cy="newTdPTopic"]')
-    .last()
-    .click();
-  cy.get('[data-cy="newTdPSave"]').click();
-  cy.wait(500);
+});
+
+Cypress.Commands.add('doTournamentQuiz', options => {
+  let i = options.length;
+  cy.wrap(options).each(option => {
+    cy.get('.option-list > :nth-child(' + option + ')').click();
+    cy.wait(500);
+    if (--i > 0) cy.get('[data-cy="NextQuestionTdP"]').click();
+    else cy.get('[data-cy="FinishQuizTdP"]').click();
+  });
+  cy.get('[data-cy="Im-SureTdP"]').click();
+});
+
+Cypress.Commands.add('seeTournamentQuizSolution', nrQuestions => {
+  let i = nrQuestions;
+  cy.wrap(Array.from({ length: nrQuestions })).each(() => {
+    cy.wait(500);
+    if (--i > 0) cy.get('[data-cy="NextQuestionTdP"]').click();
+  });
 });
